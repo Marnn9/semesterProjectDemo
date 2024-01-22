@@ -24,7 +24,10 @@ USER_API.post('/', (req, res, next) => {
     const { name, email, password } = req.body;
 
     if (name != "" && email != "" && password != "") {
+        
         const user = new User();
+
+        const exisists = users.some(existingUser => existingUser.email === email);
         user.name = name;
         user.email = email;
 
@@ -32,11 +35,10 @@ USER_API.post('/', (req, res, next) => {
         user.pswHash = password;
 
         ///TODO: Does the user exist?
-        let exists = false;
 
-        if (!exists) {
+        if (!exisists) {
             users.push(user);
-            res.status(HttpCodes.SuccesfullRespons.Ok).end();
+            res.status(HttpCodes.SuccesfullRespons.Ok).send(user);
         } else {
             res.status(HttpCodes.ClientSideErrorRespons.BadRequest).end();
         }
@@ -44,6 +46,8 @@ USER_API.post('/', (req, res, next) => {
     } else {
         res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
     }
+
+    
 
 });
 
