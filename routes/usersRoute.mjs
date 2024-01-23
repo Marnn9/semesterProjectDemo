@@ -32,7 +32,7 @@ USER_API.post('/users', (req, res) => {
     }
 });
 
-USER_API.put('/users', (req, res) => {
+USER_API.put('/id', (req, res) => {
     const { name, email, password } = req.body;
 
     if (name && email && password) {

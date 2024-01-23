@@ -1,0 +1,56 @@
+html {
+    background-color: rgb(195, 209, 195);
+}
+
+h2 {
+    margin-left: 15%;
+
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+p {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: rgb(37, 91, 172);
+}
+
+.input {
+    border-radius: 15px;
+    background-color: white;
+    border: none;
+    height: 30px;
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.commitBtn {
+    border: none;
+    border-radius: 15px;
+    height: 30px;
+    background-color: orange;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.form {
+    margin-left: 25%;
+    margin-top: 10%;
+}
+
+#createUtext {
+    margin-top: 2%;
+    margin-left: 48%;
+}
+
+.displayUserBtn {
+    border: none;
+    border-radius: 15px;
+    height: 30px;
+    background-color: rgb(255, 255, 255);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-left: 20%;
+    margin-top: 10%;
+}
+
+.listed_users{
+    color: rgb(100, 69, 16);
+    font-family: sans-serif;
+}
