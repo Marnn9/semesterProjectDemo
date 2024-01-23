@@ -33,9 +33,24 @@ USER_API.post('/users', (req, res) => {
 });
 
 USER_API.put('/users', (req, res) => {
+    const { name, email, password } = req.body;
+
+    if (name && email && password) {
+        const userIndex = users.findIndex(existingUser => existingUser.email === email);
+
+        if (userIndex !== -1) {
+            const updatedUser = { id: users[userIndex].id, name, email, pswHash: password };
+            users[userIndex] = updatedUser;
+            res.status(HttpCodes.SuccesfullResponse.Ok).json(updatedUser);
+        } else {
+            res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+        }
+    } else {
+        res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Missing data fields' });
+    }
 });
 
 
-
 export default USER_API;
+
 
