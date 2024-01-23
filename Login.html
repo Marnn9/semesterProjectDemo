@@ -11,8 +11,9 @@
     <div id="container">
         <h2>Log in to create your character</h2> <br><br>
         <input type="text" class="input" name="username" id="inpUname" placeholder="username">
+        <input type="text" class="input" name="username" id="inpEmail" placeholder="email">
         <input type="password" class="input" name="password" id="inpPassword" placeholder="passsword">
-        <button id="loginBtn">login</button> <br><br>
+        <button id="loginBtn" onclick="addUser()">login</button> <br><br>
     </div>
     <p id="createUtext">Create user here</p>
 
@@ -24,7 +25,8 @@
         h2 {
             font-family: Georgia, 'Times New Roman', Times, serif;
         }
-        p{
+
+        p {
             font-family: Georgia, 'Times New Roman', Times, serif;
             color: rgb(37, 91, 172);
         }
@@ -51,15 +53,69 @@
             margin-top: 10%;
         }
 
-        #createUtext{
+        #createUtext {
             margin-top: 2%;
-            margin-left: 40%; 
+            margin-left: 40%;
         }
     </style>
     <script>
 
+        // Function to add a new user
+        function addUser() {
+            // Fetch user data from the form
+            const name = document.getElementById('inpUname').value;
+            const email = document.getElementById('inpEmail').value;
+            const password = document.getElementById('inpPassword').value;
 
+            // Create a user object
+            const user = { name, email, password };
+
+            // Send a POST request to the server to add the user
+            fetch('http://localhost:8080/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('User added:', data);
+                    // Add the user to the user list
+                    displayUser(data);
+                })
+                .catch(error => {
+                    console.error('Error adding user:', error);
+                });
+        }
+
+        // Function to display a user in the user list
+        function displayUser(user) {
+            const userList = document.getElementById('userList');
+            const listItem = document.createElement('li');
+            listItem.textContent = `Name: ${user.name}, Email: ${user.email}`;
+            userList.appendChild(listItem);
+        }
+
+        // Function to fetch and display the list of users
+        function fetchUsers() {
+            fetch('http://localhost:8080/users')
+                .then(response => response.json())
+                .then(users => {
+                    console.log('User list:', users);
+                    // Display each user in the user list
+                    users.forEach(displayUser);
+                })
+                .catch(error => {
+                    console.error('Error fetching users:', error);
+                });
+        }
+
+        // Fetch and display the list of users when the page loads
+        window.onload = fetchUsers;
     </script>
+
+
 </body>
 
 </html>

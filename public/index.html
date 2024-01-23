@@ -4,12 +4,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My app</title>
+    <title>Server app</title>
 </head>
 
-
 <body>
-    <h1>Hello Class</h1>
+    <form id="container" onsubmit="addUser(); return false;">
+        <h2>Log in to create your character</h2> <br><br>
+        <input type="text" class="input" name="username" id="inpUname" placeholder="username">
+        <input type="text" class="input" name="username" id="inpEmail" placeholder="email">
+        <input type="password" class="input" name="password" id="inpPassword" placeholder="password">
+        <button type="submit" id="loginBtn">Login</button> <br><br>
+    </form>
+
+    <p id="createUtext">Create user here</p>
+
+    <button id="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
+
+    <ul id="userList"></ul>
+
+    <style>
+        html {
+            background-color: rgb(195, 209, 195);
+        }
+
+        h2 {
+            margin-left: 15%;
+
+            font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+
+        p {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            color: rgb(37, 91, 172);
+        }
+
+        .input {
+            border-radius: 15px;
+            background-color: white;
+            border: none;
+            height: 30px;
+            text-align: center;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        #loginBtn {
+            border: none;
+            border-radius: 15px;
+            height: 30px;
+            background-color: orange;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        #container {
+            margin-left: 25%;
+            margin-top: 10%;
+        }
+
+        #createUtext {
+            margin-top: 2%;
+            margin-left: 48%;
+        }
+
+        #displayUserBtn {
+            border: none;
+            border-radius: 15px;
+            height: 30px;
+            background-color: rgb(255, 255, 255);
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            margin-left: 20%;
+            margin-top: 20%;
+        }
+    </style>
+    <script>
+
+        async function addUser() {
+            // Fetch user data from the form
+            const name = document.getElementById('inpUname').value;
+            const email = document.getElementById('inpEmail').value;
+            const password = document.getElementById('inpPassword').value;
+
+            // Create a user object
+            const user = { name, email, password };
+
+            // Send a POST request to the server to add the user
+            fetch('http://localhost:8080/user/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('User:', data);
+                    // Add the user to the user list
+                    displayUser(data);
+                })
+                .catch(error => {
+                    console.error('Error adding user:', error);
+                });
+        }
+        async function displayAllUsers() {
+            const userList = document.getElementById('userList');
+
+            // Clear existing user list
+            userList.innerHTML = '';
+
+            // Fetch all users from the server
+            fetch('http://localhost:8080/user/users')
+                .then(response => response.json())
+                .then(users => {
+                    console.log('User list:', users);
+
+                    // Display each user in the user list
+                    users.forEach(user => displayUser(user));
+                })
+                .catch(error => {
+                    console.error('Error fetching users:', error);
+                });
+        }
+
+        // Function to display a user in the user list
+        function displayUser(user) {
+            const userList = document.getElementById('userList');
+            const listItem = document.createElement('li');
+
+            // Check if user is undefined before accessing properties
+            if (user) {
+                listItem.textContent = `Name: ${user.name}, Email: ${user.email}`;
+            } else {
+                listItem.textContent = 'User information not available';
+            }
+
+            userList.appendChild(listItem);
+        }
+    </script>
 </body>
 
 </html>
