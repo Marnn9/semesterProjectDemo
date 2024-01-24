@@ -168,7 +168,12 @@
                     },
                     body: JSON.stringify(editedUser),
                 })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         console.log('Edited User:', data);
                         // Add the edited user to the user list
