@@ -20,10 +20,11 @@
 
     <p id="createUtext">Create user here</p>
 
-    <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button> 
-    <button class="displayUserBtn" onclick="editUser()">Edit User</button>
+    <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
+    <button class="displayUserBtn" onclick="displayEditUser()">Edit User</button>
 
-    <form class="form" id="editUser" onsubmit="sendEditUser(); return false;" style="display: none;">
+    <form class="form" id="editUser" onsubmit="sendEditUser(); return false;" style="display: none;"
+        enctype="multipart/form-data">
         <h2>Edit your user</h2> <br><br>
         <input type="text" class="input" name="username" id="inpUnameEdit" placeholder="username">
         <input type="text" class="input" name="Email" id="inpEmailEdit" placeholder="email">
@@ -35,7 +36,10 @@
 
     <script>
         let usersData = null;
-        let selectedUserId = null; // New variable to store the selected user's ID
+        let selectedUserId = null;
+        let selectedUserName = null;
+        let selectedUserEpost = null;
+        let selectedUserPassword = null;
 
         function addUser() {
             // Fetch user data from the form
@@ -95,7 +99,7 @@
             if (user) {
                 listItem.textContent = `name: ${user.name}, email: ${user.email}`;
                 listItem.classList.add('listed_users');
-                listItem.addEventListener('click', () => selectUser(user.id)); // Set up click event
+                listItem.addEventListener('click', () => selectUser(user.id, user.name, user.email, user.password)); // Set up click event
             } else {
                 listItem.textContent = 'User information not available';
             }
@@ -103,14 +107,19 @@
             userList.appendChild(listItem);
         }
 
-        function editUser() {
+        function displayEditUser() {
             document.getElementById('editUser').style.display = 'block';
         }
 
         // Function to select a user by ID
-        function selectUser(userId) {
+        function selectUser(userId, userName, userEpost, userPassword) {
             selectedUserId = userId;
-            console.log('Selected User ID:', selectedUserId);
+            selectedUserName = userName;
+            selectedUserEpost = userEpost;
+            console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost);
+            document.getElementById('inpUnameEdit').placeholder = selectedUserName;
+            document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;
+
         }
 
         function sendEditUser() {
@@ -121,15 +130,14 @@
 
             // Check if all required fields are present
             if (name && email && password && selectedUserId) {
-                const editedUser = { name, email, password };
+                const formDataInput = new FormData(document.getElementById('editUser'));
 
-                // Send a PUT request to update the user
+                // Append the user ID to the form data
+                formDataInput.append('id', selectedUserId);
+
                 fetch(`http://localhost:8080/user/users/${selectedUserId}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(editedUser),
+                    body: formDataInput,
                 })
                     .then(response => response.json())
                     .then(data => {
@@ -141,9 +149,11 @@
                         console.error('Error editing user:', error);
                     });
             } else {
-                console.error('Missing data fields for editing user or no user selected');
+                console.error('Missing data in fields for editing user or no user selected');
             }
         }
+
+
     </script>
 </body>
 

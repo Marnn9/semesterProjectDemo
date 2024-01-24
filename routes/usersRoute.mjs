@@ -32,11 +32,11 @@ USER_API.post('/users', (req, res) => {
     }
 });
 
-USER_API.put('/id', (req, res) => {
+USER_API.put('/user/users/id', (req, res) => {
     const { name, email, password } = req.body;
 
     if (name && email && password) {
-        const userIndex = users.findIndex(existingUser => existingUser.email === email);
+        const userIndex = users.findIndex(existingUser => existingUser.id === req.params.id);
 
         if (userIndex !== -1) {
             const updatedUser = { id: users[userIndex].id, name, email, pswHash: password };
