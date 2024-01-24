@@ -23,14 +23,15 @@
     <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
     <button class="displayUserBtn" onclick="displayEditUser()">Edit User</button>
 
-    <form class="form" id="editUser" onsubmit="sendEditUser(); return false;" style="display: none;"
-        enctype="multipart/form-data">
+    <form class="form" id="editUser" onsubmit="sendEditUser(); return false;" style="display: none;">
         <h2>Edit your user</h2> <br><br>
         <input type="text" class="input" name="username" id="inpUnameEdit" placeholder="username">
         <input type="text" class="input" name="Email" id="inpEmailEdit" placeholder="email">
         <input type="password" class="input" name="password" id="inpPasswordEdit" placeholder="password">
         <button class="commitBtn" type="submit" id="Update">Update</button> <br><br>
     </form>
+
+    <button onclick="deleteUser()">Delete selected user</button>
 
     <ul id="userList"></ul>
 
@@ -43,6 +44,7 @@
 
         function addUser() {
             // Fetch user data from the form
+            event.preventDefault();
             const name = document.getElementById('inpUname').value;
             const email = document.getElementById('inpEmail').value;
             const password = document.getElementById('inpPassword').value;
@@ -77,17 +79,37 @@
 
             // Fetch all users from the server
             fetch('http://localhost:8080/user/users')
-                .then(response => response.json())
-                .then(users => {
-                    console.log('User list:', users);
-                    usersData = users;
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response from server:', data);
 
-                    // Display each user in the user list
-                    users.forEach(user => displayUser(user));
+                    if (Array.isArray(data)) {
+                        // Display each user in the user list
+                        data.forEach(user => displayUser(user));
+                    } else {
+                        console.error('Invalid response from server:', data);
+                    }
                 })
                 .catch(error => {
-                    console.error('Error fetching users:', error);
+                    console.error('Error fetching users:', error.message);
                 });
+        }
+        // Function to select a user by ID
+        function selectUser(userId, userName, userEpost, userPassword) {
+            selectedUserId = userId;
+            selectedUserName = userName;
+            selectedUserEpost = userEpost;
+            selectedUserPassword = userPassword;
+            console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost + " pas: " + selectedUserPassword);
+            document.getElementById('inpUnameEdit').placeholder = selectedUserName;
+            document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;
+
+
         }
 
         // Function to display a user in the user list
@@ -99,7 +121,7 @@
             if (user) {
                 listItem.textContent = `name: ${user.name}, email: ${user.email}`;
                 listItem.classList.add('listed_users');
-                listItem.addEventListener('click', () => selectUser(user.id, user.name, user.email, user.password)); // Set up click event
+                listItem.addEventListener('click', () => selectUser(user.id, user.name, user.email, user.pswHash));
             } else {
                 listItem.textContent = 'User information not available';
             }
@@ -111,33 +133,40 @@
             document.getElementById('editUser').style.display = 'block';
         }
 
-        // Function to select a user by ID
-        function selectUser(userId, userName, userEpost, userPassword) {
-            selectedUserId = userId;
-            selectedUserName = userName;
-            selectedUserEpost = userEpost;
-            console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost);
-            document.getElementById('inpUnameEdit').placeholder = selectedUserName;
-            document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;
 
-        }
-
-        function sendEditUser() {
+        async function sendEditUser() {
             // Fetch user data from the edit form
-            const name = document.getElementById('inpUnameEdit').value;
-            const email = document.getElementById('inpEmailEdit').value;
-            const password = document.getElementById('inpPasswordEdit').value;
+            let name = document.getElementById('inpUnameEdit').value;
+            let email = document.getElementById('inpEmailEdit').value;
+            let password = document.getElementById('inpPasswordEdit').value;
 
+            if (!name) {
+                name = selectedUserName;
+            }
+
+            if (!email) {
+                email = selectedUserEpost;
+            }
+
+            if (!password) {
+                password = selectedUserPassword;
+                console.log("po: " + password);
+            }
+            console.log("user data: " + name, email + " pas: " + password);
             // Check if all required fields are present
             if (name && email && password && selectedUserId) {
                 const formDataInput = new FormData(document.getElementById('editUser'));
+                const editedUser = { email, selectedUserId, name, password }
 
                 // Append the user ID to the form data
                 formDataInput.append('id', selectedUserId);
 
                 fetch(`http://localhost:8080/user/users/${selectedUserId}`, {
                     method: 'PUT',
-                    body: formDataInput,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(editedUser),
                 })
                     .then(response => response.json())
                     .then(data => {
@@ -152,6 +181,28 @@
                 console.error('Missing data in fields for editing user or no user selected');
             }
         }
+
+        function deleteUser() {
+
+            if (selectedUserId) {                // Append the user ID to the form data
+                fetch(`http://localhost:8080/user/users/${selectedUserId}`, {
+                    method: 'DELETE',
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Deleted user:', data);
+                        // Add the edited user to the user list
+                        displayUser(data);
+                    })
+                    .catch(error => {
+                        console.error('Error editing user:', error);
+                    });
+            } else {
+                console.error('Missing data in fields for editing user or no user selected');
+            }
+        }
+
+
 
 
     </script>

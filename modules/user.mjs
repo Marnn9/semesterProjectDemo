@@ -5,6 +5,7 @@ class User {
         this.email;
         this.pswHash;
         this.name;
+        this.id;
     }
 }
 
