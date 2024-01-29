@@ -48,16 +48,16 @@ USER_API.put('/users/:id', (req, res) => {
     const userId = req.params.id;
     const { name, email, password } = req.body;
 
-    // Find the index of the user with the specified ID
-    const userIndex = users.find(existingUser => existingUser.id === userId);
+    // Find the user with the specified ID
+    const foundUser = users.find(existingUser => existingUser.id === userId);
 
-    if (userIndex !== -1) {
+    if (foundUser) {
         // Update user data
-        users.name = name || users[userIndex].name;
-        users.email = email || users[userIndex].email;
-        users.pswHash = password || users[userIndex].pswHash;
+        foundUser.name = name || foundUser.name;
+        foundUser.email = email || foundUser.email;
+        foundUser.pswHash = password || foundUser.pswHash;
 
-        res.status(HttpCodes.SuccesfullResponse.Ok).json(users[userIndex]);
+        res.status(HttpCodes.SuccesfullResponse.Ok).json(foundUser);
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }
