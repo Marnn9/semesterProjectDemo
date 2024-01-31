@@ -30,7 +30,7 @@
         <button class="commitBtn" type="submit" id="Update">Update</button> <br><br>
     </form>
 
-    <button onclick="deleteUser()">Delete selected user</button>
+    <button class="deleteUserBtn" onclick="deleteUser()">Delete selected user</button>
 
     <ul id="userList"></ul>
 
@@ -41,7 +41,7 @@
         let selectedUserEpost = null;
         let selectedUserPassword = null;
 
-        function addUser() {
+        async function addUser() {
             // Fetch user data from the form
             event.preventDefault();
             const name = document.getElementById('inpUname').value;
@@ -70,7 +70,7 @@
                 });
         }
 
-        function displayAllUsers() {
+        async function displayAllUsers() {
             const userList = document.getElementById('userList');
 
             // Clear existing user list
@@ -194,7 +194,7 @@
             }
         }
 
-        function deleteUser() {
+        async function deleteUser() {
 
             if (selectedUserId) {                // Append the user ID to the form data
                 fetch(`http://localhost:8080/user/users/${selectedUserId}`, {

@@ -50,8 +50,19 @@ p {
     margin-top: 10%;
 }
 
+.deleteUserBtn{
+    border: none;
+    border-radius: 15px;
+    height: 30px;
+    background-color: rgb(219, 75, 75);
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-left: 20%;
+    margin-top: 10%;
+}
+
 .listed_users{
-    color: rgb(100, 69, 16);
+    color: rgb(16, 22, 100);
     font-family: sans-serif;
 }
 

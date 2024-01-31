@@ -1,7 +1,7 @@
 // Import necessary modules and classes
 import express from 'express';
 import bodyParser from 'body-parser';
-import httpConstants from '../modules/httpConstants.mjs';
+import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 
 const USER_API = express.Router();
@@ -26,13 +26,13 @@ USER_API.use(functionToRunToEveryUser); //the use is from express making it run 
 
 USER_API.get('/users', (req, res, next) => {
     // Retrieve all users
-    res.status(httpConstants.successfulResponse.Ok).json(users);
+    res.status(HttpCodes.successfulResponse.Ok).json(users);
     console.log('Received GET request for all users: ');
 });;
 
 USER_API.post('/users', (req, res) => {
     const { name, email, password } = req.body;
-
+        
     if (name !== undefined && email !== undefined && password !== undefined) {
         // Create a new User instance
         const user = new User();
@@ -45,12 +45,12 @@ USER_API.post('/users', (req, res) => {
         const exists = users.some(existingUser => existingUser.email === email);
         if (!exists) {
             users.push(user);
-            res.status(httpConstants.successfulResponse.Ok).json(user);
+            res.status(HttpCodes.successfulResponse.Ok).json(user);
         } else {
-            res.status(httpConstants.ClientSideErrorResponse.BadRequest).json({ error: 'User already exists' });
+            res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'User already exists' });
         }
     } else {
-        res.status(httpConstants.ClientSideErrorResponse.BadRequest).json({ error: 'Missing data fields' });
+        res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Missing data fields' });
     }
 });
 
@@ -67,9 +67,9 @@ USER_API.put('/users/:id', (req, res) => {
         foundUser.email = email || foundUser.email;
         foundUser.pswHash = password || foundUser.pswHash;
 
-        res.status(httpConstants.successfulResponse.Ok).json(foundUser);
+        res.status(HttpCodes.successfulResponse.Ok).json(foundUser);
     } else {
-        res.status(httpConstants.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+        res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }
 });
 
@@ -88,7 +88,7 @@ USER_API.delete('/users/:id', (req, res) => {
         res.status(HttpCodes.successfulResponse.Ok).json(deletedUser);
     } else {
         console.log('User not found for deletion');
-        res.status(httpConstants.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+        res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }
 });
 // Add other routes as needed (PUT, DELETE, etc.)
