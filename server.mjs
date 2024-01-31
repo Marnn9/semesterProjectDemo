@@ -10,8 +10,8 @@ server.set('port', port);
 
 
 //enable logging in to server
-const log = new SuperLogger();
-server.use(log);
+/* const log = new SuperLogger();
+server.use(log.middleware); */
 
 // Defining a folder that will contain static files.
 server.use(express.static('public'));
@@ -24,7 +24,7 @@ server.use("/user", USER_API);
 
 // A get request handler example)
 server.get("/", (req, res, next) => {
-    res.status(200).send(JSON.stringify({ msg: "These are not the droids...." })).end();
+    res.status(200).send(JSON.stringify({ msg: "Server ok?" })).end();
 });
 
 // Start the server 

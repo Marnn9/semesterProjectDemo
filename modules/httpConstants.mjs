@@ -20,7 +20,7 @@ class HttpCodes {
 
 }
 
-export const HTTPMethods = {
+const HTTPMethods = {
     POST : "POST",
     GET: "GET",
     PUT: "PUT",
@@ -28,4 +28,4 @@ export const HTTPMethods = {
     DELETE: "DELETE"
 }
 
-export default {HttpCodes, HTTPMethods};
+export {HttpCodes, HTTPMethods};

@@ -89,6 +89,10 @@ class SuperLogger {
 
     }
 
+    middleware(req, res, next) {
+        this.#LogHTTPRequest(req, res, next);
+    }
+
     #LogHTTPRequest(req, res, next) {
         // These are just some variables that we extract to show the point 
         // TODO: Extract and format information important for your dev process. 
@@ -103,6 +107,8 @@ class SuperLogger {
         // On to the next handler function
         next();
     }
+
+
 
 }
 

@@ -43,7 +43,6 @@ USER_API.post('/users', (req, res) => {
 
         // Check if the user already exists
         const exists = users.some(existingUser => existingUser.email === email);
-
         if (!exists) {
             users.push(user);
             res.status(httpConstants.successfulResponse.Ok).json(user);
