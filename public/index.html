@@ -116,7 +116,8 @@
 
             // Check if user is undefined before accessing properties
             if (user) {
-                listItem.textContent = `name: ${user.name}, email: ${user.email}`;
+                listItem.innerHTML = `Name: <b>${user.name} </b>, E-mail: <b> ${user.email}</b>`;
+                userList.appendChild(listItem);
                 listItem.classList.add('listed_users');
 
                 // Add an event listener to change the class when the list item is clicked
@@ -183,7 +184,7 @@
                     })
                     .then(data => {
                         console.log('Edited User:', data);
-                        // Add the edited user to the user list
+                        window.location.reload();
                         displayUser(data);
                     })
                     .catch(error => {
@@ -215,6 +216,7 @@
             }
         }
 
+        
 
 
 
