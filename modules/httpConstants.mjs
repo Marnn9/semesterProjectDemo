@@ -18,6 +18,10 @@ class HttpCodes {
         NotAcceptable: 406
     }
 
+    static serverSideResponse = {
+        
+    }
+
 }
 
 export const HTTPMethods = {

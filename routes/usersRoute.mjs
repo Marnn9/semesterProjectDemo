@@ -3,7 +3,10 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
+import SuperLogger from '../modules/SuperLogger.mjs';
 
+
+const logger = new SuperLogger();
 const USER_API = express.Router();
 
 // Use middleware to parse JSON requests
@@ -28,7 +31,9 @@ USER_API.get('/users', (req, res, next) => {
     // Retrieve all users
     res.status(HttpCodes.successfulResponse.Ok).json(users);
     console.log('Received GET request for all users: ');
-});;
+
+    logger.log("try to get user with id " + req.params.id);
+});
 
 USER_API.post('/users', (req, res) => {
     const { name, email, password } = req.body;

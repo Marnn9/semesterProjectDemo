@@ -1,6 +1,7 @@
 import Chalk from "chalk";
 import { HTTPMethods } from "./httpConstants.mjs"
-
+import fs from "fs/promises";
+import { Console } from "console";
 //#region  Construct for decorating output.
 
 let COLORS = {}; // Creating a lookup tbl to avoid having to use if/else if or switch. 
@@ -62,6 +63,15 @@ class SuperLogger {
     //#endregion
 
 
+    static log(msg, logLvl = SuperLogger.LOGGING_LEVELS.NORMAL) {
+        let logger = SuperLogger.instance;
+        if (logger.#globalThreshold >= logLvl) {
+            return;
+        }
+
+        logger.writeToLog(msg);
+    }
+
     // This is our automatic logger, it outputs at a "normal" level
     // It is just a convenient wrapper around the more generic createLimitedRequestLogger function
     createAutoHTTPRequestLogger() {
@@ -108,7 +118,22 @@ class SuperLogger {
         next();
     }
 
+    #writeToLog (msg){
 
+        console.log(msg);
+
+        fs.appendFile("./log.txt", msg, (err) => {
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              };
+
+              const todaysDate = Date.toLocaleTimeString('de-DE', options)
+
+        });
+    }
 
 }
 
