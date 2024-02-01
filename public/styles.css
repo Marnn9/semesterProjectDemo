@@ -50,7 +50,7 @@ p {
     margin-top: 10%;
 }
 
-.deleteUserBtn{
+.deleteUserBtn {
     border: none;
     border-radius: 15px;
     height: 30px;
@@ -61,11 +61,60 @@ p {
     margin-top: 10%;
 }
 
-.listed_users{
+.listed_users {
     color: rgb(0, 0, 0);
     font-family: sans-serif;
 }
 
 .selected-user {
     color: green;
-  }
+}
+
+.toggleModeBtn {
+    border-radius: 10px;
+    height: 30px;
+    background-color: rgb(61, 61, 60);
+    color: white;
+    border: none;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#messageDisplayContainer{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: orange;
+}
+
+
+/* -------- Dark mode styles --------*/
+
+.dark-mode {
+    background-color: #000;
+    color: #fff;
+}
+
+.dark-mode input,
+.dark-mode button {
+    background-color: #222;
+    color: #fff;
+}
+
+.dark-mode .listed_users {
+    color:#fffbfb ;
+}
+
+.dark-mode .selected-user {
+    color: orange;
+}
+
+.dark-mode .toggleModeBtn {
+    background-color: white;
+    color: black;
+}
+
+.dark-mode .deleteUserBtn{
+    background-color: rgb(219, 75, 75);
+}
+
+.dark-mode .commitBtn{
+    background-color: orange;
+}

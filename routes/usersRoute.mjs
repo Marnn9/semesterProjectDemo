@@ -10,7 +10,7 @@ const logger = new SuperLogger();
 const USER_API = express.Router();
 
 // Use middleware to parse JSON requests
-USER_API.use(bodyParser.json());
+//USER_API.use(express.json());
 
 const users = [];
 
@@ -32,7 +32,7 @@ USER_API.get('/users', (req, res, next) => {
     res.status(HttpCodes.successfulResponse.Ok).json(users);
     console.log('Received GET request for all users: ');
 
-    logger.log("try to get user with id " + req.params.id);
+    //logger.log("try to get user with id " + req.params.id);
 });
 
 USER_API.post('/users', (req, res) => {
@@ -46,7 +46,7 @@ USER_API.post('/users', (req, res) => {
         user.pswHash = password;
         user.id = Date.now().toString();
 
-        // Check if the user already exists
+        // Check if a user with the provided email exists
         const exists = users.some(existingUser => existingUser.email === email);
         if (!exists) {
             users.push(user);
