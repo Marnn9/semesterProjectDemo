@@ -9,7 +9,8 @@
 </head>
 
 <body>
-    <button id="toggleModeBtn" class="toggleModeBtn">Mode</button>
+    <button id="toggleModeBtn" class="toggleModeBtn">&#9728;</button>
+    <div id="messageDisplayContainer"></div>
 
     <form class="form" id="create" onsubmit="addUser(); return false;">
         <h2>Log in to create your character</h2> <br><br>
@@ -20,11 +21,15 @@
     </form>
 
     <p id="createUtext">Create user here</p>
-    <div id="messageDisplayContainer"></div>
 
-    <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
-    <button class="displayUserBtn" onclick="displayEditUser()">Edit User</button>
+    <div id="bntContainer">
+        <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
+        <button class="displayUserBtn" onclick="displayEditUser()">Edit User</button>
+        <button class="deleteUserBtn" onclick="deleteUser()">Delete selected user</button>
+    </div>
 
+    <ul id="userList"></ul>
+    
     <form class="form" id="editUser" onsubmit="sendEditUser(); return false;" style="display: none;">
         <h2>Edit your user</h2> <br><br>
         <input type="text" class="input" name="username" id="inpUnameEdit" placeholder="username">
@@ -33,19 +38,19 @@
         <button class="commitBtn" type="submit" id="Update">Update</button> <br><br>
     </form>
 
-    <button class="deleteUserBtn" onclick="deleteUser()">Delete selected user</button>
-
-    <ul id="userList"></ul>
+   
 
     <script>
-        //implement light and dark mode
+        function displayMsg(aMsg) { //could add more parameters so you can change the color and position etc when calling the function
+
+            const messageDisplay = document.getElementById('messageDisplayContainer');
+            messageDisplay.innerHTML = aMsg;
+        }
 
         const toggleModeBtn = document.getElementById('toggleModeBtn');
         toggleModeBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark-mode');
         })
-
-        const msgDisplayContainer = document.getElementById('messageDisplayContainer');
 
         let usersData = null;
         let selectedUserId = null;
@@ -53,7 +58,7 @@
         let selectedUserEpost = null;
         let selectedUserPassword = null;
 
-        const url = 'http://localhost:8080';
+        const url = 'user/users';
 
         async function addUser() {
             // Fetch user data from the form
@@ -66,7 +71,7 @@
             const user = { name, email, password };
             if (name && email && password) {
 
-                fetch(url + '/user/users', {
+                fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -85,7 +90,7 @@
                     });
             } else {
                 console.log("missing fields");
-                //write a function that takes the message and displays it to the user (middleware)
+                displayMsg("All fields must be filled");
             }
         }
 
@@ -96,7 +101,7 @@
             userList.innerHTML = '';
 
             // Fetch all users from the server
-            fetch(url + '/user/users')
+            fetch(url)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -115,6 +120,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching users:', error.message);
+                    displayMsg(`Error fetching users: kunne ikke vise bruker <br> Server response: ${error.message}`);
                 });
         }
         // Function to select a user by ID
@@ -186,7 +192,7 @@
 
                 formDataInput.append('id', selectedUserId);
 
-                fetch(url + `/user/users/${selectedUserId}`, {
+                fetch(url + "/" + selectedUserId, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -206,30 +212,37 @@
                     })
                     .catch(error => {
                         console.error('Error editing user:', error);
+                        displayMsg(`Could not edit user, please select a user <br> ${error.message}`);
                     });
             } else {
+                displayMsg(`Missing data in fields for editing user or no user selected.`);
+
                 console.error('Missing data in fields for editing user or no user selected');
+
             }
         }
 
         async function deleteUser() {
 
-            if (selectedUserId) {
-                fetch(url + `/user/users/${selectedUserId}`, {
+            const deleteConfirm = confirm("Are you sure you want to delete the user?");
+
+            if (deleteConfirm && selectedUserId) {
+                fetch(url + "/" + selectedUserId, {
                     method: 'DELETE',
                 })
                     .then(response => response.json())
                     .then(data => {
                         console.log('Deleted user:', data);
-                        // Add the edited user to the user list
                         window.location.reload();
-                        displayUser(data);
                     })
                     .catch(error => {
                         console.error('Error editing user:', error);
                     });
-            } else {
-                console.error('Missing data in fields for editing user or no user selected');
+            } else if (!deleteConfirm) {
+                return;
+            }
+            else {
+                displayMsg("Missing data, no user selected.")
             }
         }
 

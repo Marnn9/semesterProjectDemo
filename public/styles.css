@@ -3,9 +3,9 @@ html {
 }
 
 h2 {
-    margin-left: 15%;
 
     font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
 }
 
 p {
@@ -31,13 +31,15 @@ p {
 }
 
 .form {
-    margin-left: 25%;
-    margin-top: 10%;
+    margin: auto;
+    margin-top: 5%;
+    text-align: center; 
+    
 }
 
 #createUtext {
     margin-top: 2%;
-    margin-left: 48%;
+    text-align: center;
 }
 
 .displayUserBtn {
@@ -46,7 +48,6 @@ p {
     height: 30px;
     background-color: rgb(255, 255, 255);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    margin-left: 20%;
     margin-top: 10%;
 }
 
@@ -57,7 +58,6 @@ p {
     background-color: rgb(219, 75, 75);
     color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    margin-left: 20%;
     margin-top: 10%;
 }
 
@@ -72,18 +72,30 @@ p {
 
 .toggleModeBtn {
     border-radius: 10px;
-    height: 30px;
+    height: 40px;
+    width: 40px;
     background-color: rgb(61, 61, 60);
     color: white;
     border: none;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: x-large;
+    margin-left: 1%;
+    margin-top: 1%;
 }
 
-#messageDisplayContainer{
+#messageDisplayContainer {
     font-family: Georgia, 'Times New Roman', Times, serif;
-    color: orange;
+    font-weight: bold;
+    color: red;
+    text-align: center;
 }
 
+#bntContainer {
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 30%;
+}
 
 /* -------- Dark mode styles --------*/
 
@@ -99,7 +111,7 @@ p {
 }
 
 .dark-mode .listed_users {
-    color:#fffbfb ;
+    color: #fffbfb;
 }
 
 .dark-mode .selected-user {
@@ -111,10 +123,10 @@ p {
     color: black;
 }
 
-.dark-mode .deleteUserBtn{
+.dark-mode .deleteUserBtn {
     background-color: rgb(219, 75, 75);
 }
 
-.dark-mode .commitBtn{
-    background-color: orange;
+.dark-mode .commitBtn {
+    background-color: rgb(207, 139, 11);
 }

@@ -10,9 +10,11 @@ server.set('port', port);
 
 
 //enable logging in to server
-/* const log = new SuperLogger();
-server.use(log.middleware); */
+ const log = new SuperLogger();
+server.use(log.createAutoHTTPRequestLogger()); 
 
+//server.use(errorHandler);
+ 
 // Defining a folder that will contain static files.
 server.use(express.static('public'));
 

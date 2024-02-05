@@ -8,9 +8,9 @@ import SuperLogger from '../modules/SuperLogger.mjs';
 
 const logger = new SuperLogger();
 const USER_API = express.Router();
+USER_API.use(express.json());
 
 // Use middleware to parse JSON requests
-//USER_API.use(express.json());
 
 const users = [];
 
@@ -96,6 +96,22 @@ USER_API.delete('/users/:id', (req, res) => {
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }
 });
+
+function errorHandler(err, req, res, next) {
+    console.error(err.stack);
+  
+    // Set the response status code based on the error
+    const statusCode = err.statusCode || 500;
+  
+    // Send a JSON response with detailed error information
+    res.status(statusCode).json({
+      error: 'Internal Server Error',
+      message: err.message || 'Something went wrong!',
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    });
+  }
+
+  USER_API.use(errorHandler());
 // Add other routes as needed (PUT, DELETE, etc.)
 
 export default USER_API;
