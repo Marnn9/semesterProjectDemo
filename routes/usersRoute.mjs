@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
+import { displayMsg } from '../modules/errorHandler.mjs';
 
 
 const logger = new SuperLogger();
@@ -36,26 +37,35 @@ USER_API.get('/users', (req, res, next) => {
 });
 
 USER_API.post('/users', (req, res) => {
-    const { name, email, password } = req.body;
-        
-    if (name !== undefined && email !== undefined && password !== undefined) {
-        // Create a new User instance
-        const user = new User();
-        user.name = name;
-        user.email = email;
-        user.pswHash = password;
-        user.id = Date.now().toString();
+    try {
+        const { name, email, password } = req.body;
 
-        // Check if a user with the provided email exists
-        const exists = users.some(existingUser => existingUser.email === email);
-        if (!exists) {
-            users.push(user);
-            res.status(HttpCodes.successfulResponse.Ok).json(user);
+        if (name !== undefined && email !== undefined && password !== undefined) {
+            // Create a new User instance
+            const user = new User();
+            user.name = name;
+            user.email = email;
+            user.pswHash = password;
+            user.id = Date.now().toString();
+
+            // Check if a user with the provided email exists
+            const exists = users.some(existingUser => existingUser.email === email);
+            if (!exists) {
+                users.push(user); //push this to the database
+                res.status(HttpCodes.successfulResponse.Ok).json(user);
+            } else {
+                displayMsg("error: User already exists");
+                res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'User already exists' });
+            }
         } else {
-            res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'User already exists' });
+            res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Missing data fields' });
+            displayMsg("error: Missing data fields");
         }
-    } else {
-        res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Missing data fields' });
+    } catch (error) {
+        console.error("Error in post handler:", error);
+        res.status(HttpCodes.InternalServerError).json({ error: 'Internal Server Error' });
+        displayMsg("error: Missing data fields catch");
+
     }
 });
 
@@ -97,21 +107,18 @@ USER_API.delete('/users/:id', (req, res) => {
     }
 });
 
-function errorHandler(err, req, res, next) {
-    console.error(err.stack);
-  
-    // Set the response status code based on the error
-    const statusCode = err.statusCode || 500;
-  
-    // Send a JSON response with detailed error information
-    res.status(statusCode).json({
-      error: 'Internal Server Error',
-      message: err.message || 'Something went wrong!',
-      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-    });
-  }
+USER_API.use((err, req, res, next) => {
+    console.error(err);
 
-  USER_API.use(errorHandler());
-// Add other routes as needed (PUT, DELETE, etc.)
+    // Customize the message and position as needed
+    const errorMessage = `An error occurred: ${err.message}`;
+    const errorPosition = { top: '10px', left: '10px' };
+
+    // Use the client-side error handling function
+    displayMsg(errorMessage, errorPosition);
+
+    // Send an appropriate response to the client
+    res.status(500).json({ error: 'Internal Server Error' });
+});
 
 export default USER_API;

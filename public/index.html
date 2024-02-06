@@ -14,9 +14,9 @@
 
     <form class="form" id="create" onsubmit="addUser(); return false;">
         <h2>Log in to create your character</h2> <br><br>
-        <input type="text" class="input" name="username" id="inpUname" placeholder="username">
-        <input type="text" class="input" name="Email" id="inpEmail" placeholder="email">
-        <input type="password" class="input" name="password" id="inpPassword" placeholder="password">
+        <input type="text" class="input" name="username" id="inpUname" placeholder="username" required>
+        <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
+        <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
         <button class="commitBtn" type="submit" id="loginBtn">Create user</button> <br><br>
     </form>
 
@@ -29,7 +29,7 @@
     </div>
 
     <ul id="userList"></ul>
-    
+
     <form class="form" id="editUser" onsubmit="sendEditUser(); return false;" style="display: none;">
         <h2>Edit your user</h2> <br><br>
         <input type="text" class="input" name="username" id="inpUnameEdit" placeholder="username">
@@ -38,13 +38,23 @@
         <button class="commitBtn" type="submit" id="Update">Update</button> <br><br>
     </form>
 
-   
+
 
     <script>
-        function displayMsg(aMsg) { //could add more parameters so you can change the color and position etc when calling the function
 
-            const messageDisplay = document.getElementById('messageDisplayContainer');
+        //implement try catch into this!! 
+
+
+        function displayMsg(aMsg) {
+
+            const messageDisplay = document.createElement('div');
             messageDisplay.innerHTML = aMsg;
+
+            document.body.appendChild(messageDisplay);
+
+            setTimeout(() => {
+                document.body.removeChild(messageDisplay);
+            }, 8000);
         }
 
         const toggleModeBtn = document.getElementById('toggleModeBtn');
@@ -66,11 +76,9 @@
             const name = document.getElementById('inpUname').value;
             const email = document.getElementById('inpEmail').value;
             const password = document.getElementById('inpPassword').value;
-
             // Create a user object
             const user = { name, email, password };
-            if (name && email && password) {
-
+            try {
                 fetch(url, {
                     method: 'POST',
                     headers: {
@@ -79,18 +87,9 @@
                     body: JSON.stringify(user),
                 })
 
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('User:', data);
-                        // Add the user to the user list
-                        displayUser(data);
-                    })
-                    .catch(error => {
-                        console.error('Error adding user:', error);
-                    });
-            } else {
-                console.log("missing fields");
-                displayMsg("All fields must be filled");
+            } catch (error) {
+                console.error("Bad Input");
+                displayMsg("Bad Input");
             }
         }
 
@@ -120,7 +119,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching users:', error.message);
-                    displayMsg(`Error fetching users: kunne ikke vise bruker <br> Server response: ${error.message}`);
+                    //displayMsg(`Error fetching users: kunne ikke vise bruker <br> Server response: ${error.message}`);
                 });
         }
         // Function to select a user by ID
@@ -212,10 +211,10 @@
                     })
                     .catch(error => {
                         console.error('Error editing user:', error);
-                        displayMsg(`Could not edit user, please select a user <br> ${error.message}`);
+                        //displayMsg(`Could not edit user, please select a user <br> ${error.message}`);
                     });
             } else {
-                displayMsg(`Missing data in fields for editing user or no user selected.`);
+                //displayMsg(`Missing data in fields for editing user or no user selected.`);
 
                 console.error('Missing data in fields for editing user or no user selected');
 
@@ -242,7 +241,7 @@
                 return;
             }
             else {
-                displayMsg("Missing data, no user selected.")
+                //displayMsg("Missing data, no user selected.")
             }
         }
 

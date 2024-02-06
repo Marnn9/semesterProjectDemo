@@ -1,3 +1,5 @@
+//import dbManager from "./dbManager.mjs";
+
 class User {
 
     constructor() {
@@ -6,6 +8,11 @@ class User {
         this.pswHash;
         this.name;
         this.id;
+    }
+
+    //maybe add the statement for publishing user to database
+    save(){
+        dbManager.save(this); //this should not be here
     }
 }
 
