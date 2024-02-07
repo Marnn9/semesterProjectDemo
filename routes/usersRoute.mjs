@@ -4,7 +4,9 @@ import bodyParser from 'body-parser';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
-import { displayMsg } from '../modules/errorHandler.mjs';
+import { basicAuthMiddleware } from '../modules/middleWare.mjs';
+
+
 
 
 const logger = new SuperLogger();
@@ -54,22 +56,22 @@ USER_API.post('/users', (req, res) => {
                 users.push(user); //push this to the database
                 res.status(HttpCodes.successfulResponse.Ok).json(user);
             } else {
-                displayMsg("error: User already exists");
+                //displayMsg("error: User already exists");
                 res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'User already exists' });
             }
         } else {
             res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Missing data fields' });
-            displayMsg("error: Missing data fields");
+            //displayMsg("error: Missing data fields");
         }
     } catch (error) {
         console.error("Error in post handler:", error);
         res.status(HttpCodes.InternalServerError).json({ error: 'Internal Server Error' });
-        displayMsg("error: Missing data fields catch");
+       // displayMsg("error: Missing data fields catch");
 
     }
 });
 
-USER_API.put('/users/:id', (req, res) => {
+USER_API.put('/users/:id', basicAuthMiddleware, (req, res) => {
     const userId = req.params.id;
     const { name, email, password } = req.body;
 
@@ -115,7 +117,7 @@ USER_API.use((err, req, res, next) => {
     const errorPosition = { top: '10px', left: '10px' };
 
     // Use the client-side error handling function
-    displayMsg(errorMessage, errorPosition);
+    //displayMsg(errorMessage, errorPosition);
 
     // Send an appropriate response to the client
     res.status(500).json({ error: 'Internal Server Error' });

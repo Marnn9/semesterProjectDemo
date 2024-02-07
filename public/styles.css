@@ -1,3 +1,186 @@
+:root {
+    --mainBtnColor: #EBAC78;
+    --borderColor: #ddb271;
+}
+/* Avatar studio */
+
+body {
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.globalBtn {
+    border: none;
+    border-radius: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: absolute;
+    font-weight: bold;
+    font-size: large;
+    height: 2.5em;
+    margin-top: 3em;
+}
+
+.globalBtn:hover {
+    cursor: pointer;
+
+}
+
+#mainBtn {
+    background-color: var(--mainBtnColor);
+    color: rgb(255, 255, 255);
+    width: 5em;
+    left: 3.5em;
+}
+
+#mainBtn:hover {
+    color: aqua;
+    background-color: rgb(17, 75, 75);
+    width: 5.3em;
+    height: 2.6em;
+}
+
+#exitBtn {
+    background-color: white;
+    color: #cc8145;
+    right: 3.5em;
+    width: 2.5em;
+}
+
+#questionBtn {
+    background-color: white;
+    color: #cc8145;
+    right: 6.5em;
+    width: 2.5em;
+}
+
+#checkBtn {
+    color: rgb(47, 185, 70);
+    background-color: white;
+    right: 2em;
+    bottom: 2em;
+    width: 2.5em;
+}
+
+#checkBtn:hover {
+    background-color: rgb(47, 185, 70);
+    color: white;
+}
+
+#questionBtn:hover {
+    color: aqua;
+    background-color: rgb(17, 75, 75)
+}
+
+#exitBtn:hover {
+    color: aqua;
+    background-color: rgb(17, 75, 75)
+}
+
+#choiceMenu {
+    background-color: white;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px;
+    bottom: 2em;
+    width: 80%;
+    height: 20%;
+    align-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 10px;
+    justify-items: center;
+    align-content: center;
+
+    /*pointer-events: none; /* Allows click events to pass through the choice menu */
+    /*might need to be able to click the images*/
+
+}
+
+.thumbnail {
+    width: 70%;
+    height: auto;
+    cursor: pointer;
+    background-color: rgb(250, 232, 209);
+    border: 3px solid var(--borderColor);
+    border-radius: 10px;
+}
+
+@media (max-width: 480px) {
+    #choiceMenu {
+        background-color: white;
+        border-radius: 10px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px;
+        bottom: 0em;
+        width: 100%;
+        height: 35%;
+
+    }
+
+    #checkBtn {
+        background-color: white;
+        color: rgb(47, 185, 70);
+        right: 2em;
+        bottom: 17em;
+        width: 2.5em;
+    }
+
+    #exitBtn {
+        background-color: white;
+        color: #cc8145;
+        right: 2em;
+        width: 2.5em;
+    }
+
+    #questionBtn {
+        background-color: white;
+        color: #cc8145;
+        right: 5em;
+        width: 2.5em;
+    }
+
+    #mainBtn {
+        background-color: #EBAC78;
+        color: rgb(255, 255, 255);
+        width: 5em;
+        left: 2em;
+    }
+}
+
+
+
+@media (max-width: 1000px) and (min-width: 480px) {
+    #checkBtn {
+        background-color: white;
+        color: rgb(47, 185, 70);
+        right: 3.5em;
+        bottom: 12em;
+        width: 2.5em;
+    }
+}
+
+@media (min-height:800px) {
+    #checkBtn {
+        background-color: white;
+        color: rgb(47, 185, 70);
+        right: 2em;
+        bottom: 18em;
+        width: 2.5em;
+    }
+}
+
+/* end of avatar studio */
 html {
     background-color: rgb(195, 209, 195);
 }

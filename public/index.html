@@ -39,11 +39,28 @@
     </form>
 
 
+    <button id="mainBtn" class="globalBtn">Avatar</button>
+    <button id="exitBtn" class="globalBtn">X</button>
+    <button id="questionBtn" class="globalBtn">?</button>
+    <button id="checkBtn" class="globalBtn">&#10004</button>
 
+    <div id="choiceMenu">
+        <img id="option1" class="thumbnail" src="./AvatarStudio/Media/pearlRender2.jpg">
+        <img id="option2" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option3" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option4" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option5" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option6" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option7" class="thumbnail" src="./AvatarStudio/Media/head.png">
+    </div>
+
+    <script type="module">
+
+        import * as main from "./AvatarStudio/Script/main.mjs";
+        //implement try catch into this!!
+        main.loadScene();
+    </script>
     <script>
-
-        //implement try catch into this!! 
-
 
         function displayMsg(aMsg) {
 
@@ -86,10 +103,11 @@
                     },
                     body: JSON.stringify(user),
                 })
+                displayAllUsers(user)
 
             } catch (error) {
                 console.error("Bad Input");
-                displayMsg("Bad Input");
+                //displayMsg("Bad Input");
             }
         }
 
@@ -181,43 +199,41 @@
 
             if (!password) {
                 password = selectedUserPassword;
-                console.log("po: " + password);
             }
+
             console.log("user data: " + name, email + " pas: " + password);
+
             // Check if all required fields are present
             if (name && email && password && selectedUserId) {
                 const formDataInput = new FormData(document.getElementById('editUser'));
-                const editedUser = { email, selectedUserId, name, password }
+                const editedUser = { email, selectedUserId, name, password };
 
                 formDataInput.append('id', selectedUserId);
 
-                fetch(url + "/" + selectedUserId, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(editedUser),
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Edited User:', data);
-                        window.location.reload();
-                        displayUser(data);
-                    })
-                    .catch(error => {
-                        console.error('Error editing user:', error);
-                        //displayMsg(`Could not edit user, please select a user <br> ${error.message}`);
+                try {
+                    const response = await fetch(url + "/" + selectedUserId, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            credentials: 'include',
+                        },
+                        body: JSON.stringify(editedUser),
                     });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Edited User:', data);
+                    window.location.reload();
+                    displayUser(data);
+                } catch (error) {
+                    console.error('Error editing user:', error);
+                    // Handle the error or display a message to the user
+                }
             } else {
-                //displayMsg(`Missing data in fields for editing user or no user selected.`);
-
                 console.error('Missing data in fields for editing user or no user selected');
-
             }
         }
 
@@ -244,6 +260,8 @@
                 //displayMsg("Missing data, no user selected.")
             }
         }
+
+
 
     </script>
 </body>
