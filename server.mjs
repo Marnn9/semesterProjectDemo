@@ -1,8 +1,12 @@
+import 'dotenv/config'
 import express from 'express' // Express is installed using npm
 import USER_API from './routes/usersRoute.mjs'; // This is where we have defined the API for working with users.
 import SuperLogger from './modules/SuperLogger.mjs';
 import { basicAuthMiddleware } from './modules/middleWare.mjs';
 
+import DBManager from "./modules/storageManager.mjs";
+
+await DBManager.test();
 
 console.log("DB Connection sting ") //must be deleted when the connection is proven ok not including the last statement for he actual object
 // Creating an instance of the server

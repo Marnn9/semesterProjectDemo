@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
-import { basicAuthMiddleware } from '../modules/middleWare.mjs';
+import { basicAuthMiddleware, encrypt } from '../modules/middleWare.mjs';
 
 
 
@@ -38,22 +38,22 @@ USER_API.get('/users', (req, res, next) => {
     //logger.log("try to get user with id " + req.params.id);
 });
 
-USER_API.post('/users', (req, res) => {
+USER_API.post('/users', async (req, res, next) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email } = req.body;
+        const password = encrypt(req.body.password);
 
         if (name !== undefined && email !== undefined && password !== undefined) {
             // Create a new User instance
-            const user = new User();
+            let user = new User();
             user.name = name;
             user.email = email;
             user.pswHash = password;
-            user.id = Date.now().toString();
 
             // Check if a user with the provided email exists
             const exists = users.some(existingUser => existingUser.email === email);
             if (!exists) {
-                users.push(user); //push this to the database
+                user = await user.save();
                 res.status(HttpCodes.successfulResponse.Ok).json(user);
             } else {
                 //displayMsg("error: User already exists");
@@ -71,8 +71,9 @@ USER_API.post('/users', (req, res) => {
     }
 });
 
-USER_API.put('/users/:id', basicAuthMiddleware, (req, res) => {
-    const userId = req.params.id;
+USER_API.put('/users/:id', basicAuthMiddleware, async (req, res) => {
+    //const userId = req.params.id;
+    const userId = 1;
     const { name, email, password } = req.body;
 
     // Find the user with the specified ID
@@ -83,6 +84,9 @@ USER_API.put('/users/:id', basicAuthMiddleware, (req, res) => {
         foundUser.name = name || foundUser.name;
         foundUser.email = email || foundUser.email;
         foundUser.pswHash = password || foundUser.pswHash;
+        
+        foundUser = await foundUser.save();
+
 
         res.status(HttpCodes.successfulResponse.Ok).json(foundUser);
     } else {

@@ -1,4 +1,4 @@
-//import dbManager from "./dbManager.mjs";
+import DBManager from "./storageManager.mjs";
 
 class User {
 
@@ -11,9 +11,19 @@ class User {
     }
 
     //maybe add the statement for publishing user to database
-    save(){
-        dbManager.save(this); //this should not be here
+    async save() {
+        if (this.id == null) {
+            return await DBManager.createUser(this);
+        } else {
+            return await DBManager.updateUser(this);
+        }
     }
+
+    delete() {
+        DBManager.deleteUser(this);
+    }
+
+
 }
 
 export default User;
