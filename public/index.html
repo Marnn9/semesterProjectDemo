@@ -85,7 +85,7 @@
         let selectedUserEpost = null;
         let selectedUserPassword = null;
 
-        const url = 'user/users';
+        const url = '/user/users';
 
         async function addUser() {
             // Fetch user data from the form
@@ -112,33 +112,32 @@
         }
 
         async function displayAllUsers() {
-            const userList = document.getElementById('userList');
+            try {
+                const userList = document.getElementById('userList');
+                // Clear existing user list
+                userList.innerHTML = '';
 
-            // Clear existing user list
-            userList.innerHTML = '';
+                // Fetch all users from the server using GET
+                const response = await fetch(url);
 
-            // Fetch all users from the server
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Response from server:', data);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
 
-                    if (Array.isArray(data)) {
-                        // Display each user in the user list
-                        data.forEach(user => displayUser(user));
-                    } else {
-                        console.error('Invalid response from server:', data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching users:', error.message);
-                    //displayMsg(`Error fetching users: kunne ikke vise bruker <br> Server response: ${error.message}`);
-                });
+                const data = await response.json();
+
+                console.log('Response from server:', data);
+
+                if (Array.isArray(data)) {
+                    // Display each user in the user list
+                    data.forEach(user => displayUser(user));
+                } else {
+                    console.error('Invalid response from server:', data);
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error.message);
+                displayMsg(`Error fetching users: ${error.message}`);
+            }
         }
         // Function to select a user by ID
         function selectUser(userId, userName, userEpost, userPassword) {
@@ -147,6 +146,7 @@
             selectedUserEpost = userEpost;
             selectedUserPassword = userPassword;
             console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost + " pas: " + selectedUserPassword);
+            
             document.getElementById('inpUnameEdit').placeholder = selectedUserName;
             document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;
         }
@@ -158,13 +158,14 @@
 
             // Check if user is undefined before accessing properties
             if (user) {
-                listItem.innerHTML = `Name: <b>${user.name} </b>, E-mail: <b> ${user.email}</b>`;
+                // Modify this section based on the structure of the user data from the database
+                listItem.innerHTML = `Id: <b>${user.id}</b>, Name: <b>${user.uName}</b>, E-mail: <b>${user.uEmail}</b>`;
                 userList.appendChild(listItem);
                 listItem.classList.add('listed_users');
 
                 // Add an event listener to change the class when the list item is clicked
                 listItem.addEventListener('click', () => {
-                    selectUser(user.id, user.name, user.email, user.pswHash);
+                    selectUser(user.id, user.uName, user.uEmail, user.password);
                     // Remove the "selected-user" class from all list items
                     const allListItems = document.querySelectorAll('.listed_users');
                     allListItems.forEach(item => item.classList.remove('selected-user'));

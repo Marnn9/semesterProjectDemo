@@ -42,7 +42,7 @@ class DBManager {
             // Of special intrest is the rows and rowCount properties of this object.
 
             //TODO Did we update the user?
-            
+
             if (output.rows.length == 1) {
                 // We stored the user in the DB.
                 user.id = output.rows[0].id;
@@ -103,6 +103,27 @@ class DBManager {
         }
 
         return user;
+
+    }
+
+    async retrieveAllUsers() {
+        const client = new pg.Client(this.#credentials);
+
+        try {
+            await client.connect();
+            const output = await client.query(`SELECT * FROM public."Users"`);
+            const users = output.rows;
+
+            return users;
+
+        } catch (error) {
+            console.error(error);
+            throw error;
+            //TODO : Error handling?? Remember that this is a module septate from your server 
+        } finally {
+            client.end(); // Always disconnect from the database.
+        }
+
 
     }
 

@@ -1,5 +1,5 @@
 "use strict"
-import  { createHmac } from 'crypto'; 
+import { createHmac } from 'crypto';
 
 export function basicAuthMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -29,9 +29,8 @@ export function basicAuthMiddleware(req, res, next) {
 export function encrypt(aPas) {
     const secret = aPas; //this should be the users password
     const hash = createHmac('sha256', secret) //read more sha256 - crypto //    https://nodejs.org/api/crypto.html
-        .update('I love cupcakes')
+        .update('I love cupcakes') //does this have to be here?
         .digest('hex');
-    //add hash as the users password
     return hash;
 }
 

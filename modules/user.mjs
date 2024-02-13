@@ -23,6 +23,15 @@ class User {
         DBManager.deleteUser(this);
     }
 
+    async displayAll() {
+        try {
+            const users = await DBManager.retrieveAllUsers();
+            return users;  // Make sure the retrieved users are returned
+        } catch (error) {
+            console.error('Error displaying all users:', error);
+            throw error;  // Rethrow the error for better debugging
+        }
+    }
 
 }
 

@@ -19,7 +19,7 @@ class HttpCodes {
     }
 
     static serverSideResponse = {
-        
+        InternalServerError: 500,
     }
 
 }

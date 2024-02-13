@@ -15,7 +15,7 @@ USER_API.use(express.json());
 
 // Use middleware to parse JSON requests
 
-const users = [];
+//const users = [];
 
 /* 
 Next important so you do the code but then it sends 
@@ -30,12 +30,15 @@ USER_API.use(functionToRunToEveryUser); //the use is from express making it run 
  */
 
 
-USER_API.get('/users', (req, res, next) => {
-    // Retrieve all users
-    res.status(HttpCodes.successfulResponse.Ok).json(users);
-    console.log('Received GET request for all users: ');
-
-    //logger.log("try to get user with id " + req.params.id);
+USER_API.get('/users', async (req, res, next) => {
+    try {
+        let users = new User();
+        users  = await users.displayAll();
+        res.status(HttpCodes.successfulResponse.Ok).json(users);
+    } catch (error) {
+        console.error('Error retrieving all users:', error);
+        res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
+    }
 });
 
 USER_API.post('/users', async (req, res, next) => {
@@ -66,14 +69,14 @@ USER_API.post('/users', async (req, res, next) => {
     } catch (error) {
         console.error("Error in post handler:", error);
         res.status(HttpCodes.InternalServerError).json({ error: 'Internal Server Error' });
-       // displayMsg("error: Missing data fields catch");
+        // displayMsg("error: Missing data fields catch");
 
     }
 });
 
-USER_API.put('/users/:id', basicAuthMiddleware, async (req, res) => {
-    //const userId = req.params.id;
-    const userId = 1;
+USER_API.put('/users/:id', async (req, res) => {
+    const userId = req.params.id;
+
     const { name, email, password } = req.body;
 
     // Find the user with the specified ID
@@ -84,7 +87,7 @@ USER_API.put('/users/:id', basicAuthMiddleware, async (req, res) => {
         foundUser.name = name || foundUser.name;
         foundUser.email = email || foundUser.email;
         foundUser.pswHash = password || foundUser.pswHash;
-        
+
         foundUser = await foundUser.save();
 
 
