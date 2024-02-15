@@ -12,15 +12,27 @@
     <button id="toggleModeBtn" class="toggleModeBtn">&#9728;</button>
     <div id="messageDisplayContainer"></div>
 
-    <form class="form" id="create" onsubmit="addUser(); return false;">
-        <h2>Log in to create your character</h2> <br><br>
-        <input type="text" class="input" name="username" id="inpUname" placeholder="username" required>
-        <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
-        <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
-        <button class="commitBtn" type="submit" id="loginBtn">Create user</button> <br><br>
-    </form>
+    <div id="loginForms">
 
-    <p id="createUtext">Create user here</p>
+        <form class="form" id="login" onsubmit="loginUser(); return false;">
+            <h2>Log in to create your character</h2> <br><br>
+            <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
+            <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
+            <button class="commitBtn" type="submit" id="loginBtn">login</button> <br><br>
+        </form>
+
+        <form class="form" id="create" style="display: none;" onsubmit="addUser(); return false;">
+            <h2>Create a user</h2> <br><br>
+            <input type="text" class="input" name="username" id="inpUname" placeholder="username" required>
+            <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
+            <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
+            <button class="commitBtn" type="submit" id="loginBtn">create user</button> <br><br>
+        </form>
+
+        <p id="createUtext" class="login-createText" onclick="displayCreateNewUser()">Create user here</p>
+        <p id="loginText" class="login-createText" onclick="displayCreateNewUser()" style="display: none;">Already have
+            a user? login here</p>
+    </div>
 
     <div id="bntContainer">
         <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
@@ -79,13 +91,37 @@
             document.documentElement.classList.toggle('dark-mode');
         })
 
+
+        function displayCreateNewUser() {
+            const loginForm = document.getElementById('login');
+            const createNewUserForm = document.getElementById('create');
+            const displayUserText = document.getElementById('createUtext');
+            const loginText = document.getElementById('loginText');
+
+            if (loginForm.style.display !== 'none') {
+
+                loginForm.style.display = 'none';
+                createNewUserForm.style.display = 'block';
+                displayUserText.style.display = 'none';
+                loginText.style.display = 'block';
+
+            } else {
+
+                loginForm.style.display = 'block';
+                createNewUserForm.style.display = 'none';
+                displayUserText.style.display = 'block';
+                loginText.style.display = 'none';
+            }
+
+        }
+
         let usersData = null;
         let selectedUserId = null;
         let selectedUserName = null;
         let selectedUserEpost = null;
         let selectedUserPassword = null;
 
-        const url = '/user/users';
+        const url = 'user/users';
 
         async function addUser() {
             // Fetch user data from the form
@@ -109,6 +145,14 @@
                 console.error("Bad Input");
                 //displayMsg("Bad Input");
             }
+        }
+
+        async function loginUser() {
+            //put the login for logging in
+
+            //when login is sucsessfull, make the loginDetails disappear
+            const loginForms = document.getElementById('loginForms');
+            loginForms.style.display = "none";
         }
 
         async function displayAllUsers() {
@@ -146,7 +190,7 @@
             selectedUserEpost = userEpost;
             selectedUserPassword = userPassword;
             console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost + " pas: " + selectedUserPassword);
-            
+
             document.getElementById('inpUnameEdit').placeholder = selectedUserName;
             document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;
         }
@@ -246,7 +290,6 @@
                 fetch(url + "/" + selectedUserId, {
                     method: 'DELETE',
                 })
-                    .then(response => response.json())
                     .then(data => {
                         console.log('Deleted user:', data);
                         window.location.reload();

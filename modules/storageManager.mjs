@@ -57,28 +57,51 @@ class DBManager {
 
     }
 
-    async deleteUser(user) {
-
+    async getUserByEmail(email) {
         const client = new pg.Client(this.#credentials);
 
         try {
             await client.connect();
-            const output = await client.query('Delete from "public"."Users"  where id = $1;', [user.id]);
+            const output = await client.query(`SELECT * FROM public."Users" WHERE "${this.#dbTableNames.user.email}" = $1`, [email]);
 
-            // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
-            // Of special intrest is the rows and rowCount properties of this object.
-
-            //TODO: Did the user get deleted?
-
+            if (output.rows.length === 1) {
+                const user = output.rows[0];
+                return user;
+            } else {
+                return null; // No user found with the given username
+            }
         } catch (error) {
-            //TODO : Error handling?? Remember that this is a module seperate from your server 
+            console.error(`Error getting user by email ${email}:`, error);
+            throw error;
         } finally {
-            client.end(); // Always disconnect from the database.
+            client.end();
         }
-
-        return user;
     }
 
+    async deleteUser(anId) {
+    const client = new pg.Client(this.#credentials);
+
+    try {
+        await client.connect();
+        const output = await client.query('DELETE FROM "public"."Users" WHERE id = $1;', [anId]);
+
+        // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
+        // Of special interest is the rows and rowCount properties of this object.
+
+        // Check if the user got deleted
+        if (output.rowCount === 1) {
+            console.log(`User with ID ${anId} deleted.`);
+        } else {
+            console.log(`User with ID ${anId} not found.`);
+        }
+
+    } catch (error) {
+        console.error(error);
+        // TODO: Error handling?? Remember that this is a module separate from your server 
+    } finally {
+        client.end(); // Always disconnect from the database.
+    }
+}
     async createUser(user) {
 
         const client = new pg.Client(this.#credentials);

@@ -19,8 +19,9 @@ class User {
         }
     }
 
-    delete() {
-        DBManager.deleteUser(this);
+    async delete(anId) {
+        const deletedUser = await DBManager.deleteUser(anId);
+        return deletedUser;
     }
 
     async displayAll() {
@@ -32,6 +33,25 @@ class User {
             throw error;  // Rethrow the error for better debugging
         }
     }
+
+    async findByEmail(email) {
+        try {
+            const user = await DBManager.getUserByEmail(email);
+            return user;
+        } catch (error) {
+            console.error(`Error finding user by email ${email}:`, error);
+            throw error;
+        }
+    }
+
+}
+
+class Avatar {
+    /*     
+        add the code here for the avatar, it must also be linked to the user 
+        create the table in pgAdmin, make some foreign keys to the users table 
+        save the avatar each user cerate 
+    */
 
 }
 

@@ -30,10 +30,10 @@ USER_API.use(functionToRunToEveryUser); //the use is from express making it run 
  */
 
 
-USER_API.get('/users', async (req, res, next) => {
+USER_API.get('/users', basicAuthMiddleware, async (req, res, next) => {
     try {
         let users = new User();
-        users  = await users.displayAll();
+        users = await users.displayAll();
         res.status(HttpCodes.successfulResponse.Ok).json(users);
     } catch (error) {
         console.error('Error retrieving all users:', error);
@@ -54,14 +54,10 @@ USER_API.post('/users', async (req, res, next) => {
             user.pswHash = password;
 
             // Check if a user with the provided email exists
-            const exists = users.some(existingUser => existingUser.email === email);
-            if (!exists) {
-                user = await user.save();
-                res.status(HttpCodes.successfulResponse.Ok).json(user);
-            } else {
-                //displayMsg("error: User already exists");
-                res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'User already exists' });
-            }
+
+            user = await user.save();
+            res.status(HttpCodes.successfulResponse.Ok).json(user);
+
         } else {
             res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Missing data fields' });
             //displayMsg("error: Missing data fields");
@@ -74,19 +70,22 @@ USER_API.post('/users', async (req, res, next) => {
     }
 });
 
-USER_API.put('/users/:id', async (req, res) => {
+USER_API.put('/users/:id', basicAuthMiddleware, async (req, res) => {
     const userId = req.params.id;
 
-    const { name, email, password } = req.body;
+    const { name, email } = req.body;
+    const password = encrypt(req.body.password);
+
 
     // Find the user with the specified ID
-    const foundUser = users.find(existingUser => existingUser.id === userId);
+    let foundUser = new User();
 
-    if (foundUser) {
+    if (userId) {
         // Update user data
         foundUser.name = name || foundUser.name;
         foundUser.email = email || foundUser.email;
         foundUser.pswHash = password || foundUser.pswHash;
+        foundUser.id = userId;
 
         foundUser = await foundUser.save();
 
@@ -97,19 +96,23 @@ USER_API.put('/users/:id', async (req, res) => {
     }
 });
 
-USER_API.delete('/users/:id', (req, res) => {
+USER_API.delete('/users/:id', basicAuthMiddleware, async (req, res) => {
     const userId = req.params.id;
 
     console.log('Deleting user with ID:', userId);
 
-    const deletedUser = users.find(user => user.id === userId);
+    let deleteUser = new User();
 
-    if (deletedUser) {
-        // Remove the user from the array
-        users.splice(users.indexOf(deletedUser), 1);
+    if (userId) {
+        try {
+            // Call the deleteUser method, not deletedUser
+            deleteUser = await deleteUser.delete(userId);
 
-        console.log('Users after deletion:', users);
-        res.status(HttpCodes.successfulResponse.Ok).json(deletedUser);
+            res.status(HttpCodes.successfulResponse.Ok).json(deleteUser);
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            res.status(HttpCodes.InternalServerError).json({ error: 'Internal Server Error' });
+        }
     } else {
         console.log('User not found for deletion');
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });

@@ -1,5 +1,6 @@
 "use strict"
 import { createHmac } from 'crypto';
+import HttpCodes from './httpConstants.mjs';
 
 export function basicAuthMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -22,13 +23,12 @@ export function basicAuthMiddleware(req, res, next) {
 
     // Authentication failed, send a 401 Unauthorized response
     res.set('WWW-Authenticate', 'Basic realm="Authentication Required"');
-    res.status(401).json({ error: 'Unauthorized' });
+    res.status(HttpCodes.Unauthorized).json({ error: 'Unauthorized' });
 }
 
 //make this encrypte as a good midleware?  
-export function encrypt(aPas) {
-    const secret = aPas; //this should be the users password
-    const hash = createHmac('sha256', secret) //read more sha256 - crypto //    https://nodejs.org/api/crypto.html
+export function encrypt(aSecret) {
+    const hash = createHmac('sha256', aSecret) //read more sha256 - crypto //    https://nodejs.org/api/crypto.html
         .update('I love cupcakes') //does this have to be here?
         .digest('hex');
     return hash;
