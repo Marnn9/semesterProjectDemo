@@ -64,7 +64,7 @@ class SuperLogger {
 
 
     static log(msg, logLvl = SuperLogger.LOGGING_LEVELS.NORMAL) {
-        let logger = SuperLogger.instance;
+        let logger = new SuperLogger();
         if (logger.#globalThreshold >= logLvl) {
             return;
         }
@@ -97,10 +97,6 @@ class SuperLogger {
             this.#LogHTTPRequest(req, res, next);
         }
 
-    }
-
-    middleware(req, res, next) {
-        this.#LogHTTPRequest(req, res, next);
     }
 
     #LogHTTPRequest(req, res, next) {

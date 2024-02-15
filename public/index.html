@@ -9,21 +9,38 @@
 </head>
 
 <body>
-    <button id="toggleModeBtn" class="toggleModeBtn">Mode</button>
-
-    <form class="form" id="create" onsubmit="addUser(); return false;">
-        <h2>Log in to create your character</h2> <br><br>
-        <input type="text" class="input" name="username" id="inpUname" placeholder="username">
-        <input type="text" class="input" name="Email" id="inpEmail" placeholder="email">
-        <input type="password" class="input" name="password" id="inpPassword" placeholder="password">
-        <button class="commitBtn" type="submit" id="loginBtn">Create user</button> <br><br>
-    </form>
-
-    <p id="createUtext">Create user here</p>
+    <button id="toggleModeBtn" class="toggleModeBtn">&#9728;</button>
     <div id="messageDisplayContainer"></div>
 
-    <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
-    <button class="displayUserBtn" onclick="displayEditUser()">Edit User</button>
+    <div id="loginForms">
+
+        <form class="form" id="login" onsubmit="loginUser(); return false;">
+            <h2>Log in to create your character</h2> <br><br>
+            <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
+            <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
+            <button class="commitBtn" type="submit" id="loginBtn">login</button> <br><br>
+        </form>
+
+        <form class="form" id="create" style="display: none;" onsubmit="addUser(); return false;">
+            <h2>Create a user</h2> <br><br>
+            <input type="text" class="input" name="username" id="inpUname" placeholder="username" required>
+            <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
+            <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
+            <button class="commitBtn" type="submit" id="loginBtn">create user</button> <br><br>
+        </form>
+
+        <p id="createUtext" class="login-createText" onclick="displayCreateNewUser()">Create user here</p>
+        <p id="loginText" class="login-createText" onclick="displayCreateNewUser()" style="display: none;">Already have
+            a user? login here</p>
+    </div>
+
+    <div id="bntContainer">
+        <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
+        <button class="displayUserBtn" onclick="displayEditUser()">Edit User</button>
+        <button class="deleteUserBtn" onclick="deleteUser()">Delete selected user</button>
+    </div>
+
+    <ul id="userList"></ul>
 
     <form class="form" id="editUser" onsubmit="sendEditUser(); return false;" style="display: none;">
         <h2>Edit your user</h2> <br><br>
@@ -33,19 +50,70 @@
         <button class="commitBtn" type="submit" id="Update">Update</button> <br><br>
     </form>
 
-    <button class="deleteUserBtn" onclick="deleteUser()">Delete selected user</button>
 
-    <ul id="userList"></ul>
+    <button id="mainBtn" class="globalBtn">Avatar</button>
+    <button id="exitBtn" class="globalBtn">X</button>
+    <button id="questionBtn" class="globalBtn">?</button>
+    <button id="checkBtn" class="globalBtn">&#10004</button>
 
+    <div id="choiceMenu">
+        <img id="option1" class="thumbnail" src="./AvatarStudio/Media/pearlRender2.jpg">
+        <img id="option2" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option3" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option4" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option5" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option6" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <img id="option7" class="thumbnail" src="./AvatarStudio/Media/head.png">
+    </div>
+
+    <script type="module">
+
+        import * as main from "./AvatarStudio/Script/main.mjs";
+        //implement try catch into this!!
+        main.loadScene();
+    </script>
     <script>
-        //implement light and dark mode
+
+        function displayMsg(aMsg) {
+
+            const messageDisplay = document.createElement('div');
+            messageDisplay.innerHTML = aMsg;
+
+            document.body.appendChild(messageDisplay);
+
+            setTimeout(() => {
+                document.body.removeChild(messageDisplay);
+            }, 8000);
+        }
 
         const toggleModeBtn = document.getElementById('toggleModeBtn');
         toggleModeBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark-mode');
         })
 
-        const msgDisplayContainer = document.getElementById('messageDisplayContainer');
+
+        function displayCreateNewUser() {
+            const loginForm = document.getElementById('login');
+            const createNewUserForm = document.getElementById('create');
+            const displayUserText = document.getElementById('createUtext');
+            const loginText = document.getElementById('loginText');
+
+            if (loginForm.style.display !== 'none') {
+
+                loginForm.style.display = 'none';
+                createNewUserForm.style.display = 'block';
+                displayUserText.style.display = 'none';
+                loginText.style.display = 'block';
+
+            } else {
+
+                loginForm.style.display = 'block';
+                createNewUserForm.style.display = 'none';
+                displayUserText.style.display = 'block';
+                loginText.style.display = 'none';
+            }
+
+        }
 
         let usersData = null;
         let selectedUserId = null;
@@ -53,7 +121,7 @@
         let selectedUserEpost = null;
         let selectedUserPassword = null;
 
-        const url = 'http://localhost:8080';
+        const url = 'user/users';
 
         async function addUser() {
             // Fetch user data from the form
@@ -61,61 +129,59 @@
             const name = document.getElementById('inpUname').value;
             const email = document.getElementById('inpEmail').value;
             const password = document.getElementById('inpPassword').value;
-
             // Create a user object
             const user = { name, email, password };
-            if (name && email && password) {
-
-                fetch(url + '/user/users', {
+            try {
+                fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(user),
                 })
+                displayAllUsers(user)
 
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('User:', data);
-                        // Add the user to the user list
-                        displayUser(data);
-                    })
-                    .catch(error => {
-                        console.error('Error adding user:', error);
-                    });
-            } else {
-                console.log("missing fields");
-                //write a function that takes the message and displays it to the user (middleware)
+            } catch (error) {
+                console.error("Bad Input");
+                //displayMsg("Bad Input");
             }
         }
 
+        async function loginUser() {
+            //put the login for logging in
+
+            //when login is sucsessfull, make the loginDetails disappear
+            const loginForms = document.getElementById('loginForms');
+            loginForms.style.display = "none";
+        }
+
         async function displayAllUsers() {
-            const userList = document.getElementById('userList');
+            try {
+                const userList = document.getElementById('userList');
+                // Clear existing user list
+                userList.innerHTML = '';
 
-            // Clear existing user list
-            userList.innerHTML = '';
+                // Fetch all users from the server using GET
+                const response = await fetch(url);
 
-            // Fetch all users from the server
-            fetch(url + '/user/users')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Response from server:', data);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
 
-                    if (Array.isArray(data)) {
-                        // Display each user in the user list
-                        data.forEach(user => displayUser(user));
-                    } else {
-                        console.error('Invalid response from server:', data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching users:', error.message);
-                });
+                const data = await response.json();
+
+                console.log('Response from server:', data);
+
+                if (Array.isArray(data)) {
+                    // Display each user in the user list
+                    data.forEach(user => displayUser(user));
+                } else {
+                    console.error('Invalid response from server:', data);
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error.message);
+                displayMsg(`Error fetching users: ${error.message}`);
+            }
         }
         // Function to select a user by ID
         function selectUser(userId, userName, userEpost, userPassword) {
@@ -124,6 +190,7 @@
             selectedUserEpost = userEpost;
             selectedUserPassword = userPassword;
             console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost + " pas: " + selectedUserPassword);
+
             document.getElementById('inpUnameEdit').placeholder = selectedUserName;
             document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;
         }
@@ -135,13 +202,14 @@
 
             // Check if user is undefined before accessing properties
             if (user) {
-                listItem.innerHTML = `Name: <b>${user.name} </b>, E-mail: <b> ${user.email}</b>`;
+                // Modify this section based on the structure of the user data from the database
+                listItem.innerHTML = `Id: <b>${user.id}</b>, Name: <b>${user.uName}</b>, E-mail: <b>${user.uEmail}</b>`;
                 userList.appendChild(listItem);
                 listItem.classList.add('listed_users');
 
                 // Add an event listener to change the class when the list item is clicked
                 listItem.addEventListener('click', () => {
-                    selectUser(user.id, user.name, user.email, user.pswHash);
+                    selectUser(user.id, user.uName, user.uEmail, user.password);
                     // Remove the "selected-user" class from all list items
                     const allListItems = document.querySelectorAll('.listed_users');
                     allListItems.forEach(item => item.classList.remove('selected-user'));
@@ -176,37 +244,39 @@
 
             if (!password) {
                 password = selectedUserPassword;
-                console.log("po: " + password);
             }
+
             console.log("user data: " + name, email + " pas: " + password);
+
             // Check if all required fields are present
             if (name && email && password && selectedUserId) {
                 const formDataInput = new FormData(document.getElementById('editUser'));
-                const editedUser = { email, selectedUserId, name, password }
+                const editedUser = { email, selectedUserId, name, password };
 
                 formDataInput.append('id', selectedUserId);
 
-                fetch(url + `/user/users/${selectedUserId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(editedUser),
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Edited User:', data);
-                        window.location.reload();
-                        displayUser(data);
-                    })
-                    .catch(error => {
-                        console.error('Error editing user:', error);
+                try {
+                    const response = await fetch(url + "/" + selectedUserId, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            credentials: 'include',
+                        },
+                        body: JSON.stringify(editedUser),
                     });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Edited User:', data);
+                    window.location.reload();
+                    displayUser(data);
+                } catch (error) {
+                    console.error('Error editing user:', error);
+                    // Handle the error or display a message to the user
+                }
             } else {
                 console.error('Missing data in fields for editing user or no user selected');
             }
@@ -214,24 +284,28 @@
 
         async function deleteUser() {
 
-            if (selectedUserId) {
-                fetch(url + `/user/users/${selectedUserId}`, {
+            const deleteConfirm = confirm("Are you sure you want to delete the user?");
+
+            if (deleteConfirm && selectedUserId) {
+                fetch(url + "/" + selectedUserId, {
                     method: 'DELETE',
                 })
-                    .then(response => response.json())
                     .then(data => {
                         console.log('Deleted user:', data);
-                        // Add the edited user to the user list
                         window.location.reload();
-                        displayUser(data);
                     })
                     .catch(error => {
                         console.error('Error editing user:', error);
                     });
-            } else {
-                console.error('Missing data in fields for editing user or no user selected');
+            } else if (!deleteConfirm) {
+                return;
+            }
+            else {
+                //displayMsg("Missing data, no user selected.")
             }
         }
+
+
 
     </script>
 </body>
