@@ -30,7 +30,7 @@ USER_API.use(functionToRunToEveryUser); //the use is from express making it run 
  */
 
 
-USER_API.get('/users', basicAuthMiddleware, async (req, res, next) => {
+USER_API.get('/users', async (req, res, next) => {
     try {
         let users = new User();
         users = await users.displayAll();
