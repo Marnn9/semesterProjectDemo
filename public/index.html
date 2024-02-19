@@ -16,8 +16,8 @@
 
         <form class="form" id="login" onsubmit="loginUser(); return false;">
             <h2>Log in to create your character</h2> <br><br>
-            <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
-            <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
+            <input type="text" class="input" name="Email" id="inpEmailLogin" placeholder="email" required>
+            <input type="password" class="input" name="password" id="inpPasswordLogin" placeholder="password" required>
             <button class="commitBtn" type="submit" id="loginBtn">login</button> <br><br>
         </form>
 
@@ -26,7 +26,7 @@
             <input type="text" class="input" name="username" id="inpUname" placeholder="username" required>
             <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
             <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
-            <button class="commitBtn" type="submit" id="loginBtn">create user</button> <br><br>
+            <button class="commitBtn" type="submit" id="createBtn">create user</button> <br><br>
         </form>
 
         <p id="createUtext" class="login-createText" onclick="displayCreateNewUser()">Create user here</p>
@@ -66,11 +66,15 @@
         <img id="option7" class="thumbnail" src="./AvatarStudio/Media/head.png">
     </div>
 
-    <script type="module">
 
+    <script type="module">
         import * as main from "./AvatarStudio/Script/main.mjs";
-        //implement try catch into this!!
-        main.loadScene();
+        const loginForms = document.getElementById('loginForms');
+        if (loginForms.style.display === "none") {
+            //implement try catch into this!!
+            main.loadScene();
+        }
+
     </script>
     <script>
 
@@ -152,6 +156,7 @@
 
             //when login is sucsessfull, make the loginDetails disappear
             const loginForms = document.getElementById('loginForms');
+
             loginForms.style.display = "none";
         }
 
