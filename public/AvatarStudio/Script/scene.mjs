@@ -5,10 +5,10 @@ import { GLTFLoader } from "../three.js-master/build/GLTFLoader.js";
 import { TCharacter } from './Character.mjs';
 
 export const avatarFeatures = {
-    skinColor: { r: null, g: null, b: null },
-    hairColor: { r: null, g: null, b: null },
-    eyeColor: { r: null, g: null, b: null },
-    browType: { file: null },
+    skinColor: null,
+    hairColor: null,
+    eyeColor: null,
+    browType: null,
 }
 
 export function TinitialiseScene(anAvatar) {
@@ -61,15 +61,14 @@ export function TinitialiseScene(anAvatar) {
             eyeMaterial.color.set(color);
             character.setIrisColor(color);
 
-            avatarFeatures.eyeColor.r = eyeMaterial.color.r;
-            avatarFeatures.eyeColor.g = eyeMaterial.color.g;
-            avatarFeatures.eyeColor.b = eyeMaterial.color.b;
+            avatarFeatures.eyeColor = eyeMaterial.color.getHex().toString(16);
+
 
             // Set the color of the loaded model's material to the same color
             if (modelMaterial) {
                 modelMaterial.color.set(color);
             }
-    
+
         });
 
         const hairChanger = { color: hairMaterial.color.getHex() };
@@ -78,9 +77,7 @@ export function TinitialiseScene(anAvatar) {
             hairMaterial.color.set(color);
             character.setHairColor(color);
 
-            avatarFeatures.hairColor.r = hairMaterial.color.r;
-            avatarFeatures.hairColor.g = hairMaterial.color.g;
-            avatarFeatures.hairColor.b = hairMaterial.color.b;
+            avatarFeatures.hairColor = hairMaterial.color.getHex().toString(16);
 
             // Set the color of the loaded model's material to the same color
             if (modelMaterial) {
@@ -94,9 +91,7 @@ export function TinitialiseScene(anAvatar) {
             skinMaterial.color.set(color);
             character.setSkinColor(color);
 
-            avatarFeatures.skinColor.r = skinMaterial.color.r;
-            avatarFeatures.skinColor.g = skinMaterial.color.g;
-            avatarFeatures.skinColor.b = skinMaterial.color.b;
+            avatarFeatures.skinColor = skinMaterial.color.getHex().toString(16);
 
             // Set the color of the loaded model's material to the same color
             if (modelMaterial) {

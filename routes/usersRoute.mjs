@@ -1,6 +1,5 @@
 // Import necessary modules and classes
 import express from 'express';
-import bodyParser from 'body-parser';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
@@ -116,6 +115,23 @@ USER_API.put('/users/:id', async (req, res) => {
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }
 });
+
+USER_API.put('/avatar', async (req, res) => {
+  const hairColor = req.body.hairColor; 
+  //gets the data from avatar features, find a way to get the elements in the submitted object sent to database 
+
+
+    // Find the user with the specified ID
+    let avatar = null;
+
+    if (avatar) {
+    
+        res.status(HttpCodes.successfulResponse.Ok).json(foundUser);
+    } else {
+        res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+    }
+});
+
 
 USER_API.delete('/users/:id', basicAuthMiddleware, async (req, res) => {
     const userId = req.params.id;

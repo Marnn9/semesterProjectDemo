@@ -124,7 +124,7 @@ class DBManager {
         } finally {
             client.end(); // Always disconnect from the database.
         }
-
+ 
         return user;
 
     }
@@ -147,6 +147,10 @@ class DBManager {
             client.end(); // Always disconnect from the database.
         }
 
+
+    }
+
+    async addAvatar (){
 
     }
 

@@ -70,8 +70,7 @@
 
     <script type="module">
         import * as main from "./AvatarStudio/Script/main.mjs";
-        import {avatarFeatures} from "./AvatarStudio/Script/scene.mjs";
-
+        import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
 
         const loginForms = document.getElementById('loginForms');
         /* if (loginForms.style.display === "none") {
@@ -79,7 +78,7 @@
             main.loadScene();
         } */
         main.loadScene();
-        const avatarUrl = null;
+        const avatarUrl = "/avatar";
 
         try {
             const response = await fetch(avatarUrl, {
