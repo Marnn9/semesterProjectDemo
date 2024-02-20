@@ -1,9 +1,10 @@
 "use strict";
-import { TinitialiseScene } from './scene.mjs';
+import { TinitialiseScene, avatarFeatures } from './scene.mjs';
 
 
 export function loadScene() {
     TinitialiseScene();
+    
 }
 
 

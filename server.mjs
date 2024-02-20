@@ -30,7 +30,7 @@ server.use(express.json());
 // Telling the server to use the USER_API (all urls that uses this code will have to have the /user after the base address)
 server.use("/user", USER_API);
 
-server.use("/users", basicAuthMiddleware, USER_API);
+server.use("/login", basicAuthMiddleware, USER_API);
 
 // A get request handler example)
 server.get("/", (req, res, next) => {

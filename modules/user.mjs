@@ -37,7 +37,12 @@ class User {
     async findByEmail(email) {
         try {
             const user = await DBManager.getUserByEmail(email);
-            return user;
+            if (user){
+                return user;
+            }else {
+                return null;
+            }
+            
         } catch (error) {
             console.error(`Error finding user by email ${email}:`, error);
             throw error;

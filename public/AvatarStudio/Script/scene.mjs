@@ -4,11 +4,16 @@ import * as dat from "../three.js-master/build/dat.gui.module.js";
 import { GLTFLoader } from "../three.js-master/build/GLTFLoader.js";
 import { TCharacter } from './Character.mjs';
 
+export const avatarFeatures = {
+    skinColor: { r: null, g: null, b: null },
+    hairColor: { r: null, g: null, b: null },
+    eyeColor: { r: null, g: null, b: null },
+    browType: { file: null },
+}
 
 export function TinitialiseScene(anAvatar) {
 
     let scene, camera, renderer, modelMaterial, eyeMaterial, hairMaterial, skinMaterial;
-
     scene = new THREE.Scene();
 
 
@@ -42,22 +47,29 @@ export function TinitialiseScene(anAvatar) {
     window.addEventListener('resize', windowResized);
 
     //-----------------character-------------------------
-    const character = new TCharacter(scene);    
+    const character = new TCharacter(scene);
     scene.add(character);
 
     //-------------functions-------------------------------
 
     function guiControls() {
         const gui = new dat.GUI();
-        const colorChanger = { color: eyeMaterial.color.getHex() };
+        const eyeChanger = { color: eyeMaterial.color.getHex() };
 
-        gui.addColor(colorChanger, 'color').name('Eyecolor').onChange(function (color) {
+        gui.addColor(eyeChanger, 'color').name('Eyecolor').onChange(function (color) {
+
             eyeMaterial.color.set(color);
             character.setIrisColor(color);
+
+            avatarFeatures.eyeColor.r = eyeMaterial.color.r;
+            avatarFeatures.eyeColor.g = eyeMaterial.color.g;
+            avatarFeatures.eyeColor.b = eyeMaterial.color.b;
+
             // Set the color of the loaded model's material to the same color
             if (modelMaterial) {
                 modelMaterial.color.set(color);
             }
+    
         });
 
         const hairChanger = { color: hairMaterial.color.getHex() };
@@ -65,6 +77,11 @@ export function TinitialiseScene(anAvatar) {
         gui.addColor(hairChanger, 'color').name('Haircolor').onChange(function (color) {
             hairMaterial.color.set(color);
             character.setHairColor(color);
+
+            avatarFeatures.hairColor.r = hairMaterial.color.r;
+            avatarFeatures.hairColor.g = hairMaterial.color.g;
+            avatarFeatures.hairColor.b = hairMaterial.color.b;
+
             // Set the color of the loaded model's material to the same color
             if (modelMaterial) {
                 modelMaterial.color.set(color);
@@ -76,6 +93,11 @@ export function TinitialiseScene(anAvatar) {
         gui.addColor(skinChanger, 'color').name('Skincolor').onChange(function (color) {
             skinMaterial.color.set(color);
             character.setSkinColor(color);
+
+            avatarFeatures.skinColor.r = skinMaterial.color.r;
+            avatarFeatures.skinColor.g = skinMaterial.color.g;
+            avatarFeatures.skinColor.b = skinMaterial.color.b;
+
             // Set the color of the loaded model's material to the same color
             if (modelMaterial) {
                 modelMaterial.color.set(color);
@@ -84,7 +106,7 @@ export function TinitialiseScene(anAvatar) {
     }
 
     guiControls();
-    
+
 
     function render() {
         requestAnimationFrame(render);
@@ -114,4 +136,6 @@ export function TinitialiseScene(anAvatar) {
         return canvas;
     }
     render();
+
+
 }

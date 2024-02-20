@@ -57,12 +57,12 @@ class DBManager {
 
     }
 
-    async getUserByEmail(email) {
+    async getUserByEmail(anEmail) {
         const client = new pg.Client(this.#credentials);
 
         try {
             await client.connect();
-            const output = await client.query(`SELECT * FROM public."Users" WHERE "${this.#dbTableNames.user.email}" = $1`, [email]);
+            const output = await client.query(`SELECT * FROM public."Users" WHERE "${this.#dbTableNames.user.email}" = $1`, [anEmail]);
 
             if (output.rows.length === 1) {
                 const user = output.rows[0];
@@ -71,7 +71,7 @@ class DBManager {
                 return null; // No user found with the given username
             }
         } catch (error) {
-            console.error(`Error getting user by email ${email}:`, error);
+            console.error(`Error getting user by email ${anEmail}:`, error);
             throw error;
         } finally {
             client.end();

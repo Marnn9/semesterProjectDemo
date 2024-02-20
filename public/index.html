@@ -67,12 +67,32 @@
     </div>
 
 
+
     <script type="module">
         import * as main from "./AvatarStudio/Script/main.mjs";
+        import {avatarFeatures} from "./AvatarStudio/Script/scene.mjs";
+
+
         const loginForms = document.getElementById('loginForms');
-        if (loginForms.style.display === "none") {
+        /* if (loginForms.style.display === "none") {
             //implement try catch into this!!
             main.loadScene();
+        } */
+        main.loadScene();
+        const avatarUrl = null;
+
+        try {
+            const response = await fetch(avatarUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(avatarFeatures),
+            });
+
+        } catch (error) {
+            console.error("Bad Input");
+            //displayMsg("Bad Input");
         }
 
     </script>
@@ -143,6 +163,7 @@
                     },
                     body: JSON.stringify(user),
                 })
+                window.location.reload();
                 displayAllUsers(user)
 
             } catch (error) {
@@ -152,14 +173,38 @@
         }
 
         async function loginUser() {
-            //put the login for logging in
+            // Get user credentials from the input fields
+            const email = document.getElementById('inpEmailLogin').value;
+            const password = document.getElementById('inpPasswordLogin').value;
 
-            //when login is sucsessfull, make the loginDetails disappear
-            const loginForms = document.getElementById('loginForms');
+            const user = { email, password };
 
-            loginForms.style.display = "none";
+            try {
+                const response = await fetch('user/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Handle the data or redirect to another page as needed
+                console.log('Login successful:', data);
+
+                // Hide the login forms after successful login
+                const loginForms = document.getElementById('loginForms');
+                loginForms.style.display = 'none';
+            } catch (error) {
+                console.error('Error during login:', error);
+                // Handle the error or display a message to the user
+            }
         }
-
         async function displayAllUsers() {
             try {
                 const userList = document.getElementById('userList');
@@ -251,7 +296,7 @@
                 password = selectedUserPassword;
             }
 
-            console.log("user data: " + name, email + " pas: " + password);
+            console.log("trying to update user data: " + name, email);
 
             // Check if all required fields are present
             if (name && email && password && selectedUserId) {
@@ -265,7 +310,6 @@
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            credentials: 'include',
                         },
                         body: JSON.stringify(editedUser),
                     });

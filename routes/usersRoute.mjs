@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
-import { basicAuthMiddleware, encrypt } from '../modules/middleWare.mjs';
+import { basicAuthMiddleware, encrypt, validatePas } from '../modules/middleWare.mjs';
 
 
 
@@ -70,7 +70,28 @@ USER_API.post('/users', async (req, res, next) => {
     }
 });
 
-USER_API.put('/users/:id', basicAuthMiddleware, async (req, res) => {
+USER_API.post('/login', async (req, res, next) => {
+    try {
+        const email  = req.body.email;
+        const password = encrypt(req.body.password)
+
+        const user = new User();
+        const existingUser = await user.findByEmail(email);
+
+        if (existingUser && validatePas(password, existingUser.password)) {
+            // Authentication successful
+            res.status(HttpCodes.successfulResponse.Ok).json(existingUser);
+        } else {
+            // Authentication failed
+            res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid email or password' });
+        }
+    } catch (error) {
+        console.error("Error in login handler:", error);
+        res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
+    }
+});
+
+USER_API.put('/users/:id', async (req, res) => {
     const userId = req.params.id;
 
     const { name, email } = req.body;
