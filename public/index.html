@@ -14,7 +14,7 @@
 
     <div id="loginForms">
 
-        <form class="form" id="login" onsubmit="loginUser(); return false;">
+        <form class="form" id="login">
             <h2>Log in to create your character</h2> <br><br>
             <input type="text" class="input" name="Email" id="inpEmailLogin" placeholder="email" required>
             <input type="password" class="input" name="password" id="inpPasswordLogin" placeholder="password" required>
@@ -50,31 +50,37 @@
         <button class="commitBtn" type="submit" id="Update">Update</button> <br><br>
     </form>
 
+    <div id="avatarStudioEvents" style="display: none;">
+        <button id="mainBtn" class="globalBtn">Save</button>
+        <button id="exitBtn" class="globalBtn">X</button>
+        <button id="questionBtn" class="globalBtn">?</button>
+        <button id="checkBtn" class="globalBtn">&#10004</button>
 
-    <button id="mainBtn" class="globalBtn">Save</button>
-    <button id="exitBtn" class="globalBtn">X</button>
-    <button id="questionBtn" class="globalBtn">?</button>
-    <button id="checkBtn" class="globalBtn">&#10004</button>
-
-    <div id="choiceMenu">
-        <img id="option1" class="thumbnail" src="./AvatarStudio/Media/pearlRender2.jpg">
-        <img id="option2" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option3" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option4" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option5" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option6" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option7" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        <div id="choiceMenu">
+            <img id="option1" class="thumbnail" src="./AvatarStudio/Media/pearlRender2.jpg">
+            <img id="option2" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img id="option3" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img id="option4" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img id="option5" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img id="option6" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img id="option7" class="thumbnail" src="./AvatarStudio/Media/head.png">
+        </div>
     </div>
 
 
-
-    <script type="module">
+    <!-- <script type="module">
         import * as main from "./AvatarStudio/Script/main.mjs";
         import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
 
         const loginForms = document.getElementById('loginForms');
+        const avatarStudioEvents = document.getElementById('avatarStudioEvents');
 
-        main.loadScene();
+        if (loginForms.style.display === 'none') {
+            //implement try catch into this!!
+            main.loadScene();
+            avatarStudioEvents.style.display = 'block';
+        }
+        //main.loadScene();
         const avatarUrl = "user/avatar";
 
         const mainBtn = document.getElementById("mainBtn");
@@ -88,59 +94,17 @@
                     body: JSON.stringify(avatarFeatures),
                 });
 
-                if (loginForms.style.display === "none") {
-                    //implement try catch into this!!
-                    main.loadScene();
-                }
+
 
             } catch (error) {
                 console.error("Bad Input");
             }
         })
 
-    </script>
-    <script>
-
-        function displayMsg(aMsg) {
-
-            const messageDisplay = document.createElement('div');
-            messageDisplay.innerHTML = aMsg;
-
-            document.body.appendChild(messageDisplay);
-
-            setTimeout(() => {
-                document.body.removeChild(messageDisplay);
-            }, 8000);
-        }
-
-        const toggleModeBtn = document.getElementById('toggleModeBtn');
-        toggleModeBtn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark-mode');
-        })
-
-
-        function displayCreateNewUser() {
-            const loginForm = document.getElementById('login');
-            const createNewUserForm = document.getElementById('create');
-            const displayUserText = document.getElementById('createUtext');
-            const loginText = document.getElementById('loginText');
-
-            if (loginForm.style.display !== 'none') {
-
-                loginForm.style.display = 'none';
-                createNewUserForm.style.display = 'block';
-                displayUserText.style.display = 'none';
-                loginText.style.display = 'block';
-
-            } else {
-
-                loginForm.style.display = 'block';
-                createNewUserForm.style.display = 'none';
-                displayUserText.style.display = 'block';
-                loginText.style.display = 'none';
-            }
-
-        }
+    </script> -->
+    <script type="module">
+        import * as main from "./AvatarStudio/Script/main.mjs";
+        import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
 
         let usersData = null;
         let selectedUserId = null;
@@ -149,6 +113,27 @@
         let selectedUserPassword = null;
 
         const url = 'user/users';
+        const avatarUrl = "user/avatar";
+
+        const toggleModeBtn = document.getElementById('toggleModeBtn');
+        toggleModeBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark-mode');
+        })
+
+        const mainBtn = document.getElementById("mainBtn");
+        mainBtn.addEventListener("click", async () => {
+            try {
+                const response = await fetch(avatarUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(avatarFeatures),
+                });
+            } catch (error) {
+                console.error("Bad Input");
+            }
+        })
 
         async function addUser() {
             // Fetch user data from the form
@@ -174,8 +159,15 @@
                 //displayMsg("Bad Input");
             }
         }
+        const loginForm = document.getElementById('login');
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            loginUser()
+        });
 
         async function loginUser() {
+
+            console.log("loginFunction");
             // Get user credentials from the input fields
             const email = document.getElementById('inpEmailLogin').value;
             const password = document.getElementById('inpPasswordLogin').value;
@@ -200,15 +192,21 @@
                 // Handle the data or redirect to another page as needed
                 console.log('Login successful:', data);
 
+                showAvatarStudio()
+                //send User thats logged in to local storeage
+                localStorage.setItem('loggedInUserMail', email);
+                //delete from localStorage when user loggs out
+
                 // Hide the login forms after successful login
-                const loginForms = document.getElementById('loginForms');
-                loginForms.style.display = 'none';
+
             } catch (error) {
                 console.error('Error during login:', error);
                 // Handle the error or display a message to the user
             }
         }
+
         async function displayAllUsers() {
+            event.preventDefault();
             try {
                 const userList = document.getElementById('userList');
                 // Clear existing user list
@@ -237,10 +235,10 @@
             }
         }
         // Function to select a user by ID
-        function selectUser(userId, userName, userEpost, userPassword) {
+        function selectUser(userId, userName, userEmail, userPassword) {
             selectedUserId = userId;
             selectedUserName = userName;
-            selectedUserEpost = userEpost;
+            selectedUserEpost = userEmail;
             selectedUserPassword = userPassword;
             console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost);
 
@@ -355,6 +353,56 @@
             else {
                 //displayMsg("Missing data, no user selected.")
             }
+        }
+
+        function showAvatarStudio() {
+            const loginForms = document.getElementById('loginForms');
+            const avatarStudioEvents = document.getElementById('avatarStudioEvents');
+
+            loginForms.style.display = 'none';
+            main.loadScene();
+            avatarStudioEvents.style.display = 'block';
+
+            /*
+            if(user is logged in && has an Avatar in the database){
+                load avatar with attributes from database
+            }
+            */
+
+        }
+        function displayCreateNewUser() {
+            const loginForm = document.getElementById('login');
+            const createNewUserForm = document.getElementById('create');
+            const displayUserText = document.getElementById('createUtext');
+            const loginText = document.getElementById('loginText');
+
+            if (loginForm.style.display !== 'none') {
+
+                loginForm.style.display = 'none';
+                createNewUserForm.style.display = 'block';
+                displayUserText.style.display = 'none';
+                loginText.style.display = 'block';
+
+            } else {
+
+                loginForm.style.display = 'block';
+                createNewUserForm.style.display = 'none';
+                displayUserText.style.display = 'block';
+                loginText.style.display = 'none';
+            }
+
+        }
+
+        function displayMsg(aMsg) {
+
+            const messageDisplay = document.createElement('div');
+            messageDisplay.innerHTML = aMsg;
+
+            document.body.appendChild(messageDisplay);
+
+            setTimeout(() => {
+                document.body.removeChild(messageDisplay);
+            }, 8000);
         }
 
 

@@ -78,7 +78,7 @@ USER_API.post('/login', async (req, res, next) => {
         const user = new User();
         const existingUser = await user.findByEmail(email);
 
-        if (existingUser && validatePas(password, existingUser.password)) {
+        if (existingUser !== null && validatePas(password, existingUser.password) ) {
             // Authentication successful
             res.status(HttpCodes.successfulResponse.Ok).json(existingUser);
         } else {

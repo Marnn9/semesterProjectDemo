@@ -23,15 +23,17 @@ export function basicAuthMiddleware(req, res, next) {
 
 
 export function validatePas(aInputPas, aStoredPas) {
-    return encrypt(aInputPas) === aStoredPas;
+    if (aInputPas === aStoredPas) {
+        return true;
+    }
 }
 
 
 //make this encrypte as a good midleware?  
 export function encrypt(aPas) {
-    const hash = createHmac('sha256', 'Fluffy unicorn') 
-    //move to env secret
-    //read more sha256 - crypto //    https://nodejs.org/api/crypto.html 
+    const hash = createHmac('sha256', 'Fluffy unicorn')
+        //move to env secret
+        //read more sha256 - crypto //    https://nodejs.org/api/crypto.html 
         .update(aPas) //cold generate a random number etc.
         .digest('hex');
     return hash;
