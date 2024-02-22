@@ -3,7 +3,7 @@ import { createHmac } from 'crypto';
 import HttpCodes from './httpConstants.mjs';
 
 
-
+//this must be fixed everyone can delete
 export function basicAuthMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
 
@@ -23,15 +23,16 @@ export function basicAuthMiddleware(req, res, next) {
 
 
 export function validatePas(aInputPas, aStoredPas) {
-    const hashInputPas = encrypt(aInputPas);
-    return hashInputPas === aStoredPas;
+    return encrypt(aInputPas) === aStoredPas;
 }
 
 
 //make this encrypte as a good midleware?  
 export function encrypt(aPas) {
-    const hash = createHmac('sha256', aPas) //read more sha256 - crypto //    https://nodejs.org/api/crypto.html
-        .update('Fluffy unicorn') //cold generate a random number etc.
+    const hash = createHmac('sha256', 'Fluffy unicorn') 
+    //move to env secret
+    //read more sha256 - crypto //    https://nodejs.org/api/crypto.html 
+        .update(aPas) //cold generate a random number etc.
         .digest('hex');
     return hash;
 }

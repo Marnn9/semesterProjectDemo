@@ -51,7 +51,7 @@
     </form>
 
 
-    <button id="mainBtn" class="globalBtn">Avatar</button>
+    <button id="mainBtn" class="globalBtn">Save</button>
     <button id="exitBtn" class="globalBtn">X</button>
     <button id="questionBtn" class="globalBtn">?</button>
     <button id="checkBtn" class="globalBtn">&#10004</button>
@@ -73,26 +73,30 @@
         import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
 
         const loginForms = document.getElementById('loginForms');
-        /* if (loginForms.style.display === "none") {
-            //implement try catch into this!!
-            main.loadScene();
-        } */
+
         main.loadScene();
-        const avatarUrl = "/avatar";
+        const avatarUrl = "user/avatar";
 
-        try {
-            const response = await fetch(avatarUrl, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(avatarFeatures),
-            });
+        const mainBtn = document.getElementById("mainBtn");
+        mainBtn.addEventListener("click", async () => {
+            try {
+                const response = await fetch(avatarUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(avatarFeatures),
+                });
 
-        } catch (error) {
-            console.error("Bad Input");
-            //displayMsg("Bad Input");
-        }
+                if (loginForms.style.display === "none") {
+                    //implement try catch into this!!
+                    main.loadScene();
+                }
+
+            } catch (error) {
+                console.error("Bad Input");
+            }
+        })
 
     </script>
     <script>
@@ -238,7 +242,7 @@
             selectedUserName = userName;
             selectedUserEpost = userEpost;
             selectedUserPassword = userPassword;
-            console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost + " pas: " + selectedUserPassword);
+            console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost);
 
             document.getElementById('inpUnameEdit').placeholder = selectedUserName;
             document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;

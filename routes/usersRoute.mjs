@@ -4,6 +4,7 @@ import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
 import { basicAuthMiddleware, encrypt, validatePas } from '../modules/middleWare.mjs';
+import  DBManager  from "../modules/storageManager.mjs"
 
 
 
@@ -116,17 +117,18 @@ USER_API.put('/users/:id', async (req, res) => {
     }
 });
 
-USER_API.put('/avatar', async (req, res) => {
-  const hairColor = req.body.hairColor; 
+USER_API.post('/avatar', async (req, res) => {
+  const {hairColor, eyeColor, skinColor} = req.body; 
   //gets the data from avatar features, find a way to get the elements in the submitted object sent to database 
 
 
     // Find the user with the specified ID
-    let avatar = null;
+    let avatar = {aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor};
 
     if (avatar) {
     
-        res.status(HttpCodes.successfulResponse.Ok).json(foundUser);
+        await DBManager.addAvatar(avatar);
+        res.status(HttpCodes.successfulResponse.Ok).json(avatar);
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }

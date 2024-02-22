@@ -13,6 +13,7 @@ class DBManager {
     #credentials = {};
     #dbTableNames = {
         user: { name: 'uName', email: 'uEmail', password: 'password', id: 'id' },
+        avatar: {id: 'avatarId', hairColor: 'hairColor', eyeColor: 'eyeColor', skinColor: 'skinColor', eyebrowType: 'eyeBrowType'},
         //add other tables here like avatar
     }
 
@@ -150,8 +151,26 @@ class DBManager {
 
     }
 
-    async addAvatar (){
+    async addAvatar (avatar){
+        const client = new pg.Client(this.#credentials);
 
+        try {
+            await client.connect();
+            const output = await client.query(`INSERT INTO "public"."anAvatar"("${this.#dbTableNames.avatar.hairColor}", "${this.#dbTableNames.avatar.eyeColor}", "${this.#dbTableNames.avatar.skinColor}") VALUES($1::Text, $2::Text, $3::Text);`, [avatar.aHairColor, avatar.anEyeColor, avatar.aSkinColor]);
+
+            if (output.rows.length == 1) {
+                // We stored the user in the DB.
+                avatar.avatarId = output.rows[0].avatarId;
+            }
+
+        } catch (error) {
+            console.error(error);
+            //TODO : Error handling?? Remember that this is a module septate from your server 
+        } finally {
+            client.end(); // Always disconnect from the database.
+        }
+ 
+        return avatar;
     }
 
 }
