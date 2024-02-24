@@ -16,6 +16,10 @@ canvas {
     display: block;
 }
 
+button:hover{
+    cursor: pointer;
+}
+
 .globalBtn {
     border: none;
     border-radius: 10px;
@@ -265,13 +269,33 @@ p {
     font-size: x-large;
     margin-left: 1%;
     margin-top: 1%;
+    align-content: center;
+}
+
+#myAccountBtn {
+    align-items: center;
+    border-radius: 10px;
+    height: 40px;
+    width: 60px;
+    border: none;
+    font-size: x-large;
+    margin: 1%;
+    
+    position: fixed;
+    top: 0;
+    right: 0;
 }
 
 #messageDisplayContainer {
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-weight: bold;
     color: red;
+    background-color: #000000;
     text-align: center;
+    position: fixed;
+    top:0;
+    width: 100%; 
+    z-index: 10; 
 }
 
 #bntContainer {

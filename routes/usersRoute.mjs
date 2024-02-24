@@ -4,7 +4,7 @@ import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
 import { basicAuthMiddleware, encrypt, validatePas } from '../modules/middleWare.mjs';
-import  DBManager  from "../modules/storageManager.mjs"
+import DBManager from "../modules/storageManager.mjs"
 
 
 
@@ -46,20 +46,23 @@ USER_API.post('/users', async (req, res, next) => {
         const { name, email } = req.body;
         const password = encrypt(req.body.password);
 
+        let user = new User();
+        user.name = name;
+        user.email = email;
+        user.pswHash = password;
+        const existingUser = await user.findByEmail(email);
+
         if (name !== undefined && email !== undefined && password !== undefined) {
             // Create a new User instance
-            let user = new User();
-            user.name = name;
-            user.email = email;
-            user.pswHash = password;
-
-            // Check if a user with the provided email exists
-
-            user = await user.save();
-            res.status(HttpCodes.successfulResponse.Ok).json(user);
-
+            // Check if a user with the provided email exists 
+            if (existingUser === null) {
+                user = await user.save();
+                res.status(HttpCodes.successfulResponse.Ok).json(user);
+            } else {
+                res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: 'A user with this email already exists' });
+            }
         } else {
-            res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Missing data fields' });
+            res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Invalid Input' });
             //displayMsg("error: Missing data fields");
         }
     } catch (error) {
@@ -72,13 +75,13 @@ USER_API.post('/users', async (req, res, next) => {
 
 USER_API.post('/login', async (req, res, next) => {
     try {
-        const email  = req.body.email;
+        const email = req.body.email;
         const password = encrypt(req.body.password)
 
         const user = new User();
         const existingUser = await user.findByEmail(email);
 
-        if (existingUser !== null && validatePas(password, existingUser.password) ) {
+        if (existingUser !== null && validatePas(password, existingUser.password)) {
             // Authentication successful
             res.status(HttpCodes.successfulResponse.Ok).json(existingUser);
         } else {
@@ -118,15 +121,15 @@ USER_API.put('/users/:id', async (req, res) => {
 });
 
 USER_API.post('/avatar', async (req, res) => {
-  const {hairColor, eyeColor, skinColor} = req.body; 
-  //gets the data from avatar features, find a way to get the elements in the submitted object sent to database 
+    const { hairColor, eyeColor, skinColor } = req.body;
+    //gets the data from avatar features, find a way to get the elements in the submitted object sent to database 
 
 
     // Find the user with the specified ID
-    let avatar = {aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor};
+    let avatar = { aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor };
 
     if (avatar) {
-    
+
         await DBManager.addAvatar(avatar);
         res.status(HttpCodes.successfulResponse.Ok).json(avatar);
     } else {

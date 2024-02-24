@@ -10,6 +10,7 @@
 
 <body>
     <button id="toggleModeBtn" class="toggleModeBtn">&#9728;</button>
+    <button id="myAccountBtn">&#x1F464;</button>
     <div id="messageDisplayContainer"></div>
 
     <div id="loginForms">
@@ -21,7 +22,7 @@
             <button class="commitBtn" type="submit" id="loginBtn">login</button> <br><br>
         </form>
 
-        <form class="form" id="create" style="display: none;" onsubmit="addUser(); return false;">
+        <form class="form" id="create" style="display: none;">
             <h2>Create a user</h2> <br><br>
             <input type="text" class="input" name="username" id="inpUname" placeholder="username" required>
             <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
@@ -29,20 +30,20 @@
             <button class="commitBtn" type="submit" id="createBtn">create user</button> <br><br>
         </form>
 
-        <p id="createUtext" class="login-createText" onclick="displayCreateNewUser()">Create user here</p>
-        <p id="loginText" class="login-createText" onclick="displayCreateNewUser()" style="display: none;">Already have
+        <p id="createUtext" class="login-createText">Create user here</p>
+        <p id="loginText" class="login-createText" style="display: none;">Already have
             a user? login here</p>
     </div>
 
     <div id="bntContainer">
-        <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
-        <button class="displayUserBtn" onclick="displayEditUser()">Edit User</button>
-        <button class="deleteUserBtn" onclick="deleteUser()">Delete selected user</button>
+        <button class="displayUserBtn" id="displayAllUsers">Display Users</button>
+        <button class="displayUserBtn" id="displayEditForm">Edit User</button>
+        <button class="deleteUserBtn" id="deleteUserBtn">Delete selected user</button>
     </div>
 
     <ul id="userList"></ul>
 
-    <form class="form" id="editUser" onsubmit="sendEditUser(); return false;" style="display: none;">
+    <form class="form" id="editUser" style="display: none;">
         <h2>Edit your user</h2> <br><br>
         <input type="text" class="input" name="username" id="inpUnameEdit" placeholder="username">
         <input type="text" class="input" name="Email" id="inpEmailEdit" placeholder="email">
@@ -67,41 +68,6 @@
         </div>
     </div>
 
-
-    <!-- <script type="module">
-        import * as main from "./AvatarStudio/Script/main.mjs";
-        import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
-
-        const loginForms = document.getElementById('loginForms');
-        const avatarStudioEvents = document.getElementById('avatarStudioEvents');
-
-        if (loginForms.style.display === 'none') {
-            //implement try catch into this!!
-            main.loadScene();
-            avatarStudioEvents.style.display = 'block';
-        }
-        //main.loadScene();
-        const avatarUrl = "user/avatar";
-
-        const mainBtn = document.getElementById("mainBtn");
-        mainBtn.addEventListener("click", async () => {
-            try {
-                const response = await fetch(avatarUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(avatarFeatures),
-                });
-
-
-
-            } catch (error) {
-                console.error("Bad Input");
-            }
-        })
-
-    </script> -->
     <script type="module">
         import * as main from "./AvatarStudio/Script/main.mjs";
         import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
@@ -120,6 +86,15 @@
             document.documentElement.classList.toggle('dark-mode');
         })
 
+        const createUserText = document.getElementById('createUtext');
+        const loginText = document.getElementById('loginText');
+        document.addEventListener('click', (event) => {
+            if (event.target === createUserText || event.target === loginText) {
+                event.preventDefault();
+                displayCreateNewUser();
+            }
+        });
+
         const mainBtn = document.getElementById("mainBtn");
         mainBtn.addEventListener("click", async () => {
             try {
@@ -135,28 +110,39 @@
             }
         })
 
-        async function addUser() {
-            // Fetch user data from the form
+        const createForm = document.getElementById('create');
+        createForm.addEventListener('submit', async (event) => {
             event.preventDefault();
+            addUser()
+        });
+
+        async function addUser() {
+
             const name = document.getElementById('inpUname').value;
             const email = document.getElementById('inpEmail').value;
             const password = document.getElementById('inpPassword').value;
             // Create a user object
             const user = { name, email, password };
             try {
-                fetch(url, {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(user),
                 })
-                window.location.reload();
-                displayAllUsers(user)
+
+                if (response.ok) {
+                    window.location.reload();
+                    displayAllUsers(user)
+                } else {
+                    const errorData = await response.json();
+                    console.error(`Error: ${response.status} - ${errorData.error}`);
+                    displayMsg(errorData.error)
+                }
 
             } catch (error) {
-                console.error("Bad Input");
-                //displayMsg("Bad Input");
+                console.error(`Error during user Creation: ${error.message}`);
             }
         }
         const loginForm = document.getElementById('login');
@@ -166,8 +152,6 @@
         });
 
         async function loginUser() {
-
-            console.log("loginFunction");
             // Get user credentials from the input fields
             const email = document.getElementById('inpEmailLogin').value;
             const password = document.getElementById('inpPasswordLogin').value;
@@ -183,21 +167,17 @@
                     body: JSON.stringify(user),
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
                 const data = await response.json();
-
-                // Handle the data or redirect to another page as needed
-                console.log('Login successful:', data);
-
-                showAvatarStudio()
-                //send User thats logged in to local storeage
-                localStorage.setItem('loggedInUserMail', email);
-                //delete from localStorage when user loggs out
-
-                // Hide the login forms after successful login
+                if (response.ok) {
+                    console.log('Login successful:', data);
+                    showAvatarStudio()
+                    //send User thats logged in to local storeage
+                    localStorage.setItem('loggedInUserMail', email);
+                    //delete from localStorage when user loggs out
+                } else {
+                    console.error(`Error: ${response.status} - ${data.error}`);
+                    displayMsg(data.error)
+                }
 
             } catch (error) {
                 console.error('Error during login:', error);
@@ -205,8 +185,25 @@
             }
         }
 
-        async function displayAllUsers() {
+        const myAccountBtn = document.getElementById('myAccountBtn');
+        myAccountBtn.addEventListener("click", async (event)=> {
             event.preventDefault();
+            showMyAccount();
+        })
+
+        async function showMyAccount (){
+            
+
+        }
+
+        const displayAllUsersBtn = document.getElementById('displayAllUsers');
+        displayAllUsersBtn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            displayAllUsers()
+        });
+
+        async function displayAllUsers() {
+            // event.preventDefault();
             try {
                 const userList = document.getElementById('userList');
                 // Clear existing user list
@@ -274,12 +271,17 @@
             userList.appendChild(listItem);
         }
 
-
-        function displayEditUser() {
+        const displayEditForm = document.getElementById('displayEditForm');
+        displayEditForm.addEventListener('click', async (event) => {
+            event.preventDefault();
             document.getElementById('editUser').style.display = 'block';
-        }
+        });
 
-
+        const sendEditForm = document.getElementById('editUser');
+        sendEditForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            sendEditUser();
+        })
         async function sendEditUser() {
             let name = document.getElementById('inpUnameEdit').value;
             let email = document.getElementById('inpEmailEdit').value;
@@ -332,6 +334,11 @@
             }
         }
 
+        const deleteBtn = document.getElementById('deleteUserBtn');
+        deleteBtn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            deleteUser();
+        })
         async function deleteUser() {
 
             const deleteConfirm = confirm("Are you sure you want to delete the user?");
@@ -394,17 +401,21 @@
         }
 
         function displayMsg(aMsg) {
+            const messageDisplayContainerId = "messageDisplayContainer";
+            let messageDisplay = document.getElementById(messageDisplayContainerId);
 
-            const messageDisplay = document.createElement('div');
-            messageDisplay.innerHTML = aMsg;
+            if (!messageDisplay) {
+                messageDisplay = document.createElement("div");
+                messageDisplay.id = messageDisplayContainerId;
+                document.body.appendChild(messageDisplay);
+            }
 
-            document.body.appendChild(messageDisplay);
+            messageDisplay.textContent = aMsg;
 
             setTimeout(() => {
                 document.body.removeChild(messageDisplay);
             }, 8000);
         }
-
 
 
     </script>

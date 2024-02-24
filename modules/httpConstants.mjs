@@ -5,7 +5,7 @@
 class HttpCodes {
 
     static successfulResponse = {
-        Ok: 200
+        Ok: 200,
     }
 
     static ClientSideErrorResponse = {
@@ -15,7 +15,8 @@ class HttpCodes {
         Forbidden: 403,
         NotFound: 404,
         MethodNotAllowed: 405,
-        NotAcceptable: 406
+        NotAcceptable: 406,
+        UnprocessableContent: 422, 
     }
 
     static serverSideResponse = {
