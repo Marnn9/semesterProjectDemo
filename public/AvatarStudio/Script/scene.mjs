@@ -54,6 +54,18 @@ export function TinitialiseScene(anAvatar) {
 
     function guiControls() {
         const gui = new dat.GUI();
+
+        const centerX = window.innerWidth / 2 - 150; // Assuming each GUI panel has a width of 300px
+
+        // Define the initial position for the GUI
+        const guiPosition = { x: centerX, y: 10 }; // Adjust 'y' as needed
+    
+        // Use dat.GUI's `domElement` property to set the position
+        gui.domElement.style.position = 'absolute';
+        gui.domElement.style.left = guiPosition.x + 'px';
+        gui.domElement.style.top = guiPosition.y + 'px';
+
+        
         const eyeChanger = { color: eyeMaterial.color.getHex() };
 
         gui.addColor(eyeChanger, 'color').name('Eyecolor').onChange(function (color) {

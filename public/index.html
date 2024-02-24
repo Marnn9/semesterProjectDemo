@@ -10,7 +10,7 @@
 
 <body>
     <button id="toggleModeBtn" class="toggleModeBtn">&#9728;</button>
-    <button id="myAccountBtn">&#x1F464;</button>
+    <button id="myAccountBtn" style="display: none;">&#x1F464;</button>
     <div id="messageDisplayContainer"></div>
 
     <div id="loginForms">
@@ -35,10 +35,8 @@
             a user? login here</p>
     </div>
 
-    <div id="bntContainer">
-        <button class="displayUserBtn" id="displayAllUsers">Display Users</button>
-        <button class="displayUserBtn" id="displayEditForm">Edit User</button>
-        <button class="deleteUserBtn" id="deleteUserBtn">Delete selected user</button>
+    <div class="btnContainer">
+        <button class="UserBtn" id="displayAllUsers">Display Users</button>
     </div>
 
     <ul id="userList"></ul>
@@ -50,6 +48,12 @@
         <input type="password" class="input" name="password" id="inpPasswordEdit" placeholder="password">
         <button class="commitBtn" type="submit" id="Update">Update</button> <br><br>
     </form>
+
+    <div id="bntContainerLoggedIn" class="btnContainer" style="display: none;">
+        <button class="UserBtn" id="logOutUser">Log out</button>
+        <button class="deleteUserBtn" id="deleteUserBtn">Delete user</button>
+        
+    </div>
 
     <div id="avatarStudioEvents" style="display: none;">
         <button id="mainBtn" class="globalBtn">Save</button>
@@ -81,12 +85,25 @@
         const url = 'user/users';
         const avatarUrl = "user/avatar";
 
+        const createUserText = document.getElementById('createUtext');
+        const myAccountBtn = document.getElementById('myAccountBtn');
+        const bntContainerLoggedIn = document.getElementById('bntContainerLoggedIn');
+        const editUserForm = document.getElementById('editUser');
+        const avatarStudioEvents = document.getElementById('avatarStudioEvents');
+        
+        const logOutUser = document.getElementById('logOutUser');
+        logOutUser.addEventListener("click", ()=> {
+            localStorage.removeItem("loggedInUserMail");
+            window.location.reload();
+        })
+
+
+
         const toggleModeBtn = document.getElementById('toggleModeBtn');
         toggleModeBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark-mode');
         })
 
-        const createUserText = document.getElementById('createUtext');
         const loginText = document.getElementById('loginText');
         document.addEventListener('click', (event) => {
             if (event.target === createUserText || event.target === loginText) {
@@ -138,7 +155,7 @@
                 } else {
                     const errorData = await response.json();
                     console.error(`Error: ${response.status} - ${errorData.error}`);
-                    displayMsg(errorData.error)
+                    displayMsg(errorData.error, 'red')
                 }
 
             } catch (error) {
@@ -170,13 +187,16 @@
                 const data = await response.json();
                 if (response.ok) {
                     console.log('Login successful:', data);
-                    showAvatarStudio()
+                    displayMsg("Successful login", 'green');
+                    showAvatarStudio();
+                    myAccountBtn.style.display = "block";
+
                     //send User thats logged in to local storeage
                     localStorage.setItem('loggedInUserMail', email);
                     //delete from localStorage when user loggs out
                 } else {
                     console.error(`Error: ${response.status} - ${data.error}`);
-                    displayMsg(data.error)
+                    displayMsg(data.error, 'red')
                 }
 
             } catch (error) {
@@ -185,15 +205,19 @@
             }
         }
 
-        const myAccountBtn = document.getElementById('myAccountBtn');
-        myAccountBtn.addEventListener("click", async (event)=> {
+
+        myAccountBtn.addEventListener("click", async (event) => {
             event.preventDefault();
             showMyAccount();
         })
 
-        async function showMyAccount (){
-            
+        async function showMyAccount() {
+            editUserForm.style.display = 'block';
+            bntContainerLoggedIn.style.display = "block";
 
+            //avatarStudioEvents.style.display = "none";
+
+            //can you hide the scene?
         }
 
         const displayAllUsersBtn = document.getElementById('displayAllUsers');
@@ -228,7 +252,7 @@
                 }
             } catch (error) {
                 console.error('Error fetching users:', error.message);
-                displayMsg(`Error fetching users: ${error.message}`);
+                displayMsg(`Error fetching users: ${error.message}`, 'red');
             }
         }
         // Function to select a user by ID
@@ -271,17 +295,17 @@
             userList.appendChild(listItem);
         }
 
-        const displayEditForm = document.getElementById('displayEditForm');
+        /* const displayEditForm = document.getElementById('displayEditForm');
         displayEditForm.addEventListener('click', async (event) => {
             event.preventDefault();
             document.getElementById('editUser').style.display = 'block';
-        });
+        }); */
 
-        const sendEditForm = document.getElementById('editUser');
-        sendEditForm.addEventListener('submit', async (event) => {
+        editUserForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             sendEditUser();
         })
+
         async function sendEditUser() {
             let name = document.getElementById('inpUnameEdit').value;
             let email = document.getElementById('inpEmailEdit').value;
@@ -334,11 +358,12 @@
             }
         }
 
-        const deleteBtn = document.getElementById('deleteUserBtn');
+
         deleteBtn.addEventListener('click', async (event) => {
             event.preventDefault();
             deleteUser();
         })
+
         async function deleteUser() {
 
             const deleteConfirm = confirm("Are you sure you want to delete the user?");
@@ -364,7 +389,6 @@
 
         function showAvatarStudio() {
             const loginForms = document.getElementById('loginForms');
-            const avatarStudioEvents = document.getElementById('avatarStudioEvents');
 
             loginForms.style.display = 'none';
             main.loadScene();
@@ -400,7 +424,7 @@
 
         }
 
-        function displayMsg(aMsg) {
+        function displayMsg(aMsg, aColor) {
             const messageDisplayContainerId = "messageDisplayContainer";
             let messageDisplay = document.getElementById(messageDisplayContainerId);
 
@@ -409,12 +433,12 @@
                 messageDisplay.id = messageDisplayContainerId;
                 document.body.appendChild(messageDisplay);
             }
-
+            messageDisplay.style.color = aColor;
             messageDisplay.textContent = aMsg;
 
             setTimeout(() => {
                 document.body.removeChild(messageDisplay);
-            }, 8000);
+            }, 5000);
         }
 
 

@@ -122,10 +122,9 @@ USER_API.put('/users/:id', async (req, res) => {
 
 USER_API.post('/avatar', async (req, res) => {
     const { hairColor, eyeColor, skinColor } = req.body;
-    //gets the data from avatar features, find a way to get the elements in the submitted object sent to database 
 
+    /* ! find a way to add the avatarId of the saved avatar to the user thats logged in ! */
 
-    // Find the user with the specified ID
     let avatar = { aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor };
 
     if (avatar) {
@@ -142,6 +141,8 @@ USER_API.delete('/users/:id', basicAuthMiddleware, async (req, res) => {
     const userId = req.params.id;
 
     console.log('Deleting user with ID:', userId);
+
+    //must check if it is the logged in user that wants to delte its own profile or an Admin 
 
     let deleteUser = new User();
 
