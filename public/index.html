@@ -52,7 +52,7 @@
     <div id="bntContainerLoggedIn" class="btnContainer" style="display: none;">
         <button class="UserBtn" id="logOutUser">Log out</button>
         <button class="deleteUserBtn" id="deleteUserBtn">Delete user</button>
-        
+
     </div>
 
     <div id="avatarStudioEvents" style="display: none;">
@@ -62,13 +62,12 @@
         <button id="checkBtn" class="globalBtn">&#10004</button>
 
         <div id="choiceMenu">
-            <img id="option1" class="thumbnail" src="./AvatarStudio/Media/pearlRender2.jpg">
             <img id="option2" class="thumbnail" src="./AvatarStudio/Media/head.png">
             <img id="option3" class="thumbnail" src="./AvatarStudio/Media/head.png">
             <img id="option4" class="thumbnail" src="./AvatarStudio/Media/head.png">
             <img id="option5" class="thumbnail" src="./AvatarStudio/Media/head.png">
-            <img id="option6" class="thumbnail" src="./AvatarStudio/Media/head.png">
-            <img id="option7" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img class="thumbnail" src="./AvatarStudio/Media/eyebrowRender.jpg" id="loadEyebrows2Button">
+            <img class="thumbnail" src="./AvatarStudio/Media/eyebrow-1Render.jpg" id="loadEyebrowsButton">
         </div>
     </div>
 
@@ -82,6 +81,10 @@
         let selectedUserEpost = null;
         let selectedUserPassword = null;
 
+        let loggedInId = null;
+        let loggedInEmail = null;
+        let loggedInName = null;
+
         const url = 'user/users';
         const avatarUrl = "user/avatar";
 
@@ -90,9 +93,10 @@
         const bntContainerLoggedIn = document.getElementById('bntContainerLoggedIn');
         const editUserForm = document.getElementById('editUser');
         const avatarStudioEvents = document.getElementById('avatarStudioEvents');
-        
+        const deleteBtn = document.getElementById('deleteUserBtn');
+
         const logOutUser = document.getElementById('logOutUser');
-        logOutUser.addEventListener("click", ()=> {
+        logOutUser.addEventListener("click", () => {
             localStorage.removeItem("loggedInUserMail");
             window.location.reload();
         })
@@ -114,7 +118,9 @@
 
         const mainBtn = document.getElementById("mainBtn");
         mainBtn.addEventListener("click", async () => {
+          
             try {
+                avatarFeatures.loggedInUser = loggedInId;
                 const response = await fetch(avatarUrl, {
                     method: 'POST',
                     headers: {
@@ -122,6 +128,7 @@
                     },
                     body: JSON.stringify(avatarFeatures),
                 });
+                console.log("features", JSON.stringify(avatarFeatures));
             } catch (error) {
                 console.error("Bad Input");
             }
@@ -191,8 +198,12 @@
                     showAvatarStudio();
                     myAccountBtn.style.display = "block";
 
+                    loggedInId = data.id;
+                    loggedInEmail = data.email;
+                    loggedInName = data.name;
+
                     //send User thats logged in to local storeage
-                    localStorage.setItem('loggedInUserMail', email);
+                    //localStorage.setItem('loggedInUserMail', email);
                     //delete from localStorage when user loggs out
                 } else {
                     console.error(`Error: ${response.status} - ${data.error}`);
@@ -205,6 +216,11 @@
             }
         }
 
+        function displayLoggedInUserEdit() {
+            document.getElementById('inpUnameEdit').placeholder = loggedInName;
+            document.getElementById('inpEmailEdit').placeholder = loggedInEmail;
+        }
+
 
         myAccountBtn.addEventListener("click", async (event) => {
             event.preventDefault();
@@ -214,6 +230,7 @@
         async function showMyAccount() {
             editUserForm.style.display = 'block';
             bntContainerLoggedIn.style.display = "block";
+            displayLoggedInUserEdit();
 
             //avatarStudioEvents.style.display = "none";
 
@@ -266,6 +283,8 @@
             document.getElementById('inpUnameEdit').placeholder = selectedUserName;
             document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;
         }
+
+
 
         // Function to display a user in the user list
         function displayUser(user) {

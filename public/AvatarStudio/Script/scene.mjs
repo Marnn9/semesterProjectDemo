@@ -3,12 +3,14 @@ import * as THREE from '../three.js-master/src/Three.js';
 import * as dat from "../three.js-master/build/dat.gui.module.js";
 import { GLTFLoader } from "../three.js-master/build/GLTFLoader.js";
 import { TCharacter } from './Character.mjs';
+import {TCharacterOptions} from "./characterOptions.js";
 
 export const avatarFeatures = {
     skinColor: null,
     hairColor: null,
     eyeColor: null,
     browType: null,
+    loggedInUser: null,
 }
 
 export function TinitialiseScene(anAvatar) {
@@ -48,7 +50,8 @@ export function TinitialiseScene(anAvatar) {
 
     //-----------------character-------------------------
     const character = new TCharacter(scene);
-    scene.add(character);
+    const characterOptions = new TCharacterOptions(scene)    
+    scene.add(character, characterOptions);
 
     //-------------functions-------------------------------
 

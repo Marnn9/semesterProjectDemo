@@ -2,61 +2,55 @@
 import { GLTFLoader } from "../three.js-master/build/GLTFLoader.js";
 import * as THREE from '../three.js-master/src/Three.js';
 
-
-const bodyParts = {
-    iris: {name: 'eye_left', child: 2},
-    hair: {name :'hair_joined'},
-    ears: {name: 'EARS', },
-    head: {name: 'BSurfaceMesh002'},
-    lowerBody: null,
-    leg: null,
-}
-
 export class TCharacter extends THREE.Object3D {
-    
-    constructor() {
+    constructor(scene) {
         super(); //class constructor
 
-        const degrees = 0;
-        const radians = degrees * (Math.PI/180);
         const loader = new GLTFLoader();
-
+        
+   
         loader.load("AvatarStudio/Media/Boy-smaller-file.gltf", (gltfModel) => {
-
-            gltfModel.scene.position.set(0, 0, 0); //sets the model in the center of the scene
-            this.add(gltfModel.scene); //places the model in the scene
-
-            //-----------------------------------------------------------------------------------------------------------
-
-            const eyeMaterial = gltfModel.scene.children.find(child => child.name === bodyParts.iris.name);
-            const hairMaterial = gltfModel.scene.children.find(child => child.name === bodyParts.hair.name);
-            const earMaterial =gltfModel.scene.children.find(child => child.name === bodyParts.ears.name);
-            const skinMaterial =gltfModel.scene.children.find(child => child.name === bodyParts.head.name);
-
-            gltfModel.scene.rotation.y = radians;
-            console.log(gltfModel.scene);
-
-            this.setIrisColor = function (aColor) {
-                eyeMaterial.children[bodyParts.iris.child].material.color.set(aColor); 
-            };
-
-            this.setHairColor = function (aColor) {
-                hairMaterial.material.color.set(aColor); 
-            };
-
-            this.setSkinColor = function (aColor){
-                skinMaterial.material.color.set(aColor);
-                earMaterial.material.color.set(aColor);
-            }
-
-            //-----------------------------------------------------------------------------------------------------------
+            //this.irisOfEye = gltfModel.scene.children[2].material;
+            gltfModel.scene.position.set(0, 0, 0);
+            //gltfModel.scene.rotation.y = -Math.PI / 2;
+            this.add(gltfModel.scene);
 
             const lights = gltfModel.scene.children.filter(child => child.isLight);
+
+            const eyebrows = gltfModel.scene.children.find(child => child.name === 'eyebrow')
+            if (eyebrows) {
+                // Remove the eyebrows from their parent
+                gltfModel.scene.remove(eyebrows);
+            }
             // Set the intensity of each light
             lights.forEach(light => {
                
                 light.intensity = 1;
             });
+            const eyeMaterial = gltfModel.scene.children.find(child => child.name === 'eye_left')
+            console.log(eyeMaterial)
+
+            // Define setIrisColor as a method of the class
+            this.setIrisColor = function (aColor) {
+                eyeMaterial.children[2].material.color.set(aColor);  // Set a default color for testing
+            };
+            const hairMaterial = gltfModel.scene.children.find(child => child.name === 'hair_joined')
+            console.log(hairMaterial)
+            this.setHairColor = function (aColor) {
+                hairMaterial.material.color.set(aColor);  // Set a default color for testing
+            };
+
+            const skinMaterial = gltfModel.scene.children.find(child => child.name === 'BSurfaceMesh002')
+            const earMaterial = gltfModel.scene.children.find(child => child.name === 'EARS')
+            console.log(skinMaterial)
+
+            // Define setIrisColor as a method of the class
+            this.setSkinColor = function (aColor) {
+                skinMaterial.material.color.set(aColor); 
+                earMaterial.material.color.set(aColor)
+            };
         });
+
+
     }
 }

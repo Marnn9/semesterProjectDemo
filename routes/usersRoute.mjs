@@ -47,15 +47,16 @@ USER_API.post('/users', async (req, res, next) => {
         const password = encrypt(req.body.password);
 
         let user = new User();
-        user.name = name;
-        user.email = email;
-        user.pswHash = password;
-        const existingUser = await user.findByEmail(email);
+
+        const existingUser = await user.findByIdentifyer(email);
 
         if (name !== undefined && email !== undefined && password !== undefined) {
             // Create a new User instance
             // Check if a user with the provided email exists 
             if (existingUser === null) {
+                user.name = name;
+                user.email = email;
+                user.pswHash = password;
                 user = await user.save();
                 res.status(HttpCodes.successfulResponse.Ok).json(user);
             } else {
@@ -79,11 +80,15 @@ USER_API.post('/login', async (req, res, next) => {
         const password = encrypt(req.body.password)
 
         const user = new User();
-        const existingUser = await user.findByEmail(email);
+        const existingUser = await user.findByIdentifyer(email);
 
         if (existingUser !== null && validatePas(password, existingUser.password)) {
             // Authentication successful
-            res.status(HttpCodes.successfulResponse.Ok).json(existingUser);
+            res.status(HttpCodes.successfulResponse.Ok).json({
+                id: existingUser.id,
+                email: existingUser.uEmail,
+                name: existingUser.uName,
+            });
         } else {
             // Authentication failed
             res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid email or password' });
@@ -121,16 +126,22 @@ USER_API.put('/users/:id', async (req, res) => {
 });
 
 USER_API.post('/avatar', async (req, res) => {
-    const { hairColor, eyeColor, skinColor } = req.body;
+    const { hairColor, eyeColor, skinColor, browType, loggedInUser } = req.body;
+
+    const user = new User();
+    const existingUser = await user.findByIdentifyer(loggedInUser);
+
 
     /* ! find a way to add the avatarId of the saved avatar to the user thats logged in ! */
 
-    let avatar = { aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor };
+    let avatar = { aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor, aBrowType: browType };
 
-    if (avatar) {
+    if (avatar !== null && existingUser.anAvatarId === null) {
 
-        await DBManager.addAvatar(avatar);
+        await DBManager.addAvatar(avatar, loggedInUser);
         res.status(HttpCodes.successfulResponse.Ok).json(avatar);
+    } else if (avatar !== null && existingUser.anAvatarId !== null) {
+        await DBManager.updateAvatar(avatar, existingUser.anAvatarId);
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }
