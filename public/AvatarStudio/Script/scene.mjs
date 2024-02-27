@@ -3,7 +3,7 @@ import * as THREE from '../three.js-master/src/Three.js';
 import * as dat from "../three.js-master/build/dat.gui.module.js";
 import { GLTFLoader } from "../three.js-master/build/GLTFLoader.js";
 import { TCharacter } from './Character.mjs';
-import {TCharacterOptions} from "./characterOptions.js";
+import { TCharacterOptions } from "./characterOptions.js";
 
 export const avatarFeatures = {
     skinColor: null,
@@ -21,13 +21,30 @@ export function TinitialiseScene(anAvatar) {
 
     //---------------gradient Background & color -----------------------
 
-    const hexValue = "ffffff";
+    let hexValue = "ffffff";
     const colorOfCube = "#" + hexValue;
 
     const topColor = new THREE.Color(0xA8D1DF);
     const bottomColor = new THREE.Color(0x294A5E);
     const gradientTexture = new THREE.CanvasTexture(createGradientBackground(topColor, bottomColor));
     scene.background = gradientTexture;
+
+    //----------------localStorage--------------------------------------
+    const localHairColor = localStorage.getItem("haircolor");
+    const localEyeColor = localStorage.getItem("eyecolor");
+    const localSkinColor = localStorage.getItem("skincolor");
+
+    eyeMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
+    hairMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
+    skinMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
+
+    setMaterialFromLocalStorage("haircolor", hairMaterial);
+    setMaterialFromLocalStorage("eyecolor", eyeMaterial);
+    setMaterialFromLocalStorage("skincolor", skinMaterial);
+
+
+
+
 
     //----------------scene objects----------------------
 
@@ -37,9 +54,7 @@ export function TinitialiseScene(anAvatar) {
     const ambientLight = new THREE.AmbientLight(0xffffff, 3);
     scene.add(ambientLight);
 
-    eyeMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
-    hairMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
-    skinMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
+
 
 
     renderer = new THREE.WebGLRenderer();
@@ -50,7 +65,7 @@ export function TinitialiseScene(anAvatar) {
 
     //-----------------character-------------------------
     const character = new TCharacter(scene);
-    const characterOptions = new TCharacterOptions(scene)    
+    const characterOptions = new TCharacterOptions(scene)
     scene.add(character, characterOptions);
 
     //-------------functions-------------------------------
@@ -62,13 +77,13 @@ export function TinitialiseScene(anAvatar) {
 
         // Define the initial position for the GUI
         const guiPosition = { x: centerX, y: 10 }; // Adjust 'y' as needed
-    
+
         // Use dat.GUI's `domElement` property to set the position
         gui.domElement.style.position = 'absolute';
         gui.domElement.style.left = guiPosition.x + 'px';
         gui.domElement.style.top = guiPosition.y + 'px';
 
-        
+
         const eyeChanger = { color: eyeMaterial.color.getHex() };
 
         gui.addColor(eyeChanger, 'color').name('Eyecolor').onChange(function (color) {
@@ -147,11 +162,31 @@ export function TinitialiseScene(anAvatar) {
     }
     render();
 
-    function hideScene (){
-        sceneContainer.visable = false;
-        renderer.render(scene, camera);
-
+    function setMaterialFromLocalStorage(storageKey, material) {
+        const localStorageColor = localStorage.getItem(storageKey);
+        switch (storageKey) {
+            case "haircolor":
+                if (localStorageColor !== null) {
+                    hexValue = localStorageColor;
+                    material.color.set(`#${localStorageColor}`);
+                }
+                break;
+            case "eyecolor":
+                if (localStorageColor !== null) {
+                    hexValue = localStorageColor;
+                    material.color.set(`#${localStorageColor}`);
+                }
+                break;
+            case "skincolor":
+                if (localStorageColor !== null) {
+                    hexValue = localStorageColor;
+                    material.color.set(`#${localStorageColor}`);
+                }
+                break;
+            default:
+                break;
+        }
     }
-
-
 }
+
+

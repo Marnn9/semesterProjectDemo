@@ -84,10 +84,15 @@ USER_API.post('/login', async (req, res, next) => {
 
         if (existingUser !== null && validatePas(password, existingUser.password)) {
             // Authentication successful
+            let dbAvatar = null;
+            if (existingUser.anAvatarId !== null) {
+                dbAvatar = await DBManager.getAvatar(existingUser.anAvatarId);
+            }
             res.status(HttpCodes.successfulResponse.Ok).json({
                 id: existingUser.id,
                 email: existingUser.uEmail,
                 name: existingUser.uName,
+                avatar: dbAvatar,
             });
         } else {
             // Authentication failed

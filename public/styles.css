@@ -244,6 +244,10 @@ p {
     text-align: center;
 }
 
+.form input{
+    margin-bottom: 3%;
+}
+
 .login-createText {
     margin-top: 2%;
     text-align: center;
@@ -290,6 +294,7 @@ p {
     margin-left: 1%;
     margin-top: 1%;
     align-content: center;
+    
 }
 
 #myAccountBtn {

@@ -202,6 +202,13 @@
                     loggedInEmail = data.email;
                     loggedInName = data.name;
 
+                    if (data.avatar !== null) {
+                        localStorage.setItem('haircolor', data.avatar.hairColor);
+                        localStorage.setItem('eyecolor', data.avatar.eyeColor); 
+                        localStorage.setItem('skincolor', data.avatar.skinColor);
+                        localStorage.setItem('browtype', data.avatar.eyeBrowType);
+                    }
+
                     //send User thats logged in to local storeage
                     //localStorage.setItem('loggedInUserMail', email);
                     //delete from localStorage when user loggs out

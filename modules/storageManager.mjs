@@ -55,26 +55,26 @@ class DBManager {
 
     async getUserByIdentifyer(anIdetifyer) {
         const client = new pg.Client(this.#credentials);
-    
+
         try {
             await client.connect();
             let user = null;
-    
+
             // Check if anIdetifyer is a valid integer
             if (/^\d+$/.test(anIdetifyer)) {
                 const outputId = await client.query(`SELECT * FROM public."Users" WHERE "${this.#dbTableNames.user.id}" = $1`, [anIdetifyer]);
-    
+
                 if (outputId.rows.length === 1) {
                     user = outputId.rows[0];
                 }
             } else {
                 const outputEmail = await client.query(`SELECT * FROM public."Users" WHERE "${this.#dbTableNames.user.email}" = $1`, [anIdetifyer]);
-    
+
                 if (outputEmail.rows.length === 1) {
                     user = outputEmail.rows[0];
                 }
             }
-    
+
             return user;
         } catch (error) {
             console.error(`Error getting user by identifyer ${anIdetifyer}:`, error);
@@ -202,20 +202,43 @@ class DBManager {
         return avatar;
     }
 
-    async updateAvatar (avatar, avatarId){
+    async updateAvatar(avatar, avatarId) {
         const client = new pg.Client(this.#credentials);
 
         try {
             await client.connect();
-        const updateQuery = await client.query(`
+            const updateQuery = await client.query(`
         UPDATE "public"."anAvatar" 
         SET "${this.#dbTableNames.avatar.hairColor}" = $1::text, "${this.#dbTableNames.avatar.eyeColor}" = $2::text, "${this.#dbTableNames.avatar.skinColor}" = $3::text, "${this.#dbTableNames.avatar.eyebrowType}" = $4::text WHERE "avatarId" = $5::integer;`
-        , [avatar.aHairColor, avatar.anEyeColor, avatar.aSkinColor, avatar.aBrowType, avatarId]);
-        }catch(error){
+                , [avatar.aHairColor, avatar.anEyeColor, avatar.aSkinColor, avatar.aBrowType, avatarId]);
+        } catch (error) {
             console.error('Error in addAvatar:', error);
-        }finally{
+        } finally {
             client.end();
         }
+    }
+
+    async getAvatar(anId) {
+        const client = new pg.Client(this.#credentials);
+
+        try {
+            await client.connect();
+            let avatar = null;
+
+            const outputId = await client.query(`SELECT * FROM public."anAvatar" WHERE "${this.#dbTableNames.avatar.id}" = $1`, [anId]);
+
+            if (outputId.rows.length === 1) {
+                avatar = outputId.rows[0];
+            }
+
+            return avatar;
+        } catch (error) {
+            console.error('Error in getAvatar:', error);
+            // TODO: Handle errors appropriately
+        } finally {
+            client.end(); // Always disconnect from the database.
+        }
+
     }
 }
 
