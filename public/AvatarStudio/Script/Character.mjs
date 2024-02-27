@@ -7,8 +7,13 @@ export class TCharacter extends THREE.Object3D {
         super(); //class constructor
 
         const loader = new GLTFLoader();
-        
-   
+        const localHairColor = localStorage.getItem("haircolor");
+        const localEyeColor = localStorage.getItem("eyecolor");
+        const localSkinColor = localStorage.getItem("skincolor");
+
+
+
+
         loader.load("AvatarStudio/Media/Boy-smaller-file.gltf", (gltfModel) => {
             //this.irisOfEye = gltfModel.scene.children[2].material;
             gltfModel.scene.position.set(0, 0, 0);
@@ -24,7 +29,7 @@ export class TCharacter extends THREE.Object3D {
             }
             // Set the intensity of each light
             lights.forEach(light => {
-               
+
                 light.intensity = 1;
             });
             const eyeMaterial = gltfModel.scene.children.find(child => child.name === 'eye_left')
@@ -46,10 +51,22 @@ export class TCharacter extends THREE.Object3D {
 
             // Define setIrisColor as a method of the class
             this.setSkinColor = function (aColor) {
-                skinMaterial.material.color.set(aColor); 
+                skinMaterial.material.color.set(aColor);
                 earMaterial.material.color.set(aColor)
             };
+
+            this.setColor = function () {
+                skinMaterial.material.color.set("#" + localSkinColor);
+                earMaterial.material.color.set("#" + localSkinColor);
+                eyeMaterial.children[2].material.color.set("#" + localEyeColor);
+                hairMaterial.material.color.set("#" + localHairColor);
+
+            }
+            if ((localEyeColor && localHairColor && localSkinColor) !== null) {
+                this.setColor();
+            }
         });
+
 
 
     }

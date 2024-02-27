@@ -142,11 +142,11 @@ USER_API.post('/avatar', async (req, res) => {
     let avatar = { aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor, aBrowType: browType };
 
     if (avatar !== null && existingUser.anAvatarId === null) {
-
         await DBManager.addAvatar(avatar, loggedInUser);
         res.status(HttpCodes.successfulResponse.Ok).json(avatar);
     } else if (avatar !== null && existingUser.anAvatarId !== null) {
         await DBManager.updateAvatar(avatar, existingUser.anAvatarId);
+        res.status(HttpCodes.successfulResponse.Ok).json(avatar);
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }

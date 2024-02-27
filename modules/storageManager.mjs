@@ -216,6 +216,7 @@ class DBManager {
         } finally {
             client.end();
         }
+        return avatar
     }
 
     async getAvatar(anId) {

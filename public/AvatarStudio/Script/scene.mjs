@@ -29,22 +29,6 @@ export function TinitialiseScene(anAvatar) {
     const gradientTexture = new THREE.CanvasTexture(createGradientBackground(topColor, bottomColor));
     scene.background = gradientTexture;
 
-    //----------------localStorage--------------------------------------
-    const localHairColor = localStorage.getItem("haircolor");
-    const localEyeColor = localStorage.getItem("eyecolor");
-    const localSkinColor = localStorage.getItem("skincolor");
-
-    eyeMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
-    hairMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
-    skinMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
-
-    setMaterialFromLocalStorage("haircolor", hairMaterial);
-    setMaterialFromLocalStorage("eyecolor", eyeMaterial);
-    setMaterialFromLocalStorage("skincolor", skinMaterial);
-
-
-
-
 
     //----------------scene objects----------------------
 
@@ -53,9 +37,6 @@ export function TinitialiseScene(anAvatar) {
     camera.position.z = 10;
     const ambientLight = new THREE.AmbientLight(0xffffff, 3);
     scene.add(ambientLight);
-
-
-
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -67,6 +48,34 @@ export function TinitialiseScene(anAvatar) {
     const character = new TCharacter(scene);
     const characterOptions = new TCharacterOptions(scene)
     scene.add(character, characterOptions);
+    //----------------localStorage--------------------------------------
+    const localHairColor = localStorage.getItem("haircolor");
+    const localEyeColor = localStorage.getItem("eyecolor");
+    const localSkinColor = localStorage.getItem("skincolor");
+    const localBrows = localStorage.getItem("browtype");
+
+
+    if (localHairColor !== null) {
+        hairMaterial = new THREE.MeshBasicMaterial({ color: `#${localHairColor}` });
+        avatarFeatures.hairColor = localHairColor;
+    } else {
+        hairMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
+    }
+    if (localEyeColor !== null) {
+        eyeMaterial = new THREE.MeshBasicMaterial({ color: `#${localEyeColor}` });
+        avatarFeatures.eyeColor = localEyeColor;
+    } else {
+        eyeMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
+    }
+    if (localSkinColor !== null) {
+        skinMaterial = new THREE.MeshBasicMaterial({ color: `#${localSkinColor}` });
+        avatarFeatures.skinColor = localSkinColor;
+    } else {
+        skinMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
+    }
+    if(localBrows !== null){
+        avatarFeatures.browType = localBrows;
+    }
 
     //-------------functions-------------------------------
 
@@ -162,31 +171,6 @@ export function TinitialiseScene(anAvatar) {
     }
     render();
 
-    function setMaterialFromLocalStorage(storageKey, material) {
-        const localStorageColor = localStorage.getItem(storageKey);
-        switch (storageKey) {
-            case "haircolor":
-                if (localStorageColor !== null) {
-                    hexValue = localStorageColor;
-                    material.color.set(`#${localStorageColor}`);
-                }
-                break;
-            case "eyecolor":
-                if (localStorageColor !== null) {
-                    hexValue = localStorageColor;
-                    material.color.set(`#${localStorageColor}`);
-                }
-                break;
-            case "skincolor":
-                if (localStorageColor !== null) {
-                    hexValue = localStorageColor;
-                    material.color.set(`#${localStorageColor}`);
-                }
-                break;
-            default:
-                break;
-        }
-    }
 }
 
 

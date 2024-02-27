@@ -97,11 +97,9 @@
 
         const logOutUser = document.getElementById('logOutUser');
         logOutUser.addEventListener("click", () => {
-            localStorage.removeItem("loggedInUserMail");
+            localStorage.clear();
             window.location.reload();
         })
-
-
 
         const toggleModeBtn = document.getElementById('toggleModeBtn');
         toggleModeBtn.addEventListener('click', () => {
@@ -116,9 +114,13 @@
             }
         });
 
-        const mainBtn = document.getElementById("mainBtn");
-        mainBtn.addEventListener("click", async () => {
+        const saveBtn = document.getElementById("checkBtn");
+        saveBtn.addEventListener("click", async () => {
+            event.preventDefault();
+            saveAvatar();
+        });
 
+        async function saveAvatar() {
             try {
                 avatarFeatures.loggedInUser = loggedInId;
                 const response = await fetch(avatarUrl, {
@@ -128,11 +130,16 @@
                     },
                     body: JSON.stringify(avatarFeatures),
                 });
-                console.log("features", JSON.stringify(avatarFeatures));
+
+                if(response.ok){
+                    displayMsg("Saved", 'green');
+                }
+
             } catch (error) {
-                console.error("Bad Input");
+                console.error("Bad Input", error);
             }
-        })
+        };
+
 
         const createForm = document.getElementById('create');
         createForm.addEventListener('submit', async (event) => {
@@ -194,8 +201,9 @@
                 const data = await response.json();
                 if (response.ok) {
                     console.log('Login successful:', data);
+
                     displayMsg("Successful login", 'green');
-                    showAvatarStudio();
+
                     myAccountBtn.style.display = "block";
 
                     loggedInId = data.id;
@@ -204,10 +212,11 @@
 
                     if (data.avatar !== null) {
                         localStorage.setItem('haircolor', data.avatar.hairColor);
-                        localStorage.setItem('eyecolor', data.avatar.eyeColor); 
+                        localStorage.setItem('eyecolor', data.avatar.eyeColor);
                         localStorage.setItem('skincolor', data.avatar.skinColor);
                         localStorage.setItem('browtype', data.avatar.eyeBrowType);
                     }
+                    showAvatarStudio();
 
                     //send User thats logged in to local storeage
                     //localStorage.setItem('loggedInUserMail', email);
@@ -423,7 +432,6 @@
                 load avatar with attributes from database
             }
             */
-
         }
         function displayCreateNewUser() {
             const loginForm = document.getElementById('login');
@@ -447,7 +455,6 @@
             }
 
         }
-
         function displayMsg(aMsg, aColor) {
             const messageDisplayContainerId = "messageDisplayContainer";
             let messageDisplay = document.getElementById(messageDisplayContainerId);
