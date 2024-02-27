@@ -7,7 +7,7 @@
 
 body {
     margin: 0;
-    overflow: hidden;
+    overflow: auto;
     position: relative;
 
 }
@@ -21,6 +21,7 @@ canvas {
 button:hover {
     cursor: pointer;
 }
+
 
 .globalBtn {
     border: none;
@@ -130,7 +131,7 @@ button:hover {
         padding: 10px;
         bottom: 0em;
         width: 100%;
-        height: 35%;
+        height: 20%;
 
     }
 
@@ -321,8 +322,13 @@ p {
     display: flex;
     justify-content: space-around;
     margin: 0 30%;
+    margin-bottom: 2%;
 }
 
+.btnContainer button {
+    margin: 5%;
+    margin-bottom: 2%;
+}
 
 /* -------- Dark mode styles --------*/
 

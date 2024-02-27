@@ -147,5 +147,11 @@ export function TinitialiseScene(anAvatar) {
     }
     render();
 
+    function hideScene (){
+        sceneContainer.visable = false;
+        renderer.render(scene, camera);
+
+    }
+
 
 }
