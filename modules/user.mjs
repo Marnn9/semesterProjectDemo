@@ -34,12 +34,17 @@ class User {
         }
     }
 
-    async findByEmail(email) {
+    async findByIdentifyer(anIdentifyer) {
         try {
-            const user = await DBManager.getUserByEmail(email);
-            return user;
+            const user = await DBManager.getUserByIdentifyer(anIdentifyer);
+            if (user){
+                return user;
+            }else {
+                return null;
+            }
+            
         } catch (error) {
-            console.error(`Error finding user by email ${email}:`, error);
+            console.error(`Error finding user by identifyer ${anIdentifyer}:`, error);
             throw error;
         }
     }

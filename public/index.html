@@ -10,39 +10,34 @@
 
 <body>
     <button id="toggleModeBtn" class="toggleModeBtn">&#9728;</button>
+    <button id="myAccountBtn" style="display: none;">&#x1F464;</button>
     <div id="messageDisplayContainer"></div>
 
     <div id="loginForms">
 
-        <form class="form" id="login" onsubmit="loginUser(); return false;">
+        <form class="form" id="login">
             <h2>Log in to create your character</h2> <br><br>
-            <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
-            <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
+            <input type="text" class="input" name="Email" id="inpEmailLogin" placeholder="email" required>
+            <input type="password" class="input" name="password" id="inpPasswordLogin" placeholder="password" required>
             <button class="commitBtn" type="submit" id="loginBtn">login</button> <br><br>
         </form>
 
-        <form class="form" id="create" style="display: none;" onsubmit="addUser(); return false;">
+        <form class="form" id="create" style="display: none;">
             <h2>Create a user</h2> <br><br>
             <input type="text" class="input" name="username" id="inpUname" placeholder="username" required>
             <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
             <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
-            <button class="commitBtn" type="submit" id="loginBtn">create user</button> <br><br>
+            <button class="commitBtn" type="submit" id="createBtn">create user</button> <br><br>
         </form>
 
-        <p id="createUtext" class="login-createText" onclick="displayCreateNewUser()">Create user here</p>
-        <p id="loginText" class="login-createText" onclick="displayCreateNewUser()" style="display: none;">Already have
+        <p id="createUtext" class="login-createText">Create user here</p>
+        <p id="loginText" class="login-createText" style="display: none;">Already have
             a user? login here</p>
-    </div>
-
-    <div id="bntContainer">
-        <button class="displayUserBtn" onclick="displayAllUsers()">Display Users</button>
-        <button class="displayUserBtn" onclick="displayEditUser()">Edit User</button>
-        <button class="deleteUserBtn" onclick="deleteUser()">Delete selected user</button>
     </div>
 
     <ul id="userList"></ul>
 
-    <form class="form" id="editUser" onsubmit="sendEditUser(); return false;" style="display: none;">
+    <form class="form" id="editUser" style="display: none;">
         <h2>Edit your user</h2> <br><br>
         <input type="text" class="input" name="username" id="inpUnameEdit" placeholder="username">
         <input type="text" class="input" name="Email" id="inpEmailEdit" placeholder="email">
@@ -50,47 +45,290 @@
         <button class="commitBtn" type="submit" id="Update">Update</button> <br><br>
     </form>
 
+    <div id="bntContainerLoggedIn" class="btnContainer" style="display: none;">
+        <button class="UserBtn" id="logOutUser">Log out</button>
+        <button class="deleteUserBtn" id="deleteUserBtn">Delete user</button>
 
-    <button id="mainBtn" class="globalBtn">Avatar</button>
-    <button id="exitBtn" class="globalBtn">X</button>
-    <button id="questionBtn" class="globalBtn">?</button>
-    <button id="checkBtn" class="globalBtn">&#10004</button>
+    </div>
 
-    <div id="choiceMenu">
-        <img id="option1" class="thumbnail" src="./AvatarStudio/Media/pearlRender2.jpg">
-        <img id="option2" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option3" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option4" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option5" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option6" class="thumbnail" src="./AvatarStudio/Media/head.png">
-        <img id="option7" class="thumbnail" src="./AvatarStudio/Media/head.png">
+    <div id="avatarStudioEvents" style="display: none;">
+        <button id="mainBtn" class="globalBtn">Share</button>
+        <button id="exitBtn" class="globalBtn">X</button>
+        <button id="questionBtn" class="globalBtn">?</button>
+        <button id="checkBtn" class="globalBtn">&#10004</button>
+
+        <div id="choiceMenu">
+            <img id="option2" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img id="option3" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img id="option4" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img id="option5" class="thumbnail" src="./AvatarStudio/Media/head.png">
+            <img class="thumbnail" src="./AvatarStudio/Media/eyebrowRender.jpg" id="loadEyebrows2Button">
+            <img class="thumbnail" src="./AvatarStudio/Media/eyebrow-1Render.jpg" id="loadEyebrowsButton">
+        </div>
     </div>
 
     <script type="module">
-
         import * as main from "./AvatarStudio/Script/main.mjs";
-        //implement try catch into this!!
-        main.loadScene();
-    </script>
-    <script>
+        import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
+        
+        /* -----------clear local storage------------*/
+        localStorage.clear();
+        /* -----------clear localstorage end---------*/
+        let usersData = null;
 
-        function displayMsg(aMsg) {
+        let loggedInId = null;
+        let loggedInEmail = null;
+        let loggedInName = null;
+        let loggedInPassword = null;
 
-            const messageDisplay = document.createElement('div');
-            messageDisplay.innerHTML = aMsg;
+        const url = 'user/users';
+        const avatarUrl = "user/avatar";
 
-            document.body.appendChild(messageDisplay);
+        const createUserText = document.getElementById('createUtext');
+        const myAccountBtn = document.getElementById('myAccountBtn');
+        const bntContainerLoggedIn = document.getElementById('bntContainerLoggedIn');
+        const editUserForm = document.getElementById('editUser');
+        const avatarStudioEvents = document.getElementById('avatarStudioEvents');
+        const deleteBtn = document.getElementById('deleteUserBtn');
 
-            setTimeout(() => {
-                document.body.removeChild(messageDisplay);
-            }, 8000);
-        }
+        const logOutUser = document.getElementById('logOutUser');
+        logOutUser.addEventListener("click", () => {
+            localStorage.clear();
+            window.location.reload();
+        })
 
         const toggleModeBtn = document.getElementById('toggleModeBtn');
         toggleModeBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark-mode');
         })
 
+        const loginText = document.getElementById('loginText');
+        document.addEventListener('click', (event) => {
+            if (event.target === createUserText || event.target === loginText) {
+                event.preventDefault();
+                displayCreateNewUser();
+            }
+        });
+
+        const saveBtn = document.getElementById("checkBtn");
+        saveBtn.addEventListener("click", async () => {
+            event.preventDefault();
+            saveAvatar();
+        });
+
+        async function saveAvatar() {
+            try {
+                avatarFeatures.loggedInUser = loggedInId;
+                const response = await fetch(avatarUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(avatarFeatures),
+                });
+
+                if (response.ok) {
+                    displayMsg("Saved", 'green');
+                }
+            } catch (error) {
+                console.error("Bad Input", error);
+            }
+        };
+
+        const createForm = document.getElementById('create');
+        createForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            addUser()
+        });
+
+        async function addUser() {
+
+            const name = document.getElementById('inpUname').value;
+            const email = document.getElementById('inpEmail').value;
+            const password = document.getElementById('inpPassword').value;
+            // Create a user object
+            const user = { name, email, password };
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user),
+                })
+
+                if (response.ok) {
+                    window.location.reload();
+                    displayAllUsers(user)
+                } else {
+                    const errorData = await response.json();
+                    console.error(`Error: ${response.status} - ${errorData.error}`);
+                    displayMsg(errorData.error, 'red')
+                }
+
+            } catch (error) {
+                console.error(`Error during user Creation: ${error.message}`);
+            }
+        }
+        const loginForm = document.getElementById('login');
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            loginUser()
+        });
+
+        async function loginUser() {
+            // Get user credentials from the input fields
+            const email = document.getElementById('inpEmailLogin').value;
+            const password = document.getElementById('inpPasswordLogin').value;
+
+            const user = { email, password };
+
+            try {
+                const response = await fetch('user/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    console.log('Login successful:', data);
+
+                    displayMsg("Successful login", 'green');
+
+                    myAccountBtn.style.display = "block";
+
+                    loggedInId = data.id;
+                    loggedInEmail = data.email;
+                    loggedInName = data.name;
+                    loggedInPassword = data.paswHash;
+
+                    if (data.avatar !== null) {
+                        localStorage.setItem('haircolor', data.avatar.hairColor);
+                        localStorage.setItem('eyecolor', data.avatar.eyeColor);
+                        localStorage.setItem('skincolor', data.avatar.skinColor);
+                        localStorage.setItem('browtype', data.avatar.eyeBrowType);
+                    }
+                    showAvatarStudio();
+                } else {
+                    console.error(`Error: ${response.status} - ${data.error}`);
+                    displayMsg(data.error, 'red')
+                }
+
+            } catch (error) {
+                console.error('Error during login:', error);
+                // Handle the error or display a message to the user
+            }
+        }
+
+        function displayLoggedInUserEdit() {
+            document.getElementById('inpUnameEdit').placeholder = loggedInName;
+            document.getElementById('inpEmailEdit').placeholder = loggedInEmail;
+        }
+
+        myAccountBtn.addEventListener("click", async (event) => {
+            event.preventDefault();
+            if (editUserForm.style.display === "none") {
+                editUserForm.style.display = 'block';
+                bntContainerLoggedIn.style.display = "block";
+                displayLoggedInUserEdit();
+            } else {
+                editUserForm.style.display = "none";
+                bntContainerLoggedIn.style.display = "none";
+            }
+
+        })
+
+        editUserForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            sendEditUser();
+        })
+
+        async function sendEditUser() {
+            let name = document.getElementById('inpUnameEdit').value;
+            let email = document.getElementById('inpEmailEdit').value;
+            let password = document.getElementById('inpPasswordEdit').value;
+
+            if (!name) {
+                name = loggedInName;
+            }
+
+            if (!email) {
+                email = loggedInEmail;
+            }
+
+            if (!password) {
+                password = loggedInPassword;
+            }
+
+            if (name && email && password && loggedInId) {
+                const editedUser = { email, loggedInId, name, password };
+
+                try {
+                    const response = await fetch(url + "/" + loggedInId, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(editedUser),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error(`Error: ${response.status} - ${errorData.error}`);
+                        displayMsg(errorData.error, 'red')
+                    }
+
+                    const data = await response.json();
+                    console.log('Edited User:', data);
+                    displayMsg("User updated", 'green');
+
+                } catch (error) {
+                    console.error('Error during login:', error);
+                }
+            } else {
+                console.error('Missing data in fields for editing user or no user logged In');
+            }
+        }
+
+        deleteBtn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            deleteUser();
+        })
+
+        async function deleteUser() {
+
+            const deleteConfirm = confirm("Are you sure you want to delete the user?");
+
+            if (deleteConfirm && loggedInId) {
+                fetch(url + "/" + loggedInId, {
+                    method: 'DELETE',
+                })
+                    .then(data => {
+                        console.log('Deleted user:', data);
+                        localStorage.clear();
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error editing user:', error);
+                    });
+            } else if (!deleteConfirm) {
+                return;
+            }
+            else {
+                //displayMsg("Missing data, no user selected.")
+            }
+        }
+
+        function showAvatarStudio() {
+            const loginForms = document.getElementById('loginForms');
+
+            loginForms.style.display = 'none';
+            main.loadScene();
+            avatarStudioEvents.style.display = 'block';
+        }
 
         function displayCreateNewUser() {
             const loginForm = document.getElementById('login');
@@ -114,197 +352,22 @@
             }
 
         }
+        function displayMsg(aMsg, aColor) {
+            const messageDisplayContainerId = "messageDisplayContainer";
+            let messageDisplay = document.getElementById(messageDisplayContainerId);
 
-        let usersData = null;
-        let selectedUserId = null;
-        let selectedUserName = null;
-        let selectedUserEpost = null;
-        let selectedUserPassword = null;
-
-        const url = 'user/users';
-
-        async function addUser() {
-            // Fetch user data from the form
-            event.preventDefault();
-            const name = document.getElementById('inpUname').value;
-            const email = document.getElementById('inpEmail').value;
-            const password = document.getElementById('inpPassword').value;
-            // Create a user object
-            const user = { name, email, password };
-            try {
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(user),
-                })
-                displayAllUsers(user)
-
-            } catch (error) {
-                console.error("Bad Input");
-                //displayMsg("Bad Input");
+            if (!messageDisplay) {
+                messageDisplay = document.createElement("div");
+                messageDisplay.id = messageDisplayContainerId;
+                document.body.appendChild(messageDisplay);
             }
+            messageDisplay.style.color = aColor;
+            messageDisplay.textContent = aMsg;
+
+            setTimeout(() => {
+                document.body.removeChild(messageDisplay);
+            }, 5000);
         }
-
-        async function loginUser() {
-            //put the login for logging in
-
-            //when login is sucsessfull, make the loginDetails disappear
-            const loginForms = document.getElementById('loginForms');
-            loginForms.style.display = "none";
-        }
-
-        async function displayAllUsers() {
-            try {
-                const userList = document.getElementById('userList');
-                // Clear existing user list
-                userList.innerHTML = '';
-
-                // Fetch all users from the server using GET
-                const response = await fetch(url);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                console.log('Response from server:', data);
-
-                if (Array.isArray(data)) {
-                    // Display each user in the user list
-                    data.forEach(user => displayUser(user));
-                } else {
-                    console.error('Invalid response from server:', data);
-                }
-            } catch (error) {
-                console.error('Error fetching users:', error.message);
-                displayMsg(`Error fetching users: ${error.message}`);
-            }
-        }
-        // Function to select a user by ID
-        function selectUser(userId, userName, userEpost, userPassword) {
-            selectedUserId = userId;
-            selectedUserName = userName;
-            selectedUserEpost = userEpost;
-            selectedUserPassword = userPassword;
-            console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost + " pas: " + selectedUserPassword);
-
-            document.getElementById('inpUnameEdit').placeholder = selectedUserName;
-            document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;
-        }
-
-        // Function to display a user in the user list
-        function displayUser(user) {
-            const userList = document.getElementById('userList');
-            const listItem = document.createElement('li');
-
-            // Check if user is undefined before accessing properties
-            if (user) {
-                // Modify this section based on the structure of the user data from the database
-                listItem.innerHTML = `Id: <b>${user.id}</b>, Name: <b>${user.uName}</b>, E-mail: <b>${user.uEmail}</b>`;
-                userList.appendChild(listItem);
-                listItem.classList.add('listed_users');
-
-                // Add an event listener to change the class when the list item is clicked
-                listItem.addEventListener('click', () => {
-                    selectUser(user.id, user.uName, user.uEmail, user.password);
-                    // Remove the "selected-user" class from all list items
-                    const allListItems = document.querySelectorAll('.listed_users');
-                    allListItems.forEach(item => item.classList.remove('selected-user'));
-                    // Add the "selected-user" class to the clicked list item
-                    listItem.classList.add('selected-user');
-                });
-            } else {
-                listItem.textContent = 'User information not available';
-            }
-
-            userList.appendChild(listItem);
-        }
-
-
-        function displayEditUser() {
-            document.getElementById('editUser').style.display = 'block';
-        }
-
-
-        async function sendEditUser() {
-            let name = document.getElementById('inpUnameEdit').value;
-            let email = document.getElementById('inpEmailEdit').value;
-            let password = document.getElementById('inpPasswordEdit').value;
-
-            if (!name) {
-                name = selectedUserName;
-            }
-
-            if (!email) {
-                email = selectedUserEpost;
-            }
-
-            if (!password) {
-                password = selectedUserPassword;
-            }
-
-            console.log("user data: " + name, email + " pas: " + password);
-
-            // Check if all required fields are present
-            if (name && email && password && selectedUserId) {
-                const formDataInput = new FormData(document.getElementById('editUser'));
-                const editedUser = { email, selectedUserId, name, password };
-
-                formDataInput.append('id', selectedUserId);
-
-                try {
-                    const response = await fetch(url + "/" + selectedUserId, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            credentials: 'include',
-                        },
-                        body: JSON.stringify(editedUser),
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-
-                    const data = await response.json();
-                    console.log('Edited User:', data);
-                    window.location.reload();
-                    displayUser(data);
-                } catch (error) {
-                    console.error('Error editing user:', error);
-                    // Handle the error or display a message to the user
-                }
-            } else {
-                console.error('Missing data in fields for editing user or no user selected');
-            }
-        }
-
-        async function deleteUser() {
-
-            const deleteConfirm = confirm("Are you sure you want to delete the user?");
-
-            if (deleteConfirm && selectedUserId) {
-                fetch(url + "/" + selectedUserId, {
-                    method: 'DELETE',
-                })
-                    .then(data => {
-                        console.log('Deleted user:', data);
-                        window.location.reload();
-                    })
-                    .catch(error => {
-                        console.error('Error editing user:', error);
-                    });
-            } else if (!deleteConfirm) {
-                return;
-            }
-            else {
-                //displayMsg("Missing data, no user selected.")
-            }
-        }
-
 
 
     </script>

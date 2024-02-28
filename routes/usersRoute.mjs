@@ -1,10 +1,10 @@
 // Import necessary modules and classes
 import express from 'express';
-import bodyParser from 'body-parser';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
-import { basicAuthMiddleware, encrypt } from '../modules/middleWare.mjs';
+import { basicAuthMiddleware, encrypt, validatePas } from '../modules/middleWare.mjs';
+import DBManager from "../modules/storageManager.mjs"
 
 
 
@@ -30,7 +30,7 @@ USER_API.use(functionToRunToEveryUser); //the use is from express making it run 
  */
 
 
-USER_API.get('/users', basicAuthMiddleware, async (req, res, next) => {
+USER_API.get('/users', async (req, res, next) => {
     try {
         let users = new User();
         users = await users.displayAll();
@@ -46,20 +46,24 @@ USER_API.post('/users', async (req, res, next) => {
         const { name, email } = req.body;
         const password = encrypt(req.body.password);
 
+        let user = new User();
+
+        const existingUser = await user.findByIdentifyer(email);
+
         if (name !== undefined && email !== undefined && password !== undefined) {
             // Create a new User instance
-            let user = new User();
-            user.name = name;
-            user.email = email;
-            user.pswHash = password;
-
-            // Check if a user with the provided email exists
-
-            user = await user.save();
-            res.status(HttpCodes.successfulResponse.Ok).json(user);
-
+            // Check if a user with the provided email exists 
+            if (existingUser === null) {
+                user.name = name;
+                user.email = email;
+                user.pswHash = password;
+                user = await user.save();
+                res.status(HttpCodes.successfulResponse.Ok).json('New user created');
+            } else {
+                res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: 'A user with this email already exists' });
+            }
         } else {
-            res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Missing data fields' });
+            res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Invalid Input' });
             //displayMsg("error: Missing data fields");
         }
     } catch (error) {
@@ -70,36 +74,98 @@ USER_API.post('/users', async (req, res, next) => {
     }
 });
 
-USER_API.put('/users/:id', basicAuthMiddleware, async (req, res) => {
+USER_API.post('/login', async (req, res, next) => {
+    try {
+        const email = req.body.email;
+        const password = encrypt(req.body.password)
+
+        const user = new User();
+        const existingUser = await user.findByIdentifyer(email);
+
+        if (existingUser !== null && validatePas(password, existingUser.password)) {
+            // Authentication successful
+            let dbAvatar = null;
+            if (existingUser.anAvatarId !== null) {
+                dbAvatar = await DBManager.getAvatar(existingUser.anAvatarId);
+            }
+            res.status(HttpCodes.successfulResponse.Ok).json({
+                id: existingUser.id,
+                email: existingUser.uEmail,
+                name: existingUser.uName,
+                paswHash: existingUser.password,
+                avatar: dbAvatar,
+            });
+        } else {
+            // Authentication failed
+            res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid email or password' });
+        }
+    } catch (error) {
+        console.error("Error in login handler:", error);
+        res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
+    }
+});
+
+USER_API.put('/users/:id', async (req, res) => {
     const userId = req.params.id;
-
     const { name, email } = req.body;
-    const password = encrypt(req.body.password);
+    let password = req.body.password;
 
+    let user = new User();
+    const foundUser = await user.findByIdentifyer(userId);
 
-    // Find the user with the specified ID
-    let foundUser = new User();
+    const checkMail = new User();
+    const existingMail = await checkMail.findByIdentifyer(email);
+    if (existingMail === null || email === foundUser.uEmail) {
+        if (password === foundUser.password) {
+            password = password;
+        } else {
+            password = encrypt(password);
+        }
 
-    if (userId) {
-        // Update user data
-        foundUser.name = name || foundUser.name;
-        foundUser.email = email || foundUser.email;
-        foundUser.pswHash = password || foundUser.pswHash;
-        foundUser.id = userId;
+        if (userId && foundUser !== null) {
+            // Update user data
+            user.name = name;
+            user.email = email;
+            user.pswHash = password;
+            user.id = userId;
 
-        foundUser = await foundUser.save();
+            user = await user.save();
 
+            res.status(HttpCodes.successfulResponse.Ok).json(user);
+        } else {
+            res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+        }
+    } else {
+        res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: 'A user with this email already exists' });
+    }
+});
 
-        res.status(HttpCodes.successfulResponse.Ok).json(foundUser);
+USER_API.post('/avatar', async (req, res) => {
+    const { hairColor, eyeColor, skinColor, browType, loggedInUser } = req.body;
+
+    const user = new User();
+    const existingUser = await user.findByIdentifyer(loggedInUser);
+
+    const avatar = { aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor, aBrowType: browType };
+
+    if (avatar !== null && existingUser.anAvatarId === null) {
+        await DBManager.addAvatar(avatar, loggedInUser);
+        res.status(HttpCodes.successfulResponse.Ok).json(avatar);
+    } else if (avatar !== null && existingUser.anAvatarId !== null) {
+        const updatedAvatar  = await DBManager.updateAvatar(avatar, existingUser.anAvatarId);
+        res.status(HttpCodes.successfulResponse.Ok).json(updatedAvatar);
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }
 });
 
-USER_API.delete('/users/:id', basicAuthMiddleware, async (req, res) => {
+
+USER_API.delete('/users/:id', async (req, res) => {
     const userId = req.params.id;
 
     console.log('Deleting user with ID:', userId);
+
+    //must check if it is the logged in user that wants to delte its own profile or an Admin 
 
     let deleteUser = new User();
 

@@ -2,12 +2,14 @@
     --mainBtnColor: #EBAC78;
     --borderColor: #ddb271;
 }
+
 /* Avatar studio */
 
 body {
     margin: 0;
-    overflow: hidden;
+    overflow: auto;
     position: relative;
+
 }
 
 canvas {
@@ -15,6 +17,11 @@ canvas {
     height: 100%;
     display: block;
 }
+
+button:hover {
+    cursor: pointer;
+}
+
 
 .globalBtn {
     border: none;
@@ -124,7 +131,7 @@ canvas {
         padding: 10px;
         bottom: 0em;
         width: 100%;
-        height: 35%;
+        height: 20%;
 
     }
 
@@ -132,7 +139,7 @@ canvas {
         background-color: white;
         color: rgb(47, 185, 70);
         right: 2em;
-        bottom: 17em;
+        bottom: 12em;
         width: 2.5em;
     }
 
@@ -156,6 +163,24 @@ canvas {
         width: 5em;
         left: 2em;
     }
+
+    .form {
+        max-width: 300px;
+        /* Set your desired max-width */
+        margin: auto;
+        margin-top: 5%;
+        text-align: center;
+    }
+
+    .form>* {
+        margin-bottom: 10px;
+    }
+
+    .form button {
+        display: block;
+        margin: auto;
+        margin-top: 10px;
+    }
 }
 
 
@@ -165,7 +190,7 @@ canvas {
         background-color: white;
         color: rgb(47, 185, 70);
         right: 3.5em;
-        bottom: 12em;
+        bottom: 15em;
         width: 2.5em;
     }
 }
@@ -216,8 +241,11 @@ p {
 .form {
     margin: auto;
     margin-top: 5%;
-    text-align: center; 
-    
+    text-align: center;
+}
+
+.form input{
+    margin-bottom: 3%;
 }
 
 .login-createText {
@@ -226,7 +254,7 @@ p {
     cursor: pointer;
 }
 
-.displayUserBtn {
+.UserBtn {
     border: none;
     border-radius: 15px;
     height: 30px;
@@ -242,7 +270,7 @@ p {
     background-color: rgb(219, 75, 75);
     color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    margin-top: 10%;
+
 }
 
 .listed_users {
@@ -265,20 +293,46 @@ p {
     font-size: x-large;
     margin-left: 1%;
     margin-top: 1%;
+    align-content: center;
+    
+}
+
+#myAccountBtn {
+    align-items: center;
+    border-radius: 10px;
+    height: 40px;
+    width: 60px;
+    border: none;
+    font-size: x-large;
+    margin: 1%;
+
+    position: fixed;
+    top: 0;
+    right: 0;
 }
 
 #messageDisplayContainer {
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-weight: bold;
-    color: red;
+    background-color: #000000;
     text-align: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
 }
 
-#bntContainer {
+.btnContainer {
     text-align: center;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     margin: 0 30%;
+    margin-bottom: 2%;
+}
+
+.btnContainer button {
+    margin: 5%;
+    margin-bottom: 2%;
 }
 
 /* -------- Dark mode styles --------*/
