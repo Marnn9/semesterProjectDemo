@@ -41,7 +41,7 @@ class DBManager {
         } catch (error) {
             //TODO : Error handling?? Remember that this is a module seperate from your server 
         } finally {
-            client.end(); 
+            client.end();
         }
 
         return user;
@@ -163,11 +163,11 @@ class DBManager {
 
             console.log('User id: ' + userId + ' Number of rows affected in Users table:', userUpdateResult.rowCount);
 
-            
+
             if (userUpdateResult.rowCount > 0) {
                 console.log('User updated successfully');
             } else {
-                console.log('User update failed'); 
+                console.log('User update failed');
             }
 
             avatar.avatarId = avatarId;
@@ -175,7 +175,7 @@ class DBManager {
         } catch (error) {
             console.error('Error in addAvatar:', error);
         } finally {
-            client.end(); 
+            client.end();
         }
 
         return avatar;
@@ -216,7 +216,7 @@ class DBManager {
             console.error('Error in getAvatar:', error);
             // TODO: Handle errors appropriately
         } finally {
-            client.end(); 
+            client.end();
         }
 
     }
@@ -226,9 +226,9 @@ class DBManager {
 let connectionString = process.env.ENVIORMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 
 // We are using an enviorment variable to get the db credentials 
-/* if (connectionString == undefined) {
+if (connectionString == undefined) {
     throw ("You forgot the db connection string");
-} */
+}
 
 export default new DBManager(connectionString);
 
