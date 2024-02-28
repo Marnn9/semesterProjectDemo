@@ -35,10 +35,6 @@
             a user? login here</p>
     </div>
 
-    <div class="btnContainer">
-        <button class="UserBtn" id="displayAllUsers">Display Users</button>
-    </div>
-
     <ul id="userList"></ul>
 
     <form class="form" id="editUser" style="display: none;">
@@ -56,7 +52,7 @@
     </div>
 
     <div id="avatarStudioEvents" style="display: none;">
-        <button id="mainBtn" class="globalBtn">Save</button>
+        <button id="mainBtn" class="globalBtn">Share</button>
         <button id="exitBtn" class="globalBtn">X</button>
         <button id="questionBtn" class="globalBtn">?</button>
         <button id="checkBtn" class="globalBtn">&#10004</button>
@@ -74,16 +70,16 @@
     <script type="module">
         import * as main from "./AvatarStudio/Script/main.mjs";
         import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
-
+        
+        /* -----------clear local storage------------*/
+        localStorage.clear();
+        /* -----------clear localstorage end---------*/
         let usersData = null;
-        let selectedUserId = null;
-        let selectedUserName = null;
-        let selectedUserEpost = null;
-        let selectedUserPassword = null;
 
         let loggedInId = null;
         let loggedInEmail = null;
         let loggedInName = null;
+        let loggedInPassword = null;
 
         const url = 'user/users';
         const avatarUrl = "user/avatar";
@@ -131,15 +127,13 @@
                     body: JSON.stringify(avatarFeatures),
                 });
 
-                if(response.ok){
+                if (response.ok) {
                     displayMsg("Saved", 'green');
                 }
-
             } catch (error) {
                 console.error("Bad Input", error);
             }
         };
-
 
         const createForm = document.getElementById('create');
         createForm.addEventListener('submit', async (event) => {
@@ -209,6 +203,7 @@
                     loggedInId = data.id;
                     loggedInEmail = data.email;
                     loggedInName = data.name;
+                    loggedInPassword = data.paswHash;
 
                     if (data.avatar !== null) {
                         localStorage.setItem('haircolor', data.avatar.hairColor);
@@ -217,10 +212,6 @@
                         localStorage.setItem('browtype', data.avatar.eyeBrowType);
                     }
                     showAvatarStudio();
-
-                    //send User thats logged in to local storeage
-                    //localStorage.setItem('loggedInUserMail', email);
-                    //delete from localStorage when user loggs out
                 } else {
                     console.error(`Error: ${response.status} - ${data.error}`);
                     displayMsg(data.error, 'red')
@@ -237,7 +228,6 @@
             document.getElementById('inpEmailEdit').placeholder = loggedInEmail;
         }
 
-
         myAccountBtn.addEventListener("click", async (event) => {
             event.preventDefault();
             if (editUserForm.style.display === "none") {
@@ -251,89 +241,6 @@
 
         })
 
-        const displayAllUsersBtn = document.getElementById('displayAllUsers');
-        displayAllUsersBtn.addEventListener('click', async (event) => {
-            event.preventDefault();
-            displayAllUsers()
-        });
-
-        async function displayAllUsers() {
-            // event.preventDefault();
-            try {
-                const userList = document.getElementById('userList');
-                // Clear existing user list
-                userList.innerHTML = '';
-
-                // Fetch all users from the server using GET
-                const response = await fetch(url);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                console.log('Response from server:', data);
-
-                if (Array.isArray(data)) {
-                    // Display each user in the user list
-                    data.forEach(user => displayUser(user));
-                } else {
-                    console.error('Invalid response from server:', data);
-                }
-            } catch (error) {
-                console.error('Error fetching users:', error.message);
-                displayMsg(`Error fetching users: ${error.message}`, 'red');
-            }
-        }
-        // Function to select a user by ID
-        function selectUser(userId, userName, userEmail, userPassword) {
-            selectedUserId = userId;
-            selectedUserName = userName;
-            selectedUserEpost = userEmail;
-            selectedUserPassword = userPassword;
-            console.log('Selected User ID:', selectedUserId + " " + selectedUserName + " " + selectedUserEpost);
-
-            document.getElementById('inpUnameEdit').placeholder = selectedUserName;
-            document.getElementById('inpEmailEdit').placeholder = selectedUserEpost;
-        }
-
-
-
-        // Function to display a user in the user list
-        function displayUser(user) {
-            const userList = document.getElementById('userList');
-            const listItem = document.createElement('li');
-
-            // Check if user is undefined before accessing properties
-            if (user) {
-                // Modify this section based on the structure of the user data from the database
-                listItem.innerHTML = `Id: <b>${user.id}</b>, Name: <b>${user.uName}</b>, E-mail: <b>${user.uEmail}</b>`;
-                userList.appendChild(listItem);
-                listItem.classList.add('listed_users');
-
-                // Add an event listener to change the class when the list item is clicked
-                listItem.addEventListener('click', () => {
-                    selectUser(user.id, user.uName, user.uEmail, user.password);
-                    // Remove the "selected-user" class from all list items
-                    const allListItems = document.querySelectorAll('.listed_users');
-                    allListItems.forEach(item => item.classList.remove('selected-user'));
-                    // Add the "selected-user" class to the clicked list item
-                    listItem.classList.add('selected-user');
-                });
-            } else {
-                listItem.textContent = 'User information not available';
-            }
-
-            userList.appendChild(listItem);
-        }
-
-        /* const displayEditForm = document.getElementById('displayEditForm');
-        displayEditForm.addEventListener('click', async (event) => {
-            event.preventDefault();
-            document.getElementById('editUser').style.display = 'block';
-        }); */
-
         editUserForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             sendEditUser();
@@ -345,28 +252,22 @@
             let password = document.getElementById('inpPasswordEdit').value;
 
             if (!name) {
-                name = selectedUserName;
+                name = loggedInName;
             }
 
             if (!email) {
-                email = selectedUserEpost;
+                email = loggedInEmail;
             }
 
             if (!password) {
-                password = selectedUserPassword;
+                password = loggedInPassword;
             }
 
-            console.log("trying to update user data: " + name, email);
-
-            // Check if all required fields are present
-            if (name && email && password && selectedUserId) {
-                const formDataInput = new FormData(document.getElementById('editUser'));
-                const editedUser = { email, selectedUserId, name, password };
-
-                formDataInput.append('id', selectedUserId);
+            if (name && email && password && loggedInId) {
+                const editedUser = { email, loggedInId, name, password };
 
                 try {
-                    const response = await fetch(url + "/" + selectedUserId, {
+                    const response = await fetch(url + "/" + loggedInId, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -375,22 +276,22 @@
                     });
 
                     if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
+                        const errorData = await response.json();
+                        console.error(`Error: ${response.status} - ${errorData.error}`);
+                        displayMsg(errorData.error, 'red')
                     }
 
                     const data = await response.json();
                     console.log('Edited User:', data);
-                    window.location.reload();
-                    displayUser(data);
+                    displayMsg("User updated", 'green');
+
                 } catch (error) {
-                    console.error('Error editing user:', error);
-                    // Handle the error or display a message to the user
+                    console.error('Error during login:', error);
                 }
             } else {
-                console.error('Missing data in fields for editing user or no user selected');
+                console.error('Missing data in fields for editing user or no user logged In');
             }
         }
-
 
         deleteBtn.addEventListener('click', async (event) => {
             event.preventDefault();
@@ -401,12 +302,13 @@
 
             const deleteConfirm = confirm("Are you sure you want to delete the user?");
 
-            if (deleteConfirm && selectedUserId) {
-                fetch(url + "/" + selectedUserId, {
+            if (deleteConfirm && loggedInId) {
+                fetch(url + "/" + loggedInId, {
                     method: 'DELETE',
                 })
                     .then(data => {
                         console.log('Deleted user:', data);
+                        localStorage.clear();
                         window.location.reload();
                     })
                     .catch(error => {
@@ -426,13 +328,8 @@
             loginForms.style.display = 'none';
             main.loadScene();
             avatarStudioEvents.style.display = 'block';
-
-            /*
-            if(user is logged in && has an Avatar in the database){
-                load avatar with attributes from database
-            }
-            */
         }
+
         function displayCreateNewUser() {
             const loginForm = document.getElementById('login');
             const createNewUserForm = document.getElementById('create');

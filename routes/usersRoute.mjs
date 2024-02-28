@@ -58,7 +58,7 @@ USER_API.post('/users', async (req, res, next) => {
                 user.email = email;
                 user.pswHash = password;
                 user = await user.save();
-                res.status(HttpCodes.successfulResponse.Ok).json(user);
+                res.status(HttpCodes.successfulResponse.Ok).json('New user created');
             } else {
                 res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: 'A user with this email already exists' });
             }
@@ -92,6 +92,7 @@ USER_API.post('/login', async (req, res, next) => {
                 id: existingUser.id,
                 email: existingUser.uEmail,
                 name: existingUser.uName,
+                paswHash: existingUser.password,
                 avatar: dbAvatar,
             });
         } else {
@@ -106,27 +107,36 @@ USER_API.post('/login', async (req, res, next) => {
 
 USER_API.put('/users/:id', async (req, res) => {
     const userId = req.params.id;
-
     const { name, email } = req.body;
-    const password = encrypt(req.body.password);
+    let password = req.body.password;
 
+    let user = new User();
+    const foundUser = await user.findByIdentifyer(userId);
 
-    // Find the user with the specified ID
-    let foundUser = new User();
+    const checkMail = new User();
+    const existingMail = await checkMail.findByIdentifyer(email);
+    if (existingMail === null || email === foundUser.uEmail) {
+        if (password === foundUser.password) {
+            password = password;
+        } else {
+            password = encrypt(password);
+        }
 
-    if (userId) {
-        // Update user data
-        foundUser.name = name || foundUser.name;
-        foundUser.email = email || foundUser.email;
-        foundUser.pswHash = password || foundUser.pswHash;
-        foundUser.id = userId;
+        if (userId && foundUser !== null) {
+            // Update user data
+            user.name = name;
+            user.email = email;
+            user.pswHash = password;
+            user.id = userId;
 
-        foundUser = await foundUser.save();
+            user = await user.save();
 
-
-        res.status(HttpCodes.successfulResponse.Ok).json(foundUser);
+            res.status(HttpCodes.successfulResponse.Ok).json(user);
+        } else {
+            res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+        }
     } else {
-        res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+        res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: 'A user with this email already exists' });
     }
 });
 
@@ -135,9 +145,6 @@ USER_API.post('/avatar', async (req, res) => {
 
     const user = new User();
     const existingUser = await user.findByIdentifyer(loggedInUser);
-
-
-    /* ! find a way to add the avatarId of the saved avatar to the user thats logged in ! */
 
     let avatar = { aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor, aBrowType: browType };
 
@@ -153,7 +160,7 @@ USER_API.post('/avatar', async (req, res) => {
 });
 
 
-USER_API.delete('/users/:id', basicAuthMiddleware, async (req, res) => {
+USER_API.delete('/users/:id', async (req, res) => {
     const userId = req.params.id;
 
     console.log('Deleting user with ID:', userId);

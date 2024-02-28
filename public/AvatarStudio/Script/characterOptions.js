@@ -10,6 +10,28 @@ export class TCharacterOptions extends THREE.Object3D {
         const loader = new GLTFLoader();
         let activeEyebrow = null;
         let activeType = null;
+        const localBrows = localStorage.getItem("browtype");
+        if(localBrows !== null){
+            avatarFeatures.browType = localBrows;
+            activeType = avatarFeatures.browType;
+            if (activeType == 1) {
+                loader.load("AvatarStudio/Media/eyebrows.gltf", (gltfModel) => {
+                    gltfModel.scene.position.set(0, 0, 0);
+                    activeType = 1;
+                    avatarFeatures.browType = activeType;
+                    this.add(gltfModel.scene);
+                    activeEyebrow = gltfModel.scene;
+                });
+            } else {
+                loader.load("AvatarStudio/Media/eyebrows-1.gltf", (gltfModel) => {
+                    gltfModel.scene.position.set(0, 0, 0);
+                    activeType = 2;
+                    avatarFeatures.browType = activeType;
+                    this.add(gltfModel.scene);
+                    activeEyebrow = gltfModel.scene;
+                });
+            }
+        }
 
         const loadEyebrowsButton = document.getElementById('loadEyebrowsButton');
 

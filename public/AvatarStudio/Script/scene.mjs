@@ -18,7 +18,10 @@ export function TinitialiseScene(anAvatar) {
     let scene, camera, renderer, modelMaterial, eyeMaterial, hairMaterial, skinMaterial;
     scene = new THREE.Scene();
 
+    let centerX = window.innerWidth / 2 - 150; // Assuming each GUI panel has a width of 300px
 
+    // Define the initial position for the GUI
+    const guiPosition = { x: centerX, y: 10 }; // Adjust 'y' as needed
     //---------------gradient Background & color -----------------------
 
     let hexValue = "ffffff";
@@ -52,7 +55,6 @@ export function TinitialiseScene(anAvatar) {
     const localHairColor = localStorage.getItem("haircolor");
     const localEyeColor = localStorage.getItem("eyecolor");
     const localSkinColor = localStorage.getItem("skincolor");
-    const localBrows = localStorage.getItem("browtype");
 
 
     if (localHairColor !== null) {
@@ -73,19 +75,12 @@ export function TinitialiseScene(anAvatar) {
     } else {
         skinMaterial = new THREE.MeshBasicMaterial({ color: colorOfCube });
     }
-    if(localBrows !== null){
-        avatarFeatures.browType = localBrows;
-    }
+
 
     //-------------functions-------------------------------
 
     function guiControls() {
         const gui = new dat.GUI();
-
-        const centerX = window.innerWidth / 2 - 150; // Assuming each GUI panel has a width of 300px
-
-        // Define the initial position for the GUI
-        const guiPosition = { x: centerX, y: 10 }; // Adjust 'y' as needed
 
         // Use dat.GUI's `domElement` property to set the position
         gui.domElement.style.position = 'absolute';
@@ -149,6 +144,7 @@ export function TinitialiseScene(anAvatar) {
     }
 
     function windowResized() {
+        centerX = window.innerWidth / 2 - 150;
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
