@@ -18,12 +18,6 @@ class DBManager {
         };
     }
 
-    async test() {
-        const client = new pg.Client(this.#credentials);
-        await client.connect();
-        await client.end()
-    }
-
     async updateUser(user) {
 
         const client = new pg.Client(this.#credentials);
@@ -226,9 +220,9 @@ class DBManager {
 let connectionString = process.env.ENVIORMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 
 // We are using an enviorment variable to get the db credentials 
-if (connectionString == undefined) {
+/* if (connectionString == undefined) {
     throw ("You forgot the db connection string");
-}
+} */
 
 export default new DBManager(connectionString);
 

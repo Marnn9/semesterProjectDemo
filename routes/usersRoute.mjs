@@ -3,7 +3,8 @@ import express from 'express';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
-import { basicAuthMiddleware, encrypt, validatePas } from '../modules/middleWare.mjs';
+import { basicAuthMiddleware} from '../modules/middleWare.mjs';
+import {encrypt, validatePas } from "../modules/authentication.mjs"
 import DBManager from "../modules/storageManager.mjs"
 
 

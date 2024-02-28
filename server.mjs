@@ -7,11 +7,6 @@ import printDeveloperStartupImportantInformationMSG from "./modules/developHelpe
 
 printDeveloperStartupImportantInformationMSG();
 
-import DBManager from "./modules/storageManager.mjs";
-
-await DBManager.test();
-
-console.log("DB Connection sting ") //must be deleted when the connection is proven ok not including the last statement for he actual object
 // Creating an instance of the server
 const server = express();
 // Selecting a port for the server to use.

@@ -37,7 +37,7 @@ METHOD: PUT
 Expects: JSON
 Returns: JSON
 
-optinal fields {name, email, password}. id is also sendt with the request.
+optional fields {name, email, password}. id is also sendt with the request.
 Checks if the user exists and if the password is to be reset or the same as the one in the database. 
 response is {name, email, pswHash, id} with the updated data.
 
@@ -49,7 +49,7 @@ Expects: JSON
 Returns: JSON
 
 finds the logged in user and the avatar Id connected to them, and saves the changes to the avatar table at the given avatarId. 
-response Avatar : {aHairColor: hexvalue, anEyeColor: hexvalue, aSkinColor: hexvalue, aBrowType: integer}
+response Avatar : {aHairColor, anEyeColor, aSkinColor, aBrowType}
 
 DELETE  /users/:id -> returns the data of the deleted user. responds with 404 not found if the user has no id.
 
@@ -58,4 +58,4 @@ METHOD: DELETE
 Expects: JSON
 Returns: JSON
 
-if there is a user logged in with, the user with the same id is deleted in the database. 
+if there is a user logged in, the user with the same id is deleted in the database. 
