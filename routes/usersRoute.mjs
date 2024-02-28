@@ -152,7 +152,7 @@ USER_API.post('/avatar', async (req, res) => {
         await DBManager.addAvatar(avatar, loggedInUser);
         res.status(HttpCodes.successfulResponse.Ok).json(avatar);
     } else if (avatar !== null && existingUser.anAvatarId !== null) {
-        const updatedAvatar  = await DBManager.updateAvatar(avatar, existingUser.anAvatarId);
+        const updatedAvatar = await DBManager.updateAvatar(avatar, existingUser.anAvatarId);
         res.status(HttpCodes.successfulResponse.Ok).json(updatedAvatar);
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
@@ -188,14 +188,6 @@ USER_API.delete('/users/:id', async (req, res) => {
 USER_API.use((err, req, res, next) => {
     console.error(err);
 
-    // Customize the message and position as needed
-    const errorMessage = `An error occurred: ${err.message}`;
-    const errorPosition = { top: '10px', left: '10px' };
-
-    // Use the client-side error handling function
-    //displayMsg(errorMessage, errorPosition);
-
-    // Send an appropriate response to the client
     res.status(500).json({ error: 'Internal Server Error' });
 });
 

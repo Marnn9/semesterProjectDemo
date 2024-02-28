@@ -134,11 +134,9 @@ class DBManager {
         } catch (error) {
             console.error(error);
             throw error;
-            //TODO : Error handling?? Remember that this is a module septate from your server 
         } finally {
             client.end();
         }
-
     }
 
     async addAvatar(avatar, userId) {
@@ -214,7 +212,6 @@ class DBManager {
             return avatar;
         } catch (error) {
             console.error('Error in getAvatar:', error);
-            // TODO: Handle errors appropriately
         } finally {
             client.end();
         }
