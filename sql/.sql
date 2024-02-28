@@ -72,3 +72,5 @@ UPDATE public."anAvatar"
 --delete
 DELETE FROM public."anAvatar"
 	WHERE <condition>;
+
+    --to bachelor add the avatar as a jason so it doesn have to may columns, save the json as text in database.

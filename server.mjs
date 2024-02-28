@@ -37,6 +37,7 @@ server.get("/", (req, res, next) => {
     res.status(200).send(JSON.stringify({ msg: "Server ok?" })).end();
 });
 
+//server.use(errorMiddleware);
 // Start the server 
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));

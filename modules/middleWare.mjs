@@ -2,7 +2,7 @@
 import { createHmac } from 'crypto';
 import HttpCodes from './httpConstants.mjs';
 
-
+//middleware must have req, res, and next, for error middleware the err parameter must be present
 //this must be fixed everyone can delete
 export function basicAuthMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
