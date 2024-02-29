@@ -59,3 +59,4 @@ Expects: JSON
 Returns: JSON
 
 if there is a user logged in, the user with the same id is deleted in the database. 
+responds with {msg}
