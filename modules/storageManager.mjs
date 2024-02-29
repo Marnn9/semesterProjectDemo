@@ -18,12 +18,6 @@ class DBManager {
         };
     }
 
-    async test() {
-        const client = new pg.Client(this.#credentials);
-        await client.connect();
-        await client.end()
-    }
-
     async updateUser(user) {
 
         const client = new pg.Client(this.#credentials);
@@ -32,19 +26,16 @@ class DBManager {
             await client.connect();
             const output = await client.query(`Update "public"."Users" set "${this.#dbTableNames.user.name}" = $1, "${this.#dbTableNames.user.email}" = $2, "${this.#dbTableNames.user.password}" = $3 where id = $4;`, [user.name, user.email, user.pswHash, user.id]);
 
-            //TODO Did we update the user?
-
             if (output.rows.length === 1) {
-                // We stored the user in the DB.
                 user.id = output.rows[0].id;
             }
+            return user;
+
         } catch (error) {
-            //TODO : Error handling?? Remember that this is a module seperate from your server 
         } finally {
             client.end();
         }
 
-        return user;
     }
 
     async getUserByIdentifyer(anIdetifyer) {
@@ -85,7 +76,6 @@ class DBManager {
             await client.connect();
             const output = await client.query('DELETE FROM "public"."Users" WHERE id = $1;', [anId]);
 
-            // Check if the user got deleted
             if (output.rowCount === 1) {
                 console.log(`User with ID ${anId} deleted.`);
             } else {
@@ -94,9 +84,8 @@ class DBManager {
 
         } catch (error) {
             console.error(error);
-            // TODO: Error handling?? Remember that this is a module separate from your server 
         } finally {
-            client.end(); // Always disconnect from the database.
+            client.end(); 
         }
     }
     async createUser(user) {
@@ -108,15 +97,14 @@ class DBManager {
             const output = await client.query(`INSERT INTO "public"."Users"("${this.#dbTableNames.user.name}", "${this.#dbTableNames.user.email}", "${this.#dbTableNames.user.password}") VALUES($1::Text, $2::Text, $3::Text) RETURNING id;`, [user.name, user.email, user.pswHash]);
 
             if (output.rows.length == 1) {
-                // We stored the user in the DB.
                 user.id = output.rows[0].id;
             }
 
         } catch (error) {
             console.error(error);
-            //TODO : Error handling?? Remember that this is a module septate from your server 
+         
         } finally {
-            client.end(); // Always disconnect from the database.
+            client.end(); 
         }
         return user;
     }
@@ -134,7 +122,6 @@ class DBManager {
         } catch (error) {
             console.error(error);
             throw error;
-            //TODO : Error handling?? Remember that this is a module septate from your server 
         } finally {
             client.end();
         }
@@ -226,9 +213,9 @@ class DBManager {
 let connectionString = process.env.ENVIORMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 
 // We are using an enviorment variable to get the db credentials 
-if (connectionString == undefined) {
+/* if (connectionString == undefined) {
     throw ("You forgot the db connection string");
-}
+} */
 
 export default new DBManager(connectionString);
 
