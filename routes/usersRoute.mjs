@@ -3,7 +3,8 @@ import express from 'express';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs'; // Import your User class
 import SuperLogger from '../modules/SuperLogger.mjs';
-import { basicAuthMiddleware, encrypt, validatePas } from '../modules/middleWare.mjs';
+import { basicAuthMiddleware } from '../modules/middleWare.mjs';
+import { encrypt, validatePas } from "../modules/authentication.mjs"
 import DBManager from "../modules/storageManager.mjs"
 
 
@@ -41,6 +42,21 @@ USER_API.get('/users', async (req, res, next) => {
     }
 });
 
+USER_API.get('/avatar/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const avatar = await DBManager.getAvatar(id);
+        if (avatar !== null){
+            res.status(HttpCodes.successfulResponse.Ok).json(avatar);
+        }else {
+            res.status(HttpCodes.serverSideResponse.NotFound).json({msg: 'no avatar found'});
+        } 
+    } catch (error) {
+        console.error('Something went wrong finding avatar', error);
+        res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
+    }
+});
+
 USER_API.post('/users', async (req, res, next) => {
     try {
         const { name, email } = req.body;
@@ -58,7 +74,7 @@ USER_API.post('/users', async (req, res, next) => {
                 user.email = email;
                 user.pswHash = password;
                 user = await user.save();
-                res.status(HttpCodes.successfulResponse.Ok).json('New user created');
+                res.status(HttpCodes.successfulResponse.Ok).json({ msg: 'New user created' });
             } else {
                 res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: 'A user with this email already exists' });
             }
@@ -106,37 +122,41 @@ USER_API.post('/login', async (req, res, next) => {
 });
 
 USER_API.put('/users/:id', async (req, res) => {
-    const userId = req.params.id;
-    const { name, email } = req.body;
-    let password = req.body.password;
+    try {
+        const userId = req.params.id;
+        const { name, email } = req.body;
+        let password = req.body.password;
 
-    let user = new User();
-    const foundUser = await user.findByIdentifyer(userId);
+        let user = new User();
+        const foundUser = await user.findByIdentifyer(userId);
 
-    const checkMail = new User();
-    const existingMail = await checkMail.findByIdentifyer(email);
-    if (existingMail === null || email === foundUser.uEmail) {
-        if (password === foundUser.password) {
-            password = password;
+        const checkMail = new User();
+        const existingMail = await checkMail.findByIdentifyer(email);
+        if (existingMail === null || email === foundUser.uEmail) {
+            if (password === foundUser.password) {
+                password = password;
+            } else {
+                password = encrypt(password);
+            }
+
+            if (userId && foundUser !== null) {
+                // Update user data
+                user.name = name;
+                user.email = email;
+                user.pswHash = password;
+                user.id = userId;
+
+                user = await user.save();
+
+                res.status(HttpCodes.successfulResponse.Ok).json(user);
+            } else {
+                res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+            }
         } else {
-            password = encrypt(password);
+            res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: 'A user with this email already exists' });
         }
-
-        if (userId && foundUser !== null) {
-            // Update user data
-            user.name = name;
-            user.email = email;
-            user.pswHash = password;
-            user.id = userId;
-
-            user = await user.save();
-
-            res.status(HttpCodes.successfulResponse.Ok).json(user);
-        } else {
-            res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
-        }
-    } else {
-        res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: 'A user with this email already exists' });
+    } catch (error) {
+        //add some code here
     }
 });
 
@@ -174,7 +194,7 @@ USER_API.delete('/users/:id', async (req, res) => {
             // Call the deleteUser method, not deletedUser
             deleteUser = await deleteUser.delete(userId);
 
-            res.status(HttpCodes.successfulResponse.Ok).json(deleteUser);
+            res.status(HttpCodes.successfulResponse.Ok).json({ msg: 'user with id' + userId + 'deleted' });
         } catch (error) {
             console.error('Error deleting user:', error);
             res.status(HttpCodes.InternalServerError).json({ error: 'Internal Server Error' });

@@ -70,16 +70,10 @@
     <script type="module">
         import * as main from "./AvatarStudio/Script/main.mjs";
         import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
-        
+
         /* -----------clear local storage------------*/
         localStorage.clear();
         /* -----------clear localstorage end---------*/
-        let usersData = null;
-
-        let loggedInId = null;
-        let loggedInEmail = null;
-        let loggedInName = null;
-        let loggedInPassword = null;
 
         const url = 'user/users';
         const avatarUrl = "user/avatar";
@@ -88,12 +82,14 @@
         const myAccountBtn = document.getElementById('myAccountBtn');
         const bntContainerLoggedIn = document.getElementById('bntContainerLoggedIn');
         const editUserForm = document.getElementById('editUser');
+        const loginForms = document.getElementById('loginForms');
         const avatarStudioEvents = document.getElementById('avatarStudioEvents');
         const deleteBtn = document.getElementById('deleteUserBtn');
 
         const logOutUser = document.getElementById('logOutUser');
         logOutUser.addEventListener("click", () => {
             localStorage.clear();
+            sessionStorage.clear();
             window.location.reload();
         })
 
@@ -116,6 +112,60 @@
             saveAvatar();
         });
 
+        async function loginUser() {
+            // Get user credentials from the input fields
+            const email = document.getElementById('inpEmailLogin').value;
+            const password = document.getElementById('inpPasswordLogin').value;
+
+            const user = { email, password };
+
+            try {
+                const response = await fetch('user/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    console.log('Login successful:', data);
+                    displayMsg("Successful login", 'green');
+
+                    sessionStorage.setItem("loggedInId", data.id);
+                    sessionStorage.setItem("loggedInEmail", data.email);
+                    sessionStorage.setItem("loggedInName", data.name);
+                    sessionStorage.setItem("loggedInPassword", data.paswHash);
+
+                    if (data.avatar !== null) {
+                        localStorage.setItem('haircolor', data.avatar.hairColor);
+                        localStorage.setItem('eyecolor', data.avatar.eyeColor);
+                        localStorage.setItem('skincolor', data.avatar.skinColor);
+                        localStorage.setItem('browtype', data.avatar.eyeBrowType);
+                        sessionStorage.setItem('avatarId', data.avatar.avatarId);
+                    }
+                    await loggedInShowAvatar();
+                    window.location.reload();
+                } else {
+                    console.error(`Error: ${response.status} - ${data.error}`);
+                    displayMsg(data.error, 'red')
+                }
+
+            } catch (error) {
+                console.error('Error during login:', error);
+                connectionLost(error);
+                // Handle the error or display a message to the user
+            }
+        }
+
+        const loggedInId = sessionStorage.getItem("loggedInId");
+        const loggedInEmail = sessionStorage.getItem("loggedInEmail");
+        const loggedInName = sessionStorage.getItem("loggedInName");
+        const loggedInPassword = sessionStorage.getItem("loggedInPassword");
+
+        await loggedInShowAvatar();
+
         async function saveAvatar() {
             try {
                 avatarFeatures.loggedInUser = loggedInId;
@@ -126,9 +176,11 @@
                     },
                     body: JSON.stringify(avatarFeatures),
                 });
-
+                const data = await response.json();
                 if (response.ok) {
+
                     displayMsg("Saved", 'green');
+                    console.log('Saved:', data);
                 }
             } catch (error) {
                 console.error("Bad Input", error);
@@ -156,10 +208,11 @@
                     },
                     body: JSON.stringify(user),
                 })
+                const data = await response.json();
 
                 if (response.ok) {
                     window.location.reload();
-                    displayAllUsers(user)
+                    console.log(data)
                 } else {
                     const errorData = await response.json();
                     console.error(`Error: ${response.status} - ${errorData.error}`);
@@ -176,54 +229,7 @@
             loginUser()
         });
 
-        async function loginUser() {
-            // Get user credentials from the input fields
-            const email = document.getElementById('inpEmailLogin').value;
-            const password = document.getElementById('inpPasswordLogin').value;
-
-            const user = { email, password };
-
-            try {
-                const response = await fetch('user/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(user),
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    console.log('Login successful:', data);
-
-                    displayMsg("Successful login", 'green');
-
-                    myAccountBtn.style.display = "block";
-
-                    loggedInId = data.id;
-                    loggedInEmail = data.email;
-                    loggedInName = data.name;
-                    loggedInPassword = data.paswHash;
-
-                    if (data.avatar !== null) {
-                        localStorage.setItem('haircolor', data.avatar.hairColor);
-                        localStorage.setItem('eyecolor', data.avatar.eyeColor);
-                        localStorage.setItem('skincolor', data.avatar.skinColor);
-                        localStorage.setItem('browtype', data.avatar.eyeBrowType);
-                    }
-                    showAvatarStudio();
-                } else {
-                    console.error(`Error: ${response.status} - ${data.error}`);
-                    displayMsg(data.error, 'red')
-                }
-
-            } catch (error) {
-                console.error('Error during login:', error);
-                // Handle the error or display a message to the user
-            }
-        }
-
-        function displayLoggedInUserEdit() {
+        function displayLoggedinUserData() {
             document.getElementById('inpUnameEdit').placeholder = loggedInName;
             document.getElementById('inpEmailEdit').placeholder = loggedInEmail;
         }
@@ -233,12 +239,11 @@
             if (editUserForm.style.display === "none") {
                 editUserForm.style.display = 'block';
                 bntContainerLoggedIn.style.display = "block";
-                displayLoggedInUserEdit();
+                displayLoggedinUserData();
             } else {
                 editUserForm.style.display = "none";
                 bntContainerLoggedIn.style.display = "none";
             }
-
         })
 
         editUserForm.addEventListener('submit', async (event) => {
@@ -299,35 +304,71 @@
         })
 
         async function deleteUser() {
-
             const deleteConfirm = confirm("Are you sure you want to delete the user?");
 
             if (deleteConfirm && loggedInId) {
-                fetch(url + "/" + loggedInId, {
-                    method: 'DELETE',
-                })
-                    .then(data => {
+                try {
+                    const response = await fetch(url + "/" + loggedInId, {
+                        method: 'DELETE',
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
                         console.log('Deleted user:', data);
                         localStorage.clear();
                         window.location.reload();
-                    })
-                    .catch(error => {
-                        console.error('Error editing user:', error);
-                    });
+                    } else {
+                        console.error(`Error: ${response.status} - ${data.error}`);
+                        displayMsg(data.error, 'red')
+                    }
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                }
             } else if (!deleteConfirm) {
-                return;
+                displayMsg("deleting canceled", 'orange');
             }
             else {
-                //displayMsg("Missing data, no user selected.")
+                return;
             }
         }
 
-        function showAvatarStudio() {
-            const loginForms = document.getElementById('loginForms');
+        async function loggedInShowAvatar() {
 
-            loginForms.style.display = 'none';
-            main.loadScene();
-            avatarStudioEvents.style.display = 'block';
+            const loggedInId = sessionStorage.getItem("loggedInId");
+            const loggedInEmail = sessionStorage.getItem("loggedInEmail");
+            const loggedInName = sessionStorage.getItem("loggedInName");
+            const loggedInPassword = sessionStorage.getItem("loggedInPassword");
+            const avatarId = sessionStorage.getItem("avatarId");
+
+            try {
+                const response = await fetch(avatarUrl + "/" + avatarId, {
+                    method: 'GET',
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem("haircolor", data.hairColor);
+                    localStorage.setItem("eyecolor", data.eyeColor);
+                    localStorage.setItem("skincolor", data.skinColor);
+                    localStorage.setItem("browtype", data.eyeBrowType);
+
+                } else {
+                    console.error(`Error: ${response.status} - ${data.error}`);
+                    displayMsg(data.error, 'red')
+                }
+
+            } catch (error) {
+                console.error('Error deleting user:', error);
+            }
+
+            if (loggedInId && loggedInEmail && loggedInName && loggedInPassword !== null) {
+
+                myAccountBtn.style.display = "block";
+                loginForms.style.display = 'none';
+                main.loadScene();
+                avatarStudioEvents.style.display = 'block';
+            } else {
+                return;
+            }
         }
 
         function displayCreateNewUser() {
@@ -367,6 +408,13 @@
             setTimeout(() => {
                 document.body.removeChild(messageDisplay);
             }, 5000);
+        }
+
+        function connectionLost(error) {
+            if (error.message && error.message.includes('Failed to fetch')) {
+                alert("Connection lost, this page will now be refreshed");
+                window.location.reload();
+            }
         }
 
 
