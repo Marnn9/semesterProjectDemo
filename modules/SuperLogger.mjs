@@ -1,7 +1,8 @@
+
 import Chalk from "chalk";
 import { HTTPMethods } from "./httpConstants.mjs"
-import fs from "fs/promises";
-import { Console } from "console";
+import fs from "fs/promises"
+
 //#region  Construct for decorating output.
 
 let COLORS = {}; // Creating a lookup tbl to avoid having to use if/else if or switch. 
@@ -26,13 +27,13 @@ const colorize = (method) => {
 
 class SuperLogger {
 
-    // These are arbetrary values to make it possible for us to sort our log messages. 
+    // These are arbetrary values to make it possible for us to sort our logg messages. 
     static LOGGING_LEVELS = {
         ALL: 0,         // We output everything, no limits
-        VERBOSE: 5,     // We output a lot, but not 
+        VERBOSE: 5,     // We output a lott, but not 
         NORMAL: 10,     // We output a moderate amount of messages
-        IMPORTANT: 100, // We output just significant messages
-        CRITICAL: 999    // We output only errors. 
+        IMPORTANT: 100, // We output just siginfican messages
+        CRTICAL: 999    // We output only errors. 
     };
 
     // What level of messages should we be logging.
@@ -52,7 +53,7 @@ class SuperLogger {
     static instance = null;
 
     constructor() {
-        // This constructor will always return a reference to the first instance created. 
+        // This constructor will allways return a refrence to the first instance created. 
         if (SuperLogger.instance == null) {
             SuperLogger.instance = this;
             this.#loggers = [];
@@ -62,18 +63,19 @@ class SuperLogger {
     }
     //#endregion
 
+    static log(msg, logLevl = SuperLogger.LOGGING_LEVELS.NORMAL) {
 
-    static log(msg, logLvl = SuperLogger.LOGGING_LEVELS.NORMAL) {
         let logger = new SuperLogger();
-        if (logger.#globalThreshold >= logLvl) {
+        if (logger.#globalThreshold > logLevl) {
             return;
         }
 
-        logger.writeToLog(msg);
+        logger.#writeToLog(msg);
     }
 
+
     // This is our automatic logger, it outputs at a "normal" level
-    // It is just a convenient wrapper around the more generic createLimitedRequestLogger function
+    // It is just a convinent wrapper around the more generic createLimitedRequestLogger function
     createAutoHTTPRequestLogger() {
         return this.createLimitedHTTPRequestLogger({ threshold: SuperLogger.LOGGING_LEVELS.NORMAL });
     }
@@ -88,12 +90,12 @@ class SuperLogger {
         // Returning an anonymous function that binds local scope.
         return (req, res, next) => {
 
-            // If the threshold provided is less then the global threshold, we do not log
+            // If the threshold provided is less then the global threshold, we do not logg
             if (this.#globalThreshold > threshold) {
                 return;
             }
 
-            // Finally we parse our request on to the method that is going to writ the log msg.
+            // Finaly we parse our request on to the method that is going to writ the log msg.
             this.#LogHTTPRequest(req, res, next);
         }
 
@@ -108,30 +110,21 @@ class SuperLogger {
 
         // TODO: This is just one simple thing to create structure and order. Can you do more?
         type = colorize(type);
-        console.log(when, type, path);
+        this.#writeToLog([when, type, path].join(" "));
 
         // On to the next handler function
         next();
     }
 
-    #writeToLog (msg){
+    #writeToLog(msg) {
 
+        msg += "\n";
         console.log(msg);
-
-        fs.appendFile("./log.txt", msg, (err) => {
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              };
-
-              const todaysDate = Date.toLocaleTimeString('de-DE', options)
-
-        });
+        ///TODO: The files should be based on current date.
+        // ex: 300124.log
+        fs.appendFile("./log.txt", msg, { encoding: "utf8" }, (err) => { });
     }
-
 }
 
 
-export default SuperLogger;
+export default SuperLogger

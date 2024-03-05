@@ -35,8 +35,8 @@
             a user? login here</p>
     </div>
 
-    <ul id="userList"></ul>
-
+    <ul id="userList" class="adminItem"></ul>
+    
     <form class="form" id="editUser" style="display: none;">
         <h2>Edit your user</h2> <br><br>
         <input type="text" class="input" name="username" id="inpUnameEdit" placeholder="username">
@@ -47,14 +47,12 @@
 
     <div id="bntContainerLoggedIn" class="btnContainer" style="display: none;">
         <button class="UserBtn" id="logOutUser">Log out</button>
+        <button class="UserBtn" id="displayUsers" style="display: none;">display Users</button> 
         <button class="deleteUserBtn" id="deleteUserBtn">Delete user</button>
-
     </div>
 
-    <div id="avatarStudioEvents" style="display: none;">
-        <button id="mainBtn" class="globalBtn">Share</button>
-        <button id="exitBtn" class="globalBtn">X</button>
-        <button id="questionBtn" class="globalBtn">?</button>
+    <div id="avatarStudioEvents" class="adminItem" style="display: none;">
+        <button id="mainBtn" class="globalBtn">&#10150</button>
         <button id="checkBtn" class="globalBtn">&#10004</button>
 
         <div id="choiceMenu">
@@ -67,14 +65,26 @@
         </div>
     </div>
 
+
+    <!-- templates -->
+<!-- the page should not reload so try to find a way to get teh users session stored ... etc.  -->
+<!-- <div id="head"></div>
+<div id="content"></div> -->
+   <!--  <template id="loginTemplate">
+        <form class="form" id="login" onsubmit="return loginUserMain()">
+            <h2>Log in to create your character</h2> <br><br>
+            <input type="text" class="input" name="Email" id="inpEmailLogin" placeholder="email" required>
+            <input type="password" class="input" name="password" id="inpPasswordLogin" placeholder="password" required>
+            <button class="commitBtn" type="submit" id="loginBtn">login</button> <br><br>
+        </form>
+    </template> -->
+
+
+
     <script type="module">
         import * as main from "./AvatarStudio/Script/main.mjs";
         import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
-
-        /* -----------clear local storage------------*/
-        localStorage.clear();
-        /* -----------clear localstorage end---------*/
-
+       
         const url = 'user/users';
         const avatarUrl = "user/avatar";
 
@@ -85,6 +95,13 @@
         const loginForms = document.getElementById('loginForms');
         const avatarStudioEvents = document.getElementById('avatarStudioEvents');
         const deleteBtn = document.getElementById('deleteUserBtn');
+        const displayBtnAdmin = document.getElementById("displayUsers");
+
+        let selectedUserId = null;
+        let selectedUserName = null;
+        let selectedUserEpost = null;
+        let selectedUserPassword = null;
+
 
         const logOutUser = document.getElementById('logOutUser');
         logOutUser.addEventListener("click", () => {
@@ -112,10 +129,20 @@
             saveAvatar();
         });
 
+        const loginForm = document.getElementById('login');
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            loginUser();
+        });
+
+
         async function loginUser() {
             // Get user credentials from the input fields
             const email = document.getElementById('inpEmailLogin').value;
             const password = document.getElementById('inpPasswordLogin').value;
+
+            const authorization = new Headers();
+            authorization.append("Authorization", encode(email, password));
 
             const user = { email, password };
 
@@ -123,6 +150,7 @@
                 const response = await fetch('user/login', {
                     method: 'POST',
                     headers: {
+                        authorization,
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(user),
@@ -133,10 +161,12 @@
                     console.log('Login successful:', data);
                     displayMsg("Successful login", 'green');
 
-                    sessionStorage.setItem("loggedInId", data.id);
-                    sessionStorage.setItem("loggedInEmail", data.email);
-                    sessionStorage.setItem("loggedInName", data.name);
-                    sessionStorage.setItem("loggedInPassword", data.paswHash);
+                    //might only need to return a token that times out and give privileges that lets users/admin do different stuff
+
+                    sessionStorage.setItem("loggedInId", data.user.id);
+                    sessionStorage.setItem("loggedInEmail", data.user.email);
+                    sessionStorage.setItem("loggedInName", data.user.name);
+                    sessionStorage.setItem("loggedInPassword", data.user.paswHash);
 
                     if (data.avatar !== null) {
                         localStorage.setItem('haircolor', data.avatar.hairColor);
@@ -145,8 +175,12 @@
                         localStorage.setItem('browtype', data.avatar.eyeBrowType);
                         sessionStorage.setItem('avatarId', data.avatar.avatarId);
                     }
+
+                    if (data.user.role === "admin") {
+                        sessionStorage.setItem("role", data.user.role);
+                        showAdminFields();
+                    }
                     await loggedInShowAvatar();
-                    window.location.reload();
                 } else {
                     console.error(`Error: ${response.status} - ${data.error}`);
                     displayMsg(data.error, 'red')
@@ -159,12 +193,84 @@
             }
         }
 
+        if (sessionStorage.getItem("role") === "admin") {
+            showAdminFields();
+        }
+
+        displayBtnAdmin.addEventListener("click", async (event) => {
+            event.preventDefault();
+            displayAllUsers();
+        });
+
+        function showAdminFields() {
+            displayBtnAdmin.style.display = "inline-block";
+            const inpEmailEdit = document.getElementById("inpEmailEdit");
+            inpEmailEdit.style.display = "none";
+        }
+        async function displayAllUsers() {
+            try {
+                const userList = document.getElementById('userList');
+                userList.innerHTML = '';
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                console.log('Response from server:', data);
+
+                if (Array.isArray(data)) {
+                    data.forEach(user => displayUser(user));
+                } else {
+                    console.error('Invalid response from server:', data);
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error.message);
+                displayMsg(`Error fetching users: ${error.message}`);
+            }
+        }
+        // Function to select a user by ID
+        function selectUser(userId, userName, userEpost, userPassword) {
+            selectedUserId = userId;
+            selectedUserName = userName;
+            selectedUserEpost = userEpost;
+            selectedUserPassword = userPassword;
+        }
+
+        // Function to display a user in the user list
+        function displayUser(user) {
+            const userList = document.getElementById('userList');
+
+            const listItem = document.createElement('li');
+
+            // Check if user is undefined before accessing properties
+            if (user) {
+                listItem.innerHTML = `<i>User</i> : Id: <b>${user.id}</b>, Name: <b>${user.uName}</b>, E-mail: <b>${user.uEmail}</b>, AvatarId: <b>${user.anAvatarId}</b>, Role: <b>${user.role}</b>`;
+                userList.appendChild(listItem);
+                listItem.classList.add('listed_users');
+
+                listItem.addEventListener('click', () => {
+                    selectUser(user.id, user.uName, user.uEmail, user.password);
+                    const allListItems = document.querySelectorAll('.listed_users');
+                    allListItems.forEach(item => item.classList.remove('selected-user'));
+                    listItem.classList.add('selected-user');
+                });
+            } else {
+                listItem.textContent = 'User information not available';
+            }
+            userList.appendChild(listItem);
+        }
+
         const loggedInId = sessionStorage.getItem("loggedInId");
         const loggedInEmail = sessionStorage.getItem("loggedInEmail");
         const loggedInName = sessionStorage.getItem("loggedInName");
-        const loggedInPassword = sessionStorage.getItem("loggedInPassword");
+        const loggedInPassword = sessionStorage.getItem("loggedInPassword")
+        const loggedInRole = sessionStorage.getItem("role");
 
-        await loggedInShowAvatar();
+       await loggedInShowAvatar();
 
         async function saveAvatar() {
             try {
@@ -223,23 +329,13 @@
                 console.error(`Error during user Creation: ${error.message}`);
             }
         }
-        const loginForm = document.getElementById('login');
-        loginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            loginUser()
-        });
-
-        function displayLoggedinUserData() {
-            document.getElementById('inpUnameEdit').placeholder = loggedInName;
-            document.getElementById('inpEmailEdit').placeholder = loggedInEmail;
-        }
+       
 
         myAccountBtn.addEventListener("click", async (event) => {
             event.preventDefault();
             if (editUserForm.style.display === "none") {
                 editUserForm.style.display = 'block';
                 bntContainerLoggedIn.style.display = "block";
-                displayLoggedinUserData();
             } else {
                 editUserForm.style.display = "none";
                 bntContainerLoggedIn.style.display = "none";
@@ -306,7 +402,7 @@
         async function deleteUser() {
             const deleteConfirm = confirm("Are you sure you want to delete the user?");
 
-            if (deleteConfirm && loggedInId) {
+            if (deleteConfirm && loggedInId && (loggedInRole !== "admin")) {
                 try {
                     const response = await fetch(url + "/" + loggedInId, {
                         method: 'DELETE',
@@ -326,6 +422,22 @@
                 }
             } else if (!deleteConfirm) {
                 displayMsg("deleting canceled", 'orange');
+            } else if (loggedInRole === "admin") {
+                try {
+                    const response = await fetch(url + "/" + selectedUserId, {
+                        method: 'DELETE',
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        console.log('Deleted user:', data);
+                        localStorage.clear();
+                    } else {
+                        console.error(`Error: ${response.status} - ${data.error}`);
+                        displayMsg(data.error, 'red')
+                    }
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                }
             }
             else {
                 return;
@@ -357,7 +469,7 @@
                 }
 
             } catch (error) {
-                console.error('Error deleting user:', error);
+                console.error('Error showing Avatar user:' + error);
             }
 
             if (loggedInId && loggedInEmail && loggedInName && loggedInPassword !== null) {
@@ -416,6 +528,23 @@
                 window.location.reload();
             }
         }
+
+        function encode(anEmail, aPassword) {
+            const credentials = anEmail + ":" + aPassword;
+            return "basic " + btoa(credentials);
+        }
+
+        function saveImage() {
+            //logic for saving an image from the canvas
+        } 
+
+        /* fetch(url)
+        .then((response) => response.json)
+        .then((data) => {
+            console.log(data)
+        }).catch()//ha en catch her også
+        .catch((error) console.error("feil" , error));
+       */
 
 
     </script>

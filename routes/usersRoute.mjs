@@ -46,11 +46,11 @@ USER_API.get('/avatar/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
         const avatar = await DBManager.getAvatar(id);
-        if (avatar !== null){
+        if (avatar !== null) {
             res.status(HttpCodes.successfulResponse.Ok).json(avatar);
-        }else {
-            res.status(HttpCodes.serverSideResponse.NotFound).json({msg: 'no avatar found'});
-        } 
+        } else {
+            res.status(HttpCodes.serverSideResponse.NotFound).json({ msg: 'no avatar found' });
+        }
     } catch (error) {
         console.error('Something went wrong finding avatar', error);
         res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
@@ -90,10 +90,35 @@ USER_API.post('/users', async (req, res, next) => {
     }
 });
 
+//using :id then you can use req.params since all data is named id as a variable
 USER_API.post('/login', async (req, res, next) => {
+
+    //try to create and return a token
+
+    /* 
+    try{
+    const {existingUser, dbAvatar} = req.authCredentials;
+    let templateType = null;
+    
+    if (existingUser.role === 'admin'){
+        templateType = "adminContent";
+    }else{
+        templateType = "userContent";
+    }
+    const userData = {
+                user: existingUser,
+                avatar: dbAvatar,
+                template: templateType,
+            }
+    res.status(HttpCodes.successfulResponse.Ok).json(userData);
+    } catch (error) {
+        console.error("Error in login handler:", error);
+        res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
+    }
+    */
     try {
         const email = req.body.email;
-        const password = encrypt(req.body.password)
+        const password = encrypt(req.body.password);
 
         const user = new User();
         const existingUser = await user.findByIdentifyer(email);
@@ -104,13 +129,12 @@ USER_API.post('/login', async (req, res, next) => {
             if (existingUser.anAvatarId !== null) {
                 dbAvatar = await DBManager.getAvatar(existingUser.anAvatarId);
             }
-            res.status(HttpCodes.successfulResponse.Ok).json({
-                id: existingUser.id,
-                email: existingUser.uEmail,
-                name: existingUser.uName,
-                paswHash: existingUser.password,
+            const userData = {
+                user: existingUser,
                 avatar: dbAvatar,
-            });
+            }
+            res.status(HttpCodes.successfulResponse.Ok).json(userData); //edit this to return user not all data like this
+            //res.status(HttpCodes.successfulResponse.Ok).json({msg: server ok, data: userData})
         } else {
             // Authentication failed
             res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid email or password' });
@@ -194,7 +218,7 @@ USER_API.delete('/users/:id', async (req, res) => {
             // Call the deleteUser method, not deletedUser
             deleteUser = await deleteUser.delete(userId);
 
-            res.status(HttpCodes.successfulResponse.Ok).json({ msg: 'user with id' + userId + 'deleted' });
+            res.status(HttpCodes.successfulResponse.Ok).json({ msg: 'user with id ' + userId + ' deleted' });
         } catch (error) {
             console.error('Error deleting user:', error);
             res.status(HttpCodes.InternalServerError).json({ error: 'Internal Server Error' });

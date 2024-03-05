@@ -10,7 +10,7 @@ export default function printDeveprintDeveloperStartupImportantInformationMSGlop
     if (process.env.ENVIORMENT == "local") {
         SuperLogger.log(`Database connection  ${process.env.DB_CONNECTIONSTRING_LOCAL}`, SuperLogger.LOGGING_LEVELS.CRTICAL);
     } else {
-        SuperLogger.log(`Database connection  ${process.env.DB_CONNECTIONSTRING_LOCAL}`, SuperLogger.LOGGING_LEVELS.CRTICAL);
+        SuperLogger.log(`Database connection  ${process.env.DB_CONNECTIONSTRING_PROD}`, SuperLogger.LOGGING_LEVELS.CRTICAL);
     }
 
     if (process.argv.length > 2) {

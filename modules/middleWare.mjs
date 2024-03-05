@@ -1,32 +1,37 @@
 "use strict"
+import { encrypt, validatePas } from './authentication.mjs';
 import HttpCodes from './httpConstants.mjs';
 
+
 //middleware must have req, res, and next, for error middleware the err parameter must be present
-//this must be fixed everyone can delete
-export function basicAuthMiddleware(req, res, next) {
+
+export async function basicAuthMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
 
-    if (authHeader) {
+    if (authHeader != null) {
         const encodedCredentials = authHeader.split(' ')[1];
-        const credentials = Buffer.from(encodedCredentials, 'base64').toString('utf-8');
+        const credentials = Buffer.from(encodedCredentials).toString('base64');
         const [email, password] = credentials.split(':');
 
-        req.authCredentials = { email, password }; // Store credentials in the request object
-        return next();
+        const user = new User();
+        const existingUser = await user.findByIdentifyer(email);
+        if (existingUser !== null) {
+            validatePas(encrypt(password), existingUser.password);
+            let dbAvatar = null;
+            if (existingUser.anAvatarId !== null) {
+                dbAvatar = await DBManager.getAvatar(existingUser.anAvatarId);
+            }
+            req.authCredentials = { existingUser, dbAvatar }; // call this for the requested method in usersRoute
+            next();
+        } else {
+            res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid email or password' });
+        }
+    } else {
+        res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'no provided authentication data' });
     }
 
-    // Authentication failed, send a 401 Unauthorized response
-    res.set('WWW-Authenticate', 'Basic realm="Authentication Required"');
     res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Unauthorized' });
+    next();
 }
 
-/* function displayMsg(aMsg) {
-    const messageDisplay = document.createElement('div');
-    messageDisplay.innerHTML = aMsg;
-
-    document.body.appendChild(messageDisplay);
-
-    setTimeout(() => {
-        document.body.removeChild(messageDisplay);
-    }, 8000);
-} */
+//maybe add a new middleware for loading templates

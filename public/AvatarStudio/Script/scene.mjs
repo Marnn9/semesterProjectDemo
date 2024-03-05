@@ -27,10 +27,7 @@ export function TinitialiseScene(anAvatar) {
     let hexValue = "ffffff";
     const colorOfCube = "#" + hexValue;
 
-    const topColor = new THREE.Color(0xA8D1DF);
-    const bottomColor = new THREE.Color(0x294A5E);
-    const gradientTexture = new THREE.CanvasTexture(createGradientBackground(topColor, bottomColor));
-    scene.background = gradientTexture;
+    scene.background = new THREE.Color(0xC3D1C3);
 
 
     //----------------scene objects----------------------
@@ -150,21 +147,6 @@ export function TinitialiseScene(anAvatar) {
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    function createGradientBackground(topColor, bottomColor) {
-        const canvas = document.createElement('canvas');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const ctx = canvas.getContext('2d');
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, topColor.getStyle());
-        gradient.addColorStop(1, bottomColor.getStyle());
-
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        return canvas;
-    }
     render();
 
 }

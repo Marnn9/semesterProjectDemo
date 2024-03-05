@@ -9,8 +9,7 @@ class User {
         this.name;
         this.id;
     }
-
-    //maybe add the statement for publishing user to database
+   
     async save() {
         if (this.id == null) {
             return await DBManager.createUser(this);
