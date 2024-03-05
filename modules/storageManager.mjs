@@ -33,7 +33,7 @@ class DBManager {
 
         } catch (error) {
         } finally {
-            client.end();
+            await client.end();
         }
 
     }
@@ -65,7 +65,7 @@ class DBManager {
             console.error(`Error getting user by identifyer ${anIdetifyer}:`, error);
             throw error;
         } finally {
-            client.end();
+            await client.end();
         }
     }
 
@@ -85,7 +85,7 @@ class DBManager {
         } catch (error) {
             console.error(error);
         } finally {
-            client.end(); 
+            await client.end(); 
         }
     }
     async createUser(user) {
@@ -104,7 +104,7 @@ class DBManager {
             console.error(error);
          
         } finally {
-            client.end(); 
+            await client.end(); 
         }
         return user;
     }
@@ -123,7 +123,7 @@ class DBManager {
             console.error(error);
             throw error;
         } finally {
-            client.end();
+            await client.end();
         }
     }
 
@@ -161,7 +161,7 @@ class DBManager {
         } catch (error) {
             console.error('Error in addAvatar:', error);
         } finally {
-            client.end();
+            await client.end();
         }
 
         return avatar;
@@ -179,7 +179,7 @@ class DBManager {
         } catch (error) {
             console.error('Error in addAvatar:', error);
         } finally {
-            client.end();
+           await  client.end();
         }
         return avatar
     }
@@ -201,7 +201,7 @@ class DBManager {
         } catch (error) {
             console.error('Error in getAvatar:', error);
         } finally {
-            client.end();
+            await client.end();
         }
 
     }

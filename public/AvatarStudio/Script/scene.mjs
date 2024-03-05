@@ -40,6 +40,7 @@ export function TinitialiseScene(anAvatar) {
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.domElement.id = "sceneCanvas";
 
     document.body.appendChild(renderer.domElement);
     window.addEventListener('resize', windowResized);

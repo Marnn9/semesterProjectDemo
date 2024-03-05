@@ -36,7 +36,7 @@
     </div>
 
     <ul id="userList" class="adminItem"></ul>
-    
+
     <form class="form" id="editUser" style="display: none;">
         <h2>Edit your user</h2> <br><br>
         <input type="text" class="input" name="username" id="inpUnameEdit" placeholder="username">
@@ -47,7 +47,7 @@
 
     <div id="bntContainerLoggedIn" class="btnContainer" style="display: none;">
         <button class="UserBtn" id="logOutUser">Log out</button>
-        <button class="UserBtn" id="displayUsers" style="display: none;">display Users</button> 
+        <button class="UserBtn" id="displayUsers" style="display: none;">display Users</button>
         <button class="deleteUserBtn" id="deleteUserBtn">Delete user</button>
     </div>
 
@@ -67,10 +67,10 @@
 
 
     <!-- templates -->
-<!-- the page should not reload so try to find a way to get teh users session stored ... etc.  -->
-<!-- <div id="head"></div>
+    <!-- the page should not reload so try to find a way to get teh users session stored ... etc.  -->
+    <!-- <div id="head"></div>
 <div id="content"></div> -->
-   <!--  <template id="loginTemplate">
+    <!--  <template id="loginTemplate">
         <form class="form" id="login" onsubmit="return loginUserMain()">
             <h2>Log in to create your character</h2> <br><br>
             <input type="text" class="input" name="Email" id="inpEmailLogin" placeholder="email" required>
@@ -84,7 +84,7 @@
     <script type="module">
         import * as main from "./AvatarStudio/Script/main.mjs";
         import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
-       
+
         const url = 'user/users';
         const avatarUrl = "user/avatar";
 
@@ -135,25 +135,26 @@
             loginUser();
         });
 
+        const mainBtn = document.getElementById("mainBtn");
+        mainBtn.addEventListener("click", async (event) => {
+            event.preventDefault();
+            main.saveImage();
+        });
+
 
         async function loginUser() {
             // Get user credentials from the input fields
             const email = document.getElementById('inpEmailLogin').value;
             const password = document.getElementById('inpPasswordLogin').value;
-
-            const authorization = new Headers();
-            authorization.append("Authorization", encode(email, password));
-
-            const user = { email, password };
+            const authorization = encode(email, password);
 
             try {
                 const response = await fetch('user/login', {
                     method: 'POST',
                     headers: {
-                        authorization,
+                        'Authorization': authorization,
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(user),
                 });
 
                 const data = await response.json();
@@ -164,9 +165,9 @@
                     //might only need to return a token that times out and give privileges that lets users/admin do different stuff
 
                     sessionStorage.setItem("loggedInId", data.user.id);
-                    sessionStorage.setItem("loggedInEmail", data.user.email);
-                    sessionStorage.setItem("loggedInName", data.user.name);
-                    sessionStorage.setItem("loggedInPassword", data.user.paswHash);
+                    sessionStorage.setItem("loggedInEmail", data.user.uEmail);
+                    sessionStorage.setItem("loggedInName", data.user.uName);
+                    sessionStorage.setItem("loggedInPassword", data.user.password);
 
                     if (data.avatar !== null) {
                         localStorage.setItem('haircolor', data.avatar.hairColor);
@@ -264,17 +265,15 @@
             userList.appendChild(listItem);
         }
 
-        const loggedInId = sessionStorage.getItem("loggedInId");
-        const loggedInEmail = sessionStorage.getItem("loggedInEmail");
-        const loggedInName = sessionStorage.getItem("loggedInName");
-        const loggedInPassword = sessionStorage.getItem("loggedInPassword")
-        const loggedInRole = sessionStorage.getItem("role");
 
-       await loggedInShowAvatar();
+
+
+        await loggedInShowAvatar();
 
         async function saveAvatar() {
             try {
-                avatarFeatures.loggedInUser = loggedInId;
+
+                avatarFeatures.loggedInUser = checkStorage().loggedInId;
                 const response = await fetch(avatarUrl, {
                     method: 'POST',
                     headers: {
@@ -304,6 +303,7 @@
             const name = document.getElementById('inpUname').value;
             const email = document.getElementById('inpEmail').value;
             const password = document.getElementById('inpPassword').value;
+
             // Create a user object
             const user = { name, email, password };
             try {
@@ -329,7 +329,7 @@
                 console.error(`Error during user Creation: ${error.message}`);
             }
         }
-       
+
 
         myAccountBtn.addEventListener("click", async (event) => {
             event.preventDefault();
@@ -452,24 +452,27 @@
             const loggedInPassword = sessionStorage.getItem("loggedInPassword");
             const avatarId = sessionStorage.getItem("avatarId");
 
-            try {
-                const response = await fetch(avatarUrl + "/" + avatarId, {
-                    method: 'GET',
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    localStorage.setItem("haircolor", data.hairColor);
-                    localStorage.setItem("eyecolor", data.eyeColor);
-                    localStorage.setItem("skincolor", data.skinColor);
-                    localStorage.setItem("browtype", data.eyeBrowType);
+            if (avatarId != null) {
 
-                } else {
-                    console.error(`Error: ${response.status} - ${data.error}`);
-                    displayMsg(data.error, 'red')
+                try {
+                    const response = await fetch(avatarUrl + "/" + avatarId, {
+                        method: 'GET',
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        localStorage.setItem("haircolor", data.hairColor);
+                        localStorage.setItem("eyecolor", data.eyeColor);
+                        localStorage.setItem("skincolor", data.skinColor);
+                        localStorage.setItem("browtype", data.eyeBrowType);
+
+                    } else {
+                        console.error(`Error: ${response.status} - ${data.error}`);
+                        displayMsg(data.error, 'red')
+                    }
+
+                } catch (error) {
+                    console.error('Error showing Avatar user:' + error);
                 }
-
-            } catch (error) {
-                console.error('Error showing Avatar user:' + error);
             }
 
             if (loggedInId && loggedInEmail && loggedInName && loggedInPassword !== null) {
@@ -531,12 +534,22 @@
 
         function encode(anEmail, aPassword) {
             const credentials = anEmail + ":" + aPassword;
-            return "basic " + btoa(credentials);
+            return "Basic " + btoa(credentials);
         }
 
-        function saveImage() {
-            //logic for saving an image from the canvas
-        } 
+        function checkStorage() {
+            const loggedInId = sessionStorage.getItem("loggedInId");
+            const loggedInEmail = sessionStorage.getItem("loggedInEmail");
+            const loggedInName = sessionStorage.getItem("loggedInName");
+            const loggedInPassword = sessionStorage.getItem("loggedInPassword")
+            const loggedInRole = sessionStorage.getItem("role");
+
+            return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole };
+        }
+
+       
+
+
 
         /* fetch(url)
         .then((response) => response.json)

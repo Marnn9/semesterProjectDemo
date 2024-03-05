@@ -1,6 +1,8 @@
 "use strict"
 import { encrypt, validatePas } from './authentication.mjs';
 import HttpCodes from './httpConstants.mjs';
+import User from '../modules/user.mjs';
+import DBManager from "../modules/storageManager.mjs"
 
 
 //middleware must have req, res, and next, for error middleware the err parameter must be present
@@ -10,7 +12,7 @@ export async function basicAuthMiddleware(req, res, next) {
 
     if (authHeader != null) {
         const encodedCredentials = authHeader.split(' ')[1];
-        const credentials = Buffer.from(encodedCredentials).toString('base64');
+        const credentials = Buffer.from(encodedCredentials, 'base64').toString('utf-8');
         const [email, password] = credentials.split(':');
 
         const user = new User();
@@ -29,9 +31,8 @@ export async function basicAuthMiddleware(req, res, next) {
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'no provided authentication data' });
     }
-
-    res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Unauthorized' });
-    next();
 }
+
+
 
 //maybe add a new middleware for loading templates

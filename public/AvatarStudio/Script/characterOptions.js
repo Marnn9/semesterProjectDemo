@@ -16,7 +16,7 @@ export class TCharacterOptions extends THREE.Object3D {
             activeType = avatarFeatures.browType;
             if (activeType == 1) {
                 loader.load("AvatarStudio/Media/eyebrows.gltf", (gltfModel) => {
-                    gltfModel.scene.position.set(0, 0, 0);
+                    gltfModel.scene.position.set(0, 1, 2);
                     activeType = 1;
                     avatarFeatures.browType = activeType;
                     this.add(gltfModel.scene);
@@ -24,7 +24,7 @@ export class TCharacterOptions extends THREE.Object3D {
                 });
             } else {
                 loader.load("AvatarStudio/Media/eyebrows-1.gltf", (gltfModel) => {
-                    gltfModel.scene.position.set(0, 0, 0);
+                    gltfModel.scene.position.set(0, 1, 2);
                     activeType = 2;
                     avatarFeatures.browType = activeType;
                     this.add(gltfModel.scene);
@@ -42,7 +42,7 @@ export class TCharacterOptions extends THREE.Object3D {
             }
 
             loader.load("AvatarStudio/Media/eyebrows.gltf", (gltfModel) => {
-                gltfModel.scene.position.set(0, 0, 0);
+                gltfModel.scene.position.set(0, 1, 2);
                 activeType = 1;
                 avatarFeatures.browType = activeType;
                 this.add(gltfModel.scene);
@@ -60,7 +60,7 @@ export class TCharacterOptions extends THREE.Object3D {
                     this.remove(activeEyebrow);
                 }
 
-                gltfModel.scene.position.set(0, 0, 0);
+                gltfModel.scene.position.set(0, 1, 2);
                 activeType = 2;
                 avatarFeatures.browType = activeType;
                 this.add(gltfModel.scene);
