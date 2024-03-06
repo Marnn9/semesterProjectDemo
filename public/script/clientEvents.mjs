@@ -1,8 +1,8 @@
 "use strict"
-import * as functions from "./clientFunctions.mjs"
+import * as requests from "./clientRequests.mjs"
 
 const loginForm = document.getElementById('login');
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-            functions.loginUser();
+            requests.loginUser();
         });
