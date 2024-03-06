@@ -107,11 +107,11 @@ class SuperLogger {
         let type = req.method;
         const path = req.originalUrl;
         const when = new Date().toLocaleTimeString();
-
-        // TODO: This is just one simple thing to create structure and order. Can you do more?
-        type = colorize(type);
-        this.#writeToLog([when, type, path].join(" "));
-
+        if (!path.startsWith("/avatarStudio")) {
+            // TODO: This is just one simple thing to create structure and order. Can you do more?
+            type = colorize(type);
+            this.#writeToLog([when, type, path].join(" "));
+        }
         // On to the next handler function
         next();
     }

@@ -6,7 +6,7 @@ Expects: JSON
 Returns: JSON
 Requires: Authentication
 
-Creates a user, required fields {name,password,email,....}
+Creates a user, required fields {name,password,email}
 
 POST /users -> Adds a new user to the user/users endpoint. if a user with the given email exists it returns 422 Unprocessable Content. Also if one of the data fields is missing it returns 400
 
@@ -16,7 +16,7 @@ Expects: JSON
 Returns: JSON
 
 Creates a user, required fields {name, email, password}, password is encrypted when recieved. 
-Response is the 'user' if successful.
+Response : msg: " new user created" if successful.
 
 POST /login -> returns 401 Unautorised if the email or password does not exist in the database
 

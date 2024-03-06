@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Server app</title>
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="./script/clientEvents.mjs"></script>
 </head>
 
 <body>
@@ -14,7 +15,6 @@
     <div id="messageDisplayContainer"></div>
 
     <div id="loginForms">
-
         <form class="form" id="login">
             <h2>Log in to create your character</h2> <br><br>
             <input type="text" class="input" name="Email" id="inpEmailLogin" placeholder="email" required>
@@ -52,7 +52,7 @@
     </div>
 
     <div id="avatarStudioEvents" class="adminItem" style="display: none;">
-        <button id="mainBtn" class="globalBtn">&#10150</button>
+        <button id="mainBtn" class="globalBtn">&#8594</button>
         <button id="checkBtn" class="globalBtn">&#10004</button>
 
         <div id="choiceMenu">
@@ -96,6 +96,7 @@
         const avatarStudioEvents = document.getElementById('avatarStudioEvents');
         const deleteBtn = document.getElementById('deleteUserBtn');
         const displayBtnAdmin = document.getElementById("displayUsers");
+        const userList = document.getElementById('userList');
 
         let selectedUserId = null;
         let selectedUserName = null;
@@ -129,11 +130,11 @@
             saveAvatar();
         });
 
-        const loginForm = document.getElementById('login');
+        /* const loginForm = document.getElementById('login');
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             loginUser();
-        });
+        }); */
 
         const mainBtn = document.getElementById("mainBtn");
         mainBtn.addEventListener("click", async (event) => {
@@ -142,7 +143,7 @@
         });
 
 
-        async function loginUser() {
+        /* async function loginUser() {
             // Get user credentials from the input fields
             const email = document.getElementById('inpEmailLogin').value;
             const password = document.getElementById('inpPasswordLogin').value;
@@ -192,27 +193,35 @@
                 connectionLost(error);
                 // Handle the error or display a message to the user
             }
-        }
+        } */
 
         if (sessionStorage.getItem("role") === "admin") {
             showAdminFields();
         }
 
-        displayBtnAdmin.addEventListener("click", async (event) => {
-            event.preventDefault();
-            displayAllUsers();
-        });
+
 
         function showAdminFields() {
             displayBtnAdmin.style.display = "inline-block";
             const inpEmailEdit = document.getElementById("inpEmailEdit");
             inpEmailEdit.style.display = "none";
         }
+
+        let userListVisible = false;
+
+        displayBtnAdmin.addEventListener('click', async (event) => {
+            event.preventDefault();
+
+            if (userListVisible) {
+                hideUserList();
+            } else {
+                displayAllUsers();
+            }
+        });
+
         async function displayAllUsers() {
             try {
-                const userList = document.getElementById('userList');
-                userList.innerHTML = '';
-
+                userList.innerHTML = ' ';
                 const response = await fetch(url);
 
                 if (!response.ok) {
@@ -225,6 +234,7 @@
 
                 if (Array.isArray(data)) {
                     data.forEach(user => displayUser(user));
+                    showUserList();
                 } else {
                     console.error('Invalid response from server:', data);
                 }
@@ -232,6 +242,16 @@
                 console.error('Error fetching users:', error.message);
                 displayMsg(`Error fetching users: ${error.message}`);
             }
+        }
+
+        function showUserList() {
+            userList.style.display = 'grid';
+            userListVisible = true;
+        }
+
+        function hideUserList() {
+            userList.style.display = 'none';
+            userListVisible = false;
         }
         // Function to select a user by ID
         function selectUser(userId, userName, userEpost, userPassword) {
@@ -351,24 +371,25 @@
             let name = document.getElementById('inpUnameEdit').value;
             let email = document.getElementById('inpEmailEdit').value;
             let password = document.getElementById('inpPasswordEdit').value;
+            const loggedId = checkStorage().loggedInId;
 
             if (!name) {
-                name = loggedInName;
+                name = checkStorage().loggedInName;
             }
 
             if (!email) {
-                email = loggedInEmail;
+                email = checkStorage().loggedInEmail;
             }
 
             if (!password) {
-                password = loggedInPassword;
+                password = checkStorage().loggedInPassword;
             }
 
-            if (name && email && password && loggedInId) {
-                const editedUser = { email, loggedInId, name, password };
+            if (name && email && password && loggedId) {
+                const editedUser = { email, loggedId, name, password };
 
                 try {
-                    const response = await fetch(url + "/" + loggedInId, {
+                    const response = await fetch(url + "/" + loggedId, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -508,7 +529,7 @@
             }
 
         }
-        function displayMsg(aMsg, aColor) {
+        /* function displayMsg(aMsg, aColor) {
             const messageDisplayContainerId = "messageDisplayContainer";
             let messageDisplay = document.getElementById(messageDisplayContainerId);
 
@@ -530,12 +551,12 @@
                 alert("Connection lost, this page will now be refreshed");
                 window.location.reload();
             }
-        }
+        } */
 
-        function encode(anEmail, aPassword) {
+        /* function encode(anEmail, aPassword) {
             const credentials = anEmail + ":" + aPassword;
             return "Basic " + btoa(credentials);
-        }
+        } */
 
         function checkStorage() {
             const loggedInId = sessionStorage.getItem("loggedInId");
@@ -547,7 +568,7 @@
             return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole };
         }
 
-       
+
 
 
 

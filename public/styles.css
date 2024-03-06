@@ -43,8 +43,8 @@ button:hover {
     background-color: var(--mainBtnColor);
     color: rgb(255, 255, 255);
     width: 5em;
-    left: 3.5em;
-    bottom: 2em;
+    left: 7em;
+    bottom: 14em;
 
 }
 
@@ -52,7 +52,7 @@ button:hover {
     content: "Share ";
     width: 5.3em;
     height: 2.6em;
-    
+
 }
 
 #exitBtn {
@@ -184,6 +184,8 @@ button:hover {
         margin: auto;
         margin-top: 10px;
     }
+
+    
 }
 
 
@@ -214,6 +216,7 @@ button:hover {
         bottom: 18em;
         width: 2.5em;
     }
+
     #mainBtn {
         background-color: #EBAC78;
         color: rgb(255, 255, 255);
@@ -262,7 +265,7 @@ p {
     text-align: center;
 }
 
-.form input{
+.form input {
     margin-bottom: 3%;
 }
 
@@ -294,6 +297,7 @@ p {
 .listed_users {
     color: rgb(0, 0, 0);
     font-family: sans-serif;
+
 }
 
 .selected-user {
@@ -312,7 +316,7 @@ p {
     margin-left: 1%;
     margin-top: 1%;
     align-content: center;
-    
+
 }
 
 #myAccountBtn {
@@ -354,9 +358,10 @@ p {
 }
 
 /* -----admin---- */
-#userList{
+#userList {
     display: grid;
-    margin:auto;
+    justify-content: center;
+    width: 80%;
 }
 
 /* -------- Dark mode styles --------*/
