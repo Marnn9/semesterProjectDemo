@@ -1,94 +1,82 @@
 "use strict"
-import * as client from "./clientFunctions.mjs"
+import * as requests from "./clientRequests.mjs"
+import * as functions from "./functions.mjs"
+import * as main from "../AvatarStudio/Script/main.mjs";
+/*-------------HTML elements by ID-------------------- */
 
+const createUserText = document.getElementById('createUtext');
+const myAccountBtn = document.getElementById('myAccountBtn');
+const bntContainerLoggedIn = document.getElementById('bntContainerLoggedIn');
+const editUserForm = document.getElementById('editUser');
+const deleteBtn = document.getElementById('deleteUserBtn');
 
-        const createUserText = document.getElementById('createUtext');
-        const myAccountBtn = document.getElementById('myAccountBtn');
-        const bntContainerLoggedIn = document.getElementById('bntContainerLoggedIn');
-        const editUserForm = document.getElementById('editUser');
-        const loginForms = document.getElementById('loginForms');
-        const avatarStudioEvents = document.getElementById('avatarStudioEvents');
-        const deleteBtn = document.getElementById('deleteUserBtn');
-        const displayBtnAdmin = document.getElementById("displayUsers");
+/*------- Header Events ------ */
 
-        let selectedUserId = null;
+myAccountBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    if (editUserForm.style.display === "none") {
+        editUserForm.style.display = 'block';
+        bntContainerLoggedIn.style.display = "block";
+    } else {
+        editUserForm.style.display = "none";
+        bntContainerLoggedIn.style.display = "none";
+    }
+});
 
-        const logOutUser = document.getElementById('logOutUser');
-        logOutUser.addEventListener("click", () => {
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.reload();
-        })
+const toggleModeBtn = document.getElementById('toggleModeBtn');
+toggleModeBtn.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark-mode');
+});
 
-        const toggleModeBtn = document.getElementById('toggleModeBtn');
-        toggleModeBtn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark-mode');
-        })
+/* ------------ site content ----------------*/
 
-        const loginText = document.getElementById('loginText');
-        document.addEventListener('click', (event) => {
-            if (event.target === createUserText || event.target === loginText) {
-                event.preventDefault();
-                client.displayCreateNewUser();
-            }
-        });
+await requests.loggedInShowAvatar();
 
-        const saveBtn = document.getElementById("checkBtn");
-        saveBtn.addEventListener("click", async (event) => {
-            event.preventDefault();
-            client.saveAvatar();
-        });
+const loginForm = document.getElementById('login');
+loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    requests.loginUser();
+});
 
-        const loginForm = document.getElementById('login');
-        loginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            client.loginUser();
-        });
+const createForm = document.getElementById('create');
+createForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    requests.addUser()
+});
 
+const loginText = document.getElementById('loginText');
+document.addEventListener('click', (event) => {
+    if (event.target === createUserText || event.target === loginText) {
+        event.preventDefault();
+        functions.displayCreateNewUser();
+    }
+});
 
-        
+editUserForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    requests.sendEditUser();
+});
+const logOutUser = document.getElementById('logOutUser');
+logOutUser.addEventListener("click", () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.reload();
+});
 
-        if (sessionStorage.getItem("role") === "admin") {
-            client.showAdminFields();
-        }
+deleteBtn.addEventListener('click', async (event) => {
+    event.preventDefault();
+    requests.deleteUser();
+})
 
-        displayBtnAdmin.addEventListener("click", async (event) => {
-            event.preventDefault();
-            client.displayAllUsers();
-        });
-       
-        // Function to select a user by ID
-        const loggedInId = sessionStorage.getItem("loggedInId");
-        const loggedInEmail = sessionStorage.getItem("loggedInEmail");
-        const loggedInName = sessionStorage.getItem("loggedInName");
-        const loggedInPassword = sessionStorage.getItem("loggedInPassword")
-        const loggedInRole = sessionStorage.getItem("role");
+/* ------------avatar events----------------- */
+const saveBtn = document.getElementById("checkBtn");
+saveBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    requests.saveAvatar();
+});
 
-        const createForm = document.getElementById('create');
-        createForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            client.addUser()
-        });
-
-        myAccountBtn.addEventListener("click", async (event) => {
-            event.preventDefault();
-            if (editUserForm.style.display === "none") {
-                editUserForm.style.display = 'block';
-                bntContainerLoggedIn.style.display = "block";
-            } else {
-                editUserForm.style.display = "none";
-                bntContainerLoggedIn.style.display = "none";
-            }
-        })
-
-        editUserForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            client.sendEditUser();
-        })
-
-        deleteBtn.addEventListener('click', async (event) => {
-            event.preventDefault();
-            client.deleteUser();
-        })
-
-       
+const mainBtn = document.getElementById("mainBtn");
+mainBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    main.saveImage();
+});

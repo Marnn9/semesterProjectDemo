@@ -1,7 +1,7 @@
 // Import necessary modules and classes
 import express from 'express';
 import HttpCodes from '../modules/httpConstants.mjs';
-import User from '../modules/user.mjs'; // Import your User class
+import User from '../modules/user.mjs'; 
 import SuperLogger from '../modules/SuperLogger.mjs';
 import { basicAuthMiddleware } from '../modules/middleWare.mjs';
 import { encrypt, validatePas } from "../modules/authentication.mjs"
@@ -80,7 +80,6 @@ USER_API.post('/users', async (req, res, next) => {
             }
         } else {
             res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Invalid Input' });
-            //displayMsg("error: Missing data fields");
         }
     } catch (error) {
         console.error("Error in post handler:", error);
@@ -91,54 +90,14 @@ USER_API.post('/users', async (req, res, next) => {
 });
 
 //using :id then you can use req.params since all data is named id as a variable
-USER_API.post('/login', async (req, res, next) => {
-
-    //try to create and return a token
-
-    /* 
+USER_API.post('/login', basicAuthMiddleware, async (req, res, next) => {
     try{
-    const {existingUser, dbAvatar} = req.authCredentials;
-    let templateType = null;
-    
-    if (existingUser.role === 'admin'){
-        templateType = "adminContent";
-    }else{
-        templateType = "userContent";
-    }
+    const {dbAvatar, existingUser } = req.authCredentials;
     const userData = {
                 user: existingUser,
                 avatar: dbAvatar,
-                template: templateType,
             }
     res.status(HttpCodes.successfulResponse.Ok).json(userData);
-    } catch (error) {
-        console.error("Error in login handler:", error);
-        res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
-    }
-    */
-    try {
-        const email = req.body.email;
-        const password = encrypt(req.body.password);
-
-        const user = new User();
-        const existingUser = await user.findByIdentifyer(email);
-
-        if (existingUser !== null && validatePas(password, existingUser.password)) {
-            // Authentication successful
-            let dbAvatar = null;
-            if (existingUser.anAvatarId !== null) {
-                dbAvatar = await DBManager.getAvatar(existingUser.anAvatarId);
-            }
-            const userData = {
-                user: existingUser,
-                avatar: dbAvatar,
-            }
-            res.status(HttpCodes.successfulResponse.Ok).json(userData); //edit this to return user not all data like this
-            //res.status(HttpCodes.successfulResponse.Ok).json({msg: server ok, data: userData})
-        } else {
-            // Authentication failed
-            res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid email or password' });
-        }
     } catch (error) {
         console.error("Error in login handler:", error);
         res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });

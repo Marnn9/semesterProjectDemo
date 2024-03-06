@@ -16,7 +16,7 @@ export class TCharacter extends THREE.Object3D {
 
         loader.load("AvatarStudio/Media/Boy-smaller-file.gltf", (gltfModel) => {
             //this.irisOfEye = gltfModel.scene.children[2].material;
-            gltfModel.scene.position.set(0, 0, 0);
+            gltfModel.scene.position.set(0, 1, 2);
             //gltfModel.scene.rotation.y = -Math.PI / 2;
             this.add(gltfModel.scene);
 
