@@ -3,9 +3,12 @@
 import * as main from "../AvatarStudio/Script/main.mjs";
 import * as functions from "./functions.mjs"
 import { avatarFeatures } from "../AvatarStudio/Script/scene.mjs";
+import {selectedUserId} from "./admin.mjs";
 
 const url = 'user/users';
 const avatarUrl = "user/avatar";
+const loginForms = document.getElementById('loginForms');
+const avatarStudioEvents = document.getElementById('avatarStudioEvents');
 
 export async function loginUser() {
     // Get user credentials from the input fields
@@ -49,7 +52,7 @@ export async function loginUser() {
             await loggedInShowAvatar();
         } else {
             console.error(`Error: ${response.status} - ${data.error}`);
-            displayMsg(data.error, 'red')
+            functions.displayMsg(data.error, 'red')
         }
 
     } catch (error) {
@@ -59,7 +62,108 @@ export async function loginUser() {
     }
 }
 
-async function loggedInShowAvatar() {
+export async function addUser() {
+
+    const name = document.getElementById('inpUname').value;
+    const email = document.getElementById('inpEmail').value;
+    const password = document.getElementById('inpPassword').value;
+
+    // Create a user object
+    const user = { name, email, password };
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user),
+        })
+        const data = await response.json();
+
+        if (response.ok) {
+            window.location.reload();
+            console.log(data)
+        } else {
+            const errorData = await response.json();
+            console.error(`Error: ${response.status} - ${errorData.error}`);
+            functions.displayMsg(errorData.error, 'red')
+        }
+
+    } catch (error) {
+        console.error(`Error during user Creation: ${error.message}`);
+    }
+}
+
+export async function sendEditUser() {
+    let name = document.getElementById('inpUnameEdit').value;
+    let email = document.getElementById('inpEmailEdit').value;
+    let password = document.getElementById('inpPasswordEdit').value;
+    const loggedId = functions.checkStorage().loggedInId;
+
+    if (!name) {
+        name = functions.checkStorage().loggedInName;
+    }
+
+    if (!email) {
+        email = functions.checkStorage().loggedInEmail;
+    }
+
+    if (!password) {
+        password = functions.checkStorage().loggedInPassword;
+    }
+
+    if (name && email && password && loggedId) {
+        const editedUser = { email, loggedId, name, password };
+        try {
+            const response = await fetch(url + "/" + loggedId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(editedUser),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error(`Error: ${response.status} - ${errorData.error}`);
+                functions.displayMsg(errorData.error, 'red')
+            }
+
+            const data = await response.json();
+            console.log('Edited User:', data);
+            functions.displayMsg("User updated", 'green');
+
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
+    } else {
+        console.error('Missing data in fields for editing user or no user logged In');
+    }
+}
+
+export async function saveAvatar() {
+    try {
+
+        avatarFeatures.loggedInUser = functions.checkStorage().loggedInId;
+        const response = await fetch(avatarUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(avatarFeatures),
+        });
+        const data = await response.json();
+        if (response.ok) {
+
+            functions.displayMsg("Saved", 'green');
+            console.log('Saved:', data);
+        }
+    } catch (error) {
+        console.error("Bad Input", error);
+    }
+};
+
+export async function loggedInShowAvatar() {
 
     const loggedInId = sessionStorage.getItem("loggedInId");
     const loggedInEmail = sessionStorage.getItem("loggedInEmail");
@@ -82,7 +186,7 @@ async function loggedInShowAvatar() {
 
             } else {
                 console.error(`Error: ${response.status} - ${data.error}`);
-                displayMsg(data.error, 'red')
+                functions.displayMsg(data.error, 'red')
             }
 
         } catch (error) {
@@ -101,31 +205,50 @@ async function loggedInShowAvatar() {
     }
 }
 
-/* function encode(anEmail, aPassword) {
-    const credentials = anEmail + ":" + aPassword;
-    return "Basic " + btoa(credentials);
-}
+export async function deleteUser() {
+    const deleteConfirm = confirm("Are you sure you want to delete the user?");
+    const id = functions.checkStorage().loggedInId;
+    const role = functions.checkStorage().loggedInRole;
+    const selectedId = selectedUserId;
 
-function displayMsg(aMsg, aColor) {
-    const messageDisplayContainerId = "messageDisplayContainer";
-    let messageDisplay = document.getElementById(messageDisplayContainerId);
+    if (deleteConfirm && id && (role !== "admin")) {
+        try {
+            const response = await fetch(url + "/" + id, {
+                method: 'DELETE',
+            });
 
-    if (!messageDisplay) {
-        messageDisplay = document.createElement("div");
-        messageDisplay.id = messageDisplayContainerId;
-        document.body.appendChild(messageDisplay);
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Deleted user:', data);
+                localStorage.clear();
+                window.location.reload();
+            } else {
+                console.error(`Error: ${response.status} - ${data.error}`);
+                functions.displayMsg(data.error, 'red')
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    } else if (!deleteConfirm) {
+        functions.displayMsg("deleting canceled", 'orange');
+    } else if (role === "admin") {
+        try {
+            const response = await fetch(url + "/" + selectedId, {
+                method: 'DELETE',
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Deleted user:', data);
+                localStorage.clear();
+            } else {
+                console.error(`Error: ${response.status} - ${data.error}`);
+                functions.displayMsg(data.error, 'red')
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
     }
-    messageDisplay.style.color = aColor;
-    messageDisplay.textContent = aMsg;
-
-    setTimeout(() => {
-        document.body.removeChild(messageDisplay);
-    }, 5000);
-}
-
-function connectionLost(error) {
-    if (error.message && error.message.includes('Failed to fetch')) {
-        alert("Connection lost, this page will now be refreshed");
-        window.location.reload();
+    else {
+        return;
     }
-} */
+}

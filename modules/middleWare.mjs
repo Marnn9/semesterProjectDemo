@@ -17,8 +17,9 @@ export async function basicAuthMiddleware(req, res, next) {
 
         const user = new User();
         const existingUser = await user.findByIdentifyer(email);
-        if (existingUser !== null) {
-            validatePas(encrypt(password), existingUser.password);
+        
+        if (existingUser !== null && validatePas(encrypt(password), existingUser.password)) {
+
             let dbAvatar = null;
             if (existingUser.anAvatarId !== null) {
                 dbAvatar = await DBManager.getAvatar(existingUser.anAvatarId);
