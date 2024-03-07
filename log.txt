@@ -205,3 +205,11 @@ Database connection  postgresql://postgres:Database@localhost/projectDemo
 10:59:03 [32mGET[39m /script/functions.mjs
 10:59:03 [32mGET[39m /script/clientRequests.mjs
 10:59:06 [33mPOST[39m /user/logine
+11:01:04 [32mGET[39m /?Email=mail%40mail&password=pas
+11:01:04 [32mGET[39m /styles.css
+11:01:04 [32mGET[39m /script/clientEvents.mjs
+11:01:04 [32mGET[39m /script/admin.mjs
+11:01:04 [32mGET[39m /script/clientRequests.mjs
+11:01:04 [32mGET[39m /script/functions.mjs
+11:01:07 [33mPOST[39m /user/login
+11:01:07 [32mGET[39m /user/avatar/42

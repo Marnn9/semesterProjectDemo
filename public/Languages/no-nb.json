@@ -1,6 +1,14 @@
 {
     "no-nb": {
-        "greeting" : "Velkommen"
-
+        "greeting" : "Velkommen",
+        "titleLogin" : "Logg in for å lage din karakter",
+        "titleCreate" : "lag en bruker",
+        "createUserText" : "Lag bruker her",
+        "toLoginText" : "Har du allerede bruker? logg inn her",
+        "mailPlaceholder" : "E-post",
+        "namePlaceholder" : "Brukernavn",
+        "passwordPlaceholder"  : "Passord",
+        "loginBtn" : "logg inn",
+        "createBtn" : "lag bruker"
     }
 }
