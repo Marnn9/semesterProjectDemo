@@ -3,7 +3,7 @@
 import * as main from "../AvatarStudio/Script/main.mjs";
 import * as functions from "./functions.mjs"
 import { avatarFeatures } from "../AvatarStudio/Script/scene.mjs";
-import {selectedUserId} from "./admin.mjs";
+import { selectedUserId } from "./admin.mjs";
 
 const url = 'user/users';
 const avatarUrl = "user/avatar";
@@ -57,8 +57,8 @@ export async function loginUser() {
 
     } catch (error) {
         console.error('Error during login:', error);
+        functions.displayMsg('An error ocurred, trying to reach the server', 'red');
         functions.connectionLost(error);
-        // Handle the error or display a message to the user
     }
 }
 
@@ -90,7 +90,9 @@ export async function addUser() {
         }
 
     } catch (error) {
-        console.error(`Error during user Creation: ${error.message}`);
+        console.error('Error during login:', error);
+        functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+        functions.connectionLost(error);
     }
 }
 
@@ -127,17 +129,20 @@ export async function sendEditUser() {
                 const errorData = await response.json();
                 console.error(`Error: ${response.status} - ${errorData.error}`);
                 functions.displayMsg(errorData.error, 'red')
+            } else {
+                const data = await response.json();
+                console.log('Edited User:', data);
+                functions.displayMsg("User updated", 'green');
             }
 
-            const data = await response.json();
-            console.log('Edited User:', data);
-            functions.displayMsg("User updated", 'green');
-
         } catch (error) {
-            console.error('Error during login:', error);
+            console.error('Error updating user:', error);
+            functions.connectionLost(error);
+            functions.displayMsg('An error ocurred, trying to reach the server', 'red');
         }
     } else {
         console.error('Missing data in fields for editing user or no user logged In');
+        functions.displayMsg('Missing data in fields for editing user or no user logged In', 'red');
     }
 }
 
@@ -160,6 +165,8 @@ export async function saveAvatar() {
         }
     } catch (error) {
         console.error("Bad Input", error);
+        functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+        functions.connectionLost(error);
     }
 };
 
@@ -191,6 +198,8 @@ export async function loggedInShowAvatar() {
 
         } catch (error) {
             console.error('Error showing Avatar user:' + error);
+            functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+            functions.connectionLost(error);
         }
     }
 
@@ -246,9 +255,12 @@ export async function deleteUser() {
             }
         } catch (error) {
             console.error('Error deleting user:', error);
+            functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+            functions.connectionLost(error);
         }
     }
     else {
+        functions.displayMsg('Could not delete user', 'red');
         return;
     }
 }
