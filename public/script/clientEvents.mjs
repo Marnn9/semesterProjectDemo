@@ -2,6 +2,14 @@
 import * as requests from "./clientRequests.mjs"
 import * as functions from "./functions.mjs"
 import * as main from "../AvatarStudio/Script/main.mjs";
+
+/* ------------- lanuage and translation -------------- */
+/* let language  = null;
+
+for (const word of language) {
+    word.replaceAll("regex", translation);
+} */
+
 /*-------------HTML elements by ID-------------------- */
 
 const createUserText = document.getElementById('createUtext');

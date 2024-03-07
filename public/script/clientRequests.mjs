@@ -57,7 +57,7 @@ export async function loginUser() {
 
     } catch (error) {
         console.error('Error during login:', error);
-        functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+        functions.displayServerMsg();
         functions.connectionLost(error);
     }
 }
@@ -91,7 +91,7 @@ export async function addUser() {
 
     } catch (error) {
         console.error('Error during login:', error);
-        functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+        functions.displayServerMsg();
         functions.connectionLost(error);
     }
 }
@@ -138,7 +138,7 @@ export async function sendEditUser() {
         } catch (error) {
             console.error('Error updating user:', error);
             functions.connectionLost(error);
-            functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+            functions.displayServerMsg();
         }
     } else {
         console.error('Missing data in fields for editing user or no user logged In');
@@ -165,7 +165,7 @@ export async function saveAvatar() {
         }
     } catch (error) {
         console.error("Bad Input", error);
-        functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+        functions.displayServerMsg();
         functions.connectionLost(error);
     }
 };
@@ -198,7 +198,7 @@ export async function loggedInShowAvatar() {
 
         } catch (error) {
             console.error('Error showing Avatar user:' + error);
-            functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+            functions.displayServerMsg();
             functions.connectionLost(error);
         }
     }
@@ -255,7 +255,7 @@ export async function deleteUser() {
             }
         } catch (error) {
             console.error('Error deleting user:', error);
-            functions.displayMsg('An error ocurred, trying to reach the server', 'red');
+            functions.displayServerMsg();
             functions.connectionLost(error);
         }
     }

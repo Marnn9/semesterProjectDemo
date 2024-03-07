@@ -24,6 +24,11 @@ export function displayMsg(aMsg, aColor) {
     }, 5000);
 }
 
+export function displayServerMsg() {
+
+    displayMsg('An error ocurred, trying to reach the server', 'red')
+}
+
 export function connectionLost(error) {
     if (error.message && error.message.includes('Failed to fetch')) {
         alert("Connection lost, this page will now be refreshed");
