@@ -17,44 +17,52 @@
 
     <div id="loginForms">
         <form class="form" id="login">
-            <h2>Log in to create your character</h2> <br><br>
-            <input type="text" class="input" name="Email" id="inpEmailLogin" placeholder="email" required>
-            <input type="password" class="input" name="password" id="inpPasswordLogin" placeholder="password" required>
-            <button class="commitBtn" type="submit" id="loginBtn">login</button> <br><br>
+            <h2 data-translate="titleLogin">Log in to create your character</h2> <br><br>
+            <input type="text" class="input" name="Email" id="inpEmailLogin"
+                data-translate-placeholder="mailPlaceholder" required>
+            <input type="password" class="input" name="password" id="inpPasswordLogin"
+                data-translate-placeholder="passwordPlaceholder" required>
+            <button class="commitBtn" type="submit" id="loginBtn" data-translate="loginBtn">login</button> <br><br>
         </form>
 
         <form class="form" id="create" style="display: none;">
-            <h2>Create a user</h2> <br><br>
-            <input type="text" class="input" name="username" id="inpUname" placeholder="username" required>
-            <input type="text" class="input" name="Email" id="inpEmail" placeholder="email" required>
-            <input type="password" class="input" name="password" id="inpPassword" placeholder="password" required>
-            <button class="commitBtn" type="submit" id="createBtn">create user</button> <br><br>
+            <h2 data-translate="titleCreate">Create a user</h2> <br><br>
+            <input type="text" class="input" name="username" id="inpUname" data-translate-placeholder="namePlaceholder"
+                required>
+            <input type="text" class="input" name="Email" id="inpEmail" data-translate-placeholder="mailPlaceholder"
+                required>
+            <input type="password" class="input" name="password" id="inpPassword"
+                data-translate-placeholder="passwordPlaceholder" required>
+            <button class="commitBtn" type="submit" id="createBtn" data-translate="createBtn">create user</button>
+            <br><br>
         </form>
 
-        <p id="createUtext" class="login-createText">Create user here</p>
-        <p id="loginText" class="login-createText" style="display: none;">Already have
+        <p id="createUtext" class="login-createText" data-translate="createUserText">Create user here</p>
+        <p id="loginText" class="login-createText" style="display: none;" data-translate="toLoginText">Already have
             a user? login here</p>
     </div>
 
     <ul id="userList" class="adminItem"></ul>
 
     <form class="form" id="editUser" style="display: none;">
-        <h2>Edit your user</h2> <br><br>
-        <input type="text" class="input" name="username" id="inpUnameEdit" placeholder="username">
-        <input type="text" class="input" name="Email" id="inpEmailEdit" placeholder="email">
-        <input type="password" class="input" name="password" id="inpPasswordEdit" placeholder="password">
-        <button class="commitBtn" type="submit" id="Update">Update</button> <br><br>
+        <h2 data-translate="editUserTitle">Edit your user</h2> <br><br>
+        <input type="text" class="input" name="username" id="inpUnameEdit" data-translate-placeholder="namePlaceholder">
+        <input type="text" class="input" name="Email" id="inpEmailEdit" data-translate-placeholder="mailPlaceholder">
+        <input type="password" class="input" name="password" id="inpPasswordEdit"
+            data-translate-placeholder="passwordPlaceholder">
+        <button class="commitBtn" type="submit" id="Update" data-translate="updateBtn">Update</button> <br><br>
     </form>
 
     <div id="bntContainerLoggedIn" class="btnContainer" style="display: none;">
-        <button class="UserBtn" id="logOutUser">Log out</button>
-        <button class="UserBtn" id="displayUsers" style="display: none;">display Users</button>
-        <button class="deleteUserBtn" id="deleteUserBtn">Delete user</button>
+        <button class="UserBtn" id="logOutUser" data-translate="logOutBtn">Log out</button>
+        <button class="UserBtn" id="displayUsers" style="display: none;" data-translate="displayUsersBtn">Display
+            Users</button>
+        <button class="deleteUserBtn" id="deleteUserBtn" data-translate="deleteUserBtn">Delete user</button>
     </div>
 
     <div id="avatarStudioEvents" style="display: none;">
-        <button id="mainBtn" class="globalBtn">&#8594</button>
-        <button id="checkBtn" class="globalBtn">&#10004</button>
+        <button id="mainBtn" class="globalBtn">&#8594;</button>
+        <button id="checkBtn" class="globalBtn">&#10004;</button>
 
         <div id="choiceMenu">
             <img id="option2" class="thumbnail" src="./AvatarStudio/Media/head.png">
@@ -66,47 +74,61 @@
         </div>
     </div>
 
-
-    <!-- templates -->
-    <!-- the page should not reload so try to find a way to get teh users session stored ... etc.  -->
-    <!-- <div id="head"></div>
-<div id="content"></div> -->
-    <!--  <template id="loginTemplate">
-        <form class="form" id="login" onsubmit="return loginUserMain()">
-            <h2>Log in to create your character</h2> <br><br>
-            <input type="text" class="input" name="Email" id="inpEmailLogin" placeholder="email" required>
-            <input type="password" class="input" name="password" id="inpPasswordLogin" placeholder="password" required>
-            <button class="commitBtn" type="submit" id="loginBtn">login</button> <br><br>
-        </form>
-    </template> -->
-
-
-<!-- 
     <script type="module">
-        import * as main from "./AvatarStudio/Script/main.mjs";
-        import { avatarFeatures } from "./AvatarStudio/Script/scene.mjs";
+        
+        let language = "no-nb";
+       
+        // Fetch translations from external JSON file
+        async function fetchTranslations() {
+            try {
+                const response = await fetch(`./Languages/${language}.json`);
+                const translations = await response.json();
+                return translations;
+            } catch (error) {
+                console.error("Error fetching translations:", error);
+                return {};
+            }
+        }
 
-        const url = 'user/users';
-        const avatarUrl = "user/avatar";
+        async function replaceAllOccurrences(container) {
+            const translations = await fetchTranslations();
 
-        const createUserText = document.getElementById('createUtext');
-        const myAccountBtn = document.getElementById('myAccountBtn');
-        const bntContainerLoggedIn = document.getElementById('bntContainerLoggedIn');
-        const editUserForm = document.getElementById('editUser');
-        const loginForms = document.getElementById('loginForms');
-        const avatarStudioEvents = document.getElementById('avatarStudioEvents');
-        const deleteBtn = document.getElementById('deleteUserBtn');
-        const displayBtnAdmin = document.getElementById("displayUsers");
-        const userList = document.getElementById('userList');
+            const elementsToTranslate = container.querySelectorAll("[data-translate], [data-translate-placeholder]");
 
-        /* fetch(url)
-        .then((response) => response.json)
-        .then((data) => {
-            console.log(data)
-        }).catch()//ha en catch her også
-        .catch((error) console.error("feil" , error));
-       */
-    </script> -->
+            elementsToTranslate.forEach(element => {
+                if (element.hasAttribute("data-translate")) {
+                    const translationKey = element.getAttribute("data-translate");
+                    const translation = translations[language] && translations[language][translationKey];
+
+                    if (translation !== undefined) {
+                        element.textContent = translation;
+                    } else {
+                        console.warn(`Translation not found for key '${translationKey}' in language '${language}'.`);
+                    }
+                }
+
+                if (element.hasAttribute("data-translate-placeholder")) {
+                    const translationKey = element.getAttribute("data-translate-placeholder");
+                    const translation = translations[language] && translations[language][translationKey];
+
+                    if (translation !== undefined) {
+                        element.placeholder = translation;
+                    } else {
+                        console.warn(`Translation not found for key '${translationKey}' in language '${language}'.`);
+                    }
+                }
+            });
+        }
+
+       
+        const loginFormsContainer = document.getElementById("loginForms");
+        const editUserForm = document.getElementById("editUser");
+        const bntContainerLoggedIn = document.getElementById("bntContainerLoggedIn");
+        // Replace all occurrences based on the selected language
+        replaceAllOccurrences(loginFormsContainer);
+        replaceAllOccurrences(editUserForm);
+        replaceAllOccurrences(bntContainerLoggedIn);
+    </script>
 </body>
 
 </html>
