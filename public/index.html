@@ -74,14 +74,23 @@
         </div>
     </div>
 
+    <div id="languageSelection">
+        <img id="english" src="./media/england.png" alt="britishFlag">
+        <img id="norwegian" src="./media/norway.png" alt="norwegianFlag">
+        <img id="spanish" src="./media/spain.png" alt="spanishFlag">
+    </div>
+
     <script type="module">
-        
-        let language = "no-nb";
-       
+        const english = document.getElementById("english");
+        const norwegian = document.getElementById("norwegian");
+        const spanish = document.getElementById("spanish");
+
+        let language = "en";
+
         // Fetch translations from external JSON file
-        async function fetchTranslations() {
+        async function fetchTranslations(lang) {
             try {
-                const response = await fetch(`./Languages/${language}.json`);
+                const response = await fetch(`./Languages/${lang}.json`);
                 const translations = await response.json();
                 return translations;
             } catch (error) {
@@ -90,9 +99,7 @@
             }
         }
 
-        async function replaceAllOccurrences(container) {
-            const translations = await fetchTranslations();
-
+        async function replaceAllOccurrences(container, translations) {
             const elementsToTranslate = container.querySelectorAll("[data-translate], [data-translate-placeholder]");
 
             elementsToTranslate.forEach(element => {
@@ -120,14 +127,44 @@
             });
         }
 
-       
-        const loginFormsContainer = document.getElementById("loginForms");
-        const editUserForm = document.getElementById("editUser");
-        const bntContainerLoggedIn = document.getElementById("bntContainerLoggedIn");
-        // Replace all occurrences based on the selected language
-        replaceAllOccurrences(loginFormsContainer);
-        replaceAllOccurrences(editUserForm);
-        replaceAllOccurrences(bntContainerLoggedIn);
+        function translateAll(translations) {
+            const loginFormsContainer = document.getElementById("loginForms");
+            const editUserForm = document.getElementById("editUser");
+            const bntContainerLoggedIn = document.getElementById("bntContainerLoggedIn");
+
+            replaceAllOccurrences(loginFormsContainer, translations);
+            replaceAllOccurrences(editUserForm, translations);
+            replaceAllOccurrences(bntContainerLoggedIn, translations);
+        }
+
+        async function setInitialLanguage() {
+            // Fetch translations for the default language
+            const translations = await fetchTranslations(language);
+            translateAll(translations);
+        }
+
+        // Add click event listeners to each image
+        english.addEventListener("click", () => {
+            language = "en";
+            fetchTranslations(language).then(translations => {
+                translateAll(translations);
+            });
+        });
+        norwegian.addEventListener("click", () => {
+            language = "no-nb";
+            fetchTranslations(language).then(translations => {
+                translateAll(translations);
+            });
+        });
+        spanish.addEventListener("click", () => {
+            language = "es";
+            fetchTranslations(language).then(translations => {
+                translateAll(translations);
+            });
+        });
+
+        // Set initial language when the page is loaded
+        document.addEventListener("DOMContentLoaded", setInitialLanguage);
     </script>
 </body>
 

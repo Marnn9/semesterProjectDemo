@@ -1,0 +1,18 @@
+{
+    "es": {
+        "titleLogin": "Iniciar sesión para crear tu personaje",
+        "titleCreate": "Crear un usuario",
+        "createUserText": "Crear usuario aquí",
+        "toLoginText": "¿Ya tienes un usuario? Inicia sesión aquí",
+        "mailPlaceholder": "Correo electrónico",
+        "namePlaceholder": "Nombre de usuario",
+        "passwordPlaceholder": "Contraseña",
+        "loginBtn": "Iniciar sesión",
+        "createBtn": "Crear usuario",
+        "editUserTitle": "Editar tu usuario",
+        "updateBtn": "Actualizar",
+        "logOutBtn": "Cerrar sesión",
+        "displayUsersBtn": "Mostrar usuarios",
+        "deleteUserBtn": "Eliminar usuario"
+    }
+}

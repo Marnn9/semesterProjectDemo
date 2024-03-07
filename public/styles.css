@@ -22,6 +22,22 @@ button:hover {
     cursor: pointer;
 }
 
+#languageSelection {
+    display: flex;
+    justify-content: center;
+    background-color: transparent;
+}
+
+#languageSelection img {
+    width: 10%;
+    max-width: 40px;
+    height: auto;
+    margin-right: 2%;
+}
+
+#languageSelection img:last-child {
+    margin-right: 0;
+}
 
 .globalBtn {
     border: none;
@@ -185,7 +201,7 @@ button:hover {
         margin-top: 10px;
     }
 
-    
+
 }
 
 
