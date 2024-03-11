@@ -1,7 +1,6 @@
 # API Documentation
 
 ## GET /
-> [!note]
 > Returns current authenticated user object. If no authenticated user, returns 403 Not authorized.
 
 **"/"**<br>
@@ -60,10 +59,13 @@ finds the logged in user and the avatar Id connected to them, and saves the chan
 response Avatar : {aHairColor, anEyeColor, aSkinColor, aBrowType}
 
 ## DELETE  /users/:id 
-> returns the data of the deleted user. responds with 404 not found if the user has no id.
+> [!warning]
+> The user will be permanently deleted and can therefore nevet be restored
+
 
 "/users/:id" <br>
 METHOD: DELETE <br>
+ returns the data of the deleted user. responds with 404 not found if the user has no id.
 Expects: JSON <br>
 Returns: JSON <br>
 
