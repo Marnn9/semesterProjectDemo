@@ -1,19 +1,6 @@
 # API Documentation
 > [!note]
-> > All the authorisation is sent as base 64 encoding
-
-## GET / users
-> Returns all the users, returns 403 Forbidden if you are not an admin.
-
-**"/users"**<br>
- METHOD: GET <br>
- Expects: JSON <br>
- Returns: JSON <br>
- Requires: Authentication {id, email} <br>
-
-Shows all the users in the database. 
-> [!Important]
-> Only available for the administrator
+> All the authorizations is sent as base 64 encoding
 
 ## GET / avatar /:id
 > Returns the values of the avatar. If no authenticated user, returns 401 unauthorized.
@@ -24,7 +11,7 @@ Shows all the users in the database.
  Returns: JSON <br>
  Requires: Authentication {token} <br>
 
-Shows all the users in the database. 
+Shows the avatar the loggedIn user has based on their token. If no avatar the default avatar is shown. 
 
 ## POST /users 
 > Adds a new user to the user/users endpoint. if a user with the given email exists it returns 422 Unprocessable Content. Also if one of the data fields is missing it returns 400
@@ -85,3 +72,16 @@ Returns: JSON <br>
 
 Required fields : *{id}* if there is a user logged in, the user with the same id is deleted in the database. 
 responds with {msg}.
+
+## GET / users
+> Returns all the users, returns 403 Forbidden if you are not an admin.
+
+**"/users"**<br>
+ METHOD: GET <br>
+ Expects: JSON <br>
+ Returns: JSON <br>
+ Requires: Authentication {id, email} <br>
+
+Shows all the users in the database. 
+> [!Important]
+> Only available for the administrator
