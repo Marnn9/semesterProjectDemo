@@ -1,5 +1,5 @@
 # GET / 
-> -> Returns current authenticated user object. If no authenticated user, returns 403 Not authorized.
+> Returns current authenticated user object. If no authenticated user, returns 403 Not authorized.
 
 **"/"** <br>
 METHOD: GET <br>
@@ -7,12 +7,12 @@ Expects: JSON <br>
 Returns: JSON <br>
 Requires: Authentication <br>
 
-Creates a user, required fields: *{name,password,email}*
+### Creates a user, required fields: *{name,password,email}*
 
 # POST /users 
-> -> Adds a new user to the user/users endpoint. if a user with the given email exists it returns 422 Unprocessable Content. Also if one of the data fields is missing it returns 400
+> Adds a new user to the user/users endpoint. if a user with the given email exists it returns 422 Unprocessable Content. Also if one of the data fields is missing it returns 400
 
-## **"/users"**
+**"/users"**
 METHOD: POST
 Expects: JSON
 Returns: JSON
@@ -21,7 +21,7 @@ Creates a user, required fields: *{name, email, password}*, password is encrypte
 Response : msg: " new user created" if successful.
 
 ## POST /login 
-> -> returns 401 Unautorised if the email or password does not exist in the database
+> returns 401 Unautorised if the email or password does not exist in the database
 
 **"/login"**
 METHOD: POST
