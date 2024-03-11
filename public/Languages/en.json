@@ -1,0 +1,18 @@
+{
+    "en": {
+        "titleLogin": "Log in to create your character",
+        "titleCreate": "Create a user",
+        "createUserText": "Create user here",
+        "toLoginText": "Already have a user? Login here",
+        "mailPlaceholder": "Email",
+        "namePlaceholder": "Username",
+        "passwordPlaceholder": "Password",
+        "loginBtn": "Login",
+        "createBtn": "Create user",
+        "editUserTitle": "Edit your user",
+        "updateBtn": "Update",
+        "logOutBtn": "Log out",
+        "displayUsersBtn": "Display Users",
+        "deleteUserBtn": "Delete user"
+    }
+}

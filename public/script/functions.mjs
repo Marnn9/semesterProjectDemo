@@ -7,6 +7,11 @@ export function encode(anEmail, aPassword) {
     return "Basic " + btoa(credentials);
 }
 
+export function encodeId(anId, anEmail) {
+    const credentials = anId + ":" + anEmail;
+    return "Basic " + btoa(credentials);
+}
+
 export function displayMsg(aMsg, aColor) {
     const messageDisplayContainerId = "messageDisplayContainer";
     let messageDisplay = document.getElementById(messageDisplayContainerId);
@@ -22,6 +27,11 @@ export function displayMsg(aMsg, aColor) {
     setTimeout(() => {
         document.body.removeChild(messageDisplay);
     }, 5000);
+}
+
+export function displayServerMsg() {
+
+    displayMsg('An error ocurred, trying to reach the server', 'red')
 }
 
 export function connectionLost(error) {
@@ -66,6 +76,7 @@ export function checkStorage() {
     const loggedInName = sessionStorage.getItem("loggedInName");
     const loggedInPassword = sessionStorage.getItem("loggedInPassword")
     const loggedInRole = sessionStorage.getItem("role");
+    const token = sessionStorage.getItem("token");
 
-    return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole };
+    return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole, token };
 }

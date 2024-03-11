@@ -3,7 +3,7 @@
 import * as main from "../AvatarStudio/Script/main.mjs";
 import * as functions from "./functions.mjs"
 import { avatarFeatures } from "../AvatarStudio/Script/scene.mjs";
-import {selectedUserId} from "./admin.mjs";
+import { selectedUserId } from "./admin.mjs";
 
 const url = 'user/users';
 const avatarUrl = "user/avatar";
@@ -36,6 +36,7 @@ export async function loginUser() {
             sessionStorage.setItem("loggedInEmail", data.user.uEmail);
             sessionStorage.setItem("loggedInName", data.user.uName);
             sessionStorage.setItem("loggedInPassword", data.user.password);
+            sessionStorage.setItem("token", data.token);
 
             if (data.avatar !== null) {
                 localStorage.setItem('haircolor', data.avatar.hairColor);
@@ -57,8 +58,8 @@ export async function loginUser() {
 
     } catch (error) {
         console.error('Error during login:', error);
+        functions.displayServerMsg();
         functions.connectionLost(error);
-        // Handle the error or display a message to the user
     }
 }
 
@@ -90,7 +91,9 @@ export async function addUser() {
         }
 
     } catch (error) {
-        console.error(`Error during user Creation: ${error.message}`);
+        console.error('Error during login:', error);
+        functions.displayServerMsg();
+        functions.connectionLost(error);
     }
 }
 
@@ -118,6 +121,7 @@ export async function sendEditUser() {
             const response = await fetch(url + "/" + loggedId, {
                 method: 'PUT',
                 headers: {
+                    Authorization: functions.checkStorage().token,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(editedUser),
@@ -127,17 +131,20 @@ export async function sendEditUser() {
                 const errorData = await response.json();
                 console.error(`Error: ${response.status} - ${errorData.error}`);
                 functions.displayMsg(errorData.error, 'red')
+            } else {
+                const data = await response.json();
+                console.log('Edited User:', data);
+                functions.displayMsg("User updated", 'green');
             }
 
-            const data = await response.json();
-            console.log('Edited User:', data);
-            functions.displayMsg("User updated", 'green');
-
         } catch (error) {
-            console.error('Error during login:', error);
+            console.error('Error updating user:', error);
+            functions.connectionLost(error);
+            functions.displayServerMsg();
         }
     } else {
         console.error('Missing data in fields for editing user or no user logged In');
+        functions.displayMsg('Missing data in fields for editing user or no user logged In', 'red');
     }
 }
 
@@ -148,6 +155,7 @@ export async function saveAvatar() {
         const response = await fetch(avatarUrl, {
             method: 'POST',
             headers: {
+                Authorization: functions.checkStorage().token,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(avatarFeatures),
@@ -160,6 +168,8 @@ export async function saveAvatar() {
         }
     } catch (error) {
         console.error("Bad Input", error);
+        functions.displayServerMsg();
+        functions.connectionLost(error);
     }
 };
 
@@ -176,6 +186,10 @@ export async function loggedInShowAvatar() {
         try {
             const response = await fetch(avatarUrl + "/" + avatarId, {
                 method: 'GET',
+                headers: {
+                    'Authorization': functions.checkStorage().token,
+                    'Content-Type': 'application/json',
+                }
             });
             const data = await response.json();
             if (response.ok) {
@@ -191,6 +205,8 @@ export async function loggedInShowAvatar() {
 
         } catch (error) {
             console.error('Error showing Avatar user:' + error);
+            functions.displayServerMsg();
+            functions.connectionLost(error);
         }
     }
 
@@ -200,6 +216,7 @@ export async function loggedInShowAvatar() {
         loginForms.style.display = 'none';
         main.loadScene();
         avatarStudioEvents.style.display = 'block';
+        languageSelection.style.display = 'none';
     } else {
         return;
     }
@@ -215,12 +232,17 @@ export async function deleteUser() {
         try {
             const response = await fetch(url + "/" + id, {
                 method: 'DELETE',
+                headers: {
+                    'Authorization': functions.checkStorage().token,
+                    'Content-Type': 'application/json',
+                }
             });
 
             const data = await response.json();
             if (response.ok) {
                 console.log('Deleted user:', data);
                 localStorage.clear();
+                sessionStorage.clear();
                 window.location.reload();
             } else {
                 console.error(`Error: ${response.status} - ${data.error}`);
@@ -230,7 +252,7 @@ export async function deleteUser() {
             console.error('Error deleting user:', error);
         }
     } else if (!deleteConfirm) {
-        functions.displayMsg("deleting canceled", 'orange');
+        functions.displayMsg("delete canceled", 'orange');
     } else if (role === "admin") {
         try {
             const response = await fetch(url + "/" + selectedId, {
@@ -246,9 +268,12 @@ export async function deleteUser() {
             }
         } catch (error) {
             console.error('Error deleting user:', error);
+            functions.displayServerMsg();
+            functions.connectionLost(error);
         }
     }
     else {
+        functions.displayMsg('Could not delete user', 'red');
         return;
     }
 }

@@ -1,0 +1,19 @@
+
+{
+    "no-nb": {
+        "titleLogin": "Logg inn for å lage din karakter",
+        "titleCreate": "Lag en bruker",
+        "createUserText": "Lag bruker her",
+        "toLoginText": "Har du allerede bruker? Logg inn her",
+        "mailPlaceholder": "E-post",
+        "namePlaceholder": "Brukernavn",
+        "passwordPlaceholder": "Passord",
+        "loginBtn": "Logg inn",
+        "createBtn": "Lag bruker",
+        "editUserTitle": "Rediger bruker",
+        "updateBtn": "Oppdater",
+        "logOutBtn": "Logg ut",
+        "displayUsersBtn": "Vis brukere",
+        "deleteUserBtn": "Slett bruker"
+    }
+}

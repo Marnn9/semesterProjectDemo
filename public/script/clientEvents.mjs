@@ -2,6 +2,8 @@
 import * as requests from "./clientRequests.mjs"
 import * as functions from "./functions.mjs"
 import * as main from "../AvatarStudio/Script/main.mjs";
+
+
 /*-------------HTML elements by ID-------------------- */
 
 const createUserText = document.getElementById('createUtext');
@@ -10,16 +12,19 @@ const bntContainerLoggedIn = document.getElementById('bntContainerLoggedIn');
 const editUserForm = document.getElementById('editUser');
 const deleteBtn = document.getElementById('deleteUserBtn');
 
+
 /*------- Header Events ------ */
 
 myAccountBtn.addEventListener("click", async (event) => {
     event.preventDefault();
-    if (editUserForm.style.display === "none") {
+    if (editUserForm.style.display === 'none') {
         editUserForm.style.display = 'block';
-        bntContainerLoggedIn.style.display = "block";
+        bntContainerLoggedIn.style.display = 'block';
+        languageSelection.style.display = 'flex';
     } else {
-        editUserForm.style.display = "none";
-        bntContainerLoggedIn.style.display = "none";
+        editUserForm.style.display = 'none';
+        bntContainerLoggedIn.style.display = 'none';
+        languageSelection.style.display = 'none';
     }
 });
 

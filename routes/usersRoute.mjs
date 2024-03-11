@@ -1,9 +1,9 @@
 // Import necessary modules and classes
 import express from 'express';
 import HttpCodes from '../modules/httpConstants.mjs';
-import User from '../modules/user.mjs'; 
+import User from '../modules/user.mjs';
 import SuperLogger from '../modules/SuperLogger.mjs';
-import { basicAuthMiddleware } from '../modules/middleWare.mjs';
+import { loginAuthenticationMiddleware, adminAuth, validateUserMiddleware } from '../modules/middleWare.mjs';
 import { encrypt, validatePas } from "../modules/authentication.mjs"
 import DBManager from "../modules/storageManager.mjs"
 
@@ -31,20 +31,29 @@ USER_API.use(functionToRunToEveryUser); //the use is from express making it run 
  */
 
 
-USER_API.get('/users', async (req, res, next) => {
-    try {
-        let users = new User();
-        users = await users.displayAll();
-        res.status(HttpCodes.successfulResponse.Ok).json(users);
-    } catch (error) {
-        console.error('Error retrieving all users:', error);
-        res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
+USER_API.get('/users', adminAuth, async (req, res, next) => {
+    const admin = req.authCredentials;
+
+    if (admin != null) {
+        try {
+            let users = new User();
+            users = await users.displayAll();
+            res.status(HttpCodes.successfulResponse.Ok).json(users);
+        } catch (error) {
+            console.error('Error retrieving all users:', error);
+            res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
+        }
+    }else {
+        
     }
 });
 
-USER_API.get('/avatar/:id', async (req, res, next) => {
+//add some verification of some sort?
+
+USER_API.get('/avatar/:id', validateUserMiddleware, async (req, res, next) => {
+    const { dbAvatar} = req.authCredentials;
     try {
-        const id = req.params.id;
+        const id = dbAvatar.avatarId;
         const avatar = await DBManager.getAvatar(id);
         if (avatar !== null) {
             res.status(HttpCodes.successfulResponse.Ok).json(avatar);
@@ -90,21 +99,22 @@ USER_API.post('/users', async (req, res, next) => {
 });
 
 //using :id then you can use req.params since all data is named id as a variable
-USER_API.post('/login', basicAuthMiddleware, async (req, res, next) => {
-    try{
-    const {dbAvatar, existingUser } = req.authCredentials;
-    const userData = {
-                user: existingUser,
-                avatar: dbAvatar,
-            }
-    res.status(HttpCodes.successfulResponse.Ok).json(userData);
+USER_API.post('/login', loginAuthenticationMiddleware, async (req, res, next) => {
+    try {
+        const { dbAvatar, existingUser, token } = req.authCredentials;
+        const userData = {
+            user: existingUser,
+            avatar: dbAvatar,
+            token,
+        }
+        res.status(HttpCodes.successfulResponse.Ok).json(userData);
     } catch (error) {
         console.error("Error in login handler:", error);
         res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
     }
 });
 
-USER_API.put('/users/:id', async (req, res) => {
+USER_API.put('/users/:id', validateUserMiddleware, async (req, res) => {
     try {
         const userId = req.params.id;
         const { name, email } = req.body;
@@ -143,7 +153,7 @@ USER_API.put('/users/:id', async (req, res) => {
     }
 });
 
-USER_API.post('/avatar', async (req, res) => {
+USER_API.post('/avatar', validateUserMiddleware, async (req, res) => {
     const { hairColor, eyeColor, skinColor, browType, loggedInUser } = req.body;
 
     const user = new User();
@@ -163,7 +173,7 @@ USER_API.post('/avatar', async (req, res) => {
 });
 
 
-USER_API.delete('/users/:id', async (req, res) => {
+USER_API.delete('/users/:id', validateUserMiddleware, async (req, res) => {
     const userId = req.params.id;
 
     console.log('Deleting user with ID:', userId);
@@ -186,12 +196,6 @@ USER_API.delete('/users/:id', async (req, res) => {
         console.log('User not found for deletion');
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
     }
-});
-
-USER_API.use((err, req, res, next) => {
-    console.error(err);
-
-    res.status(500).json({ error: 'Internal Server Error' });
 });
 
 export default USER_API;
