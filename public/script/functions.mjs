@@ -76,6 +76,7 @@ export function checkStorage() {
     const loggedInName = sessionStorage.getItem("loggedInName");
     const loggedInPassword = sessionStorage.getItem("loggedInPassword")
     const loggedInRole = sessionStorage.getItem("role");
+    const token = sessionStorage.getItem("token");
 
-    return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole };
+    return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole, token };
 }

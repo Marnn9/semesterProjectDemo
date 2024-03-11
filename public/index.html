@@ -40,7 +40,7 @@
         <p id="createUtext" class="login-createText" data-translate="createUserText">Create user here</p>
         <p id="loginText" class="login-createText" style="display: none;" data-translate="toLoginText">Already have
             a user? login here</p>
-        </div>
+    </div>
 
     <ul id="userList" class="adminItem"></ul>
 
@@ -139,26 +139,34 @@
         }
 
         async function setInitialLanguage() {
-            // Fetch translations for the default language
+            // Set initial language based on the stored language or default to "en"
+            language = localStorage.getItem("language") || "en";
+
+            // Fetch translations for the initial language
             const translations = await fetchTranslations(language);
+
+            // Translate all relevant containers
             translateAll(translations);
         }
 
         // Add click event listeners to each image
         english.addEventListener("click", () => {
             language = "en";
+            localStorage.setItem("language", language);
             fetchTranslations(language).then(translations => {
                 translateAll(translations);
             });
         });
         norwegian.addEventListener("click", () => {
             language = "no-nb";
+            localStorage.setItem("language", language);
             fetchTranslations(language).then(translations => {
                 translateAll(translations);
             });
         });
         spanish.addEventListener("click", () => {
             language = "es";
+            localStorage.setItem("language", language);
             fetchTranslations(language).then(translations => {
                 translateAll(translations);
             });

@@ -36,6 +36,7 @@ export async function loginUser() {
             sessionStorage.setItem("loggedInEmail", data.user.uEmail);
             sessionStorage.setItem("loggedInName", data.user.uName);
             sessionStorage.setItem("loggedInPassword", data.user.password);
+            sessionStorage.setItem("token", data.token);
 
             if (data.avatar !== null) {
                 localStorage.setItem('haircolor', data.avatar.hairColor);
@@ -120,6 +121,7 @@ export async function sendEditUser() {
             const response = await fetch(url + "/" + loggedId, {
                 method: 'PUT',
                 headers: {
+                    Authorization: functions.checkStorage().token,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(editedUser),
@@ -153,6 +155,7 @@ export async function saveAvatar() {
         const response = await fetch(avatarUrl, {
             method: 'POST',
             headers: {
+                Authorization: functions.checkStorage().token,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(avatarFeatures),
@@ -183,6 +186,10 @@ export async function loggedInShowAvatar() {
         try {
             const response = await fetch(avatarUrl + "/" + avatarId, {
                 method: 'GET',
+                headers: {
+                    'Authorization': functions.checkStorage().token,
+                    'Content-Type': 'application/json',
+                }
             });
             const data = await response.json();
             if (response.ok) {
@@ -209,6 +216,7 @@ export async function loggedInShowAvatar() {
         loginForms.style.display = 'none';
         main.loadScene();
         avatarStudioEvents.style.display = 'block';
+        languageSelection.style.display = 'none';
     } else {
         return;
     }
@@ -224,12 +232,17 @@ export async function deleteUser() {
         try {
             const response = await fetch(url + "/" + id, {
                 method: 'DELETE',
+                headers: {
+                    'Authorization': functions.checkStorage().token,
+                    'Content-Type': 'application/json',
+                }
             });
 
             const data = await response.json();
             if (response.ok) {
                 console.log('Deleted user:', data);
                 localStorage.clear();
+                sessionStorage.clear();
                 window.location.reload();
             } else {
                 console.error(`Error: ${response.status} - ${data.error}`);
@@ -239,7 +252,7 @@ export async function deleteUser() {
             console.error('Error deleting user:', error);
         }
     } else if (!deleteConfirm) {
-        functions.displayMsg("deleting canceled", 'orange');
+        functions.displayMsg("delete canceled", 'orange');
     } else if (role === "admin") {
         try {
             const response = await fetch(url + "/" + selectedId, {

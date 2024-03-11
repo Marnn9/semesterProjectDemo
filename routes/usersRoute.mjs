@@ -3,7 +3,7 @@ import express from 'express';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs';
 import SuperLogger from '../modules/SuperLogger.mjs';
-import { basicAuthMiddleware, adminAuth } from '../modules/middleWare.mjs';
+import { loginAuthenticationMiddleware, adminAuth, validateUserMiddleware } from '../modules/middleWare.mjs';
 import { encrypt, validatePas } from "../modules/authentication.mjs"
 import DBManager from "../modules/storageManager.mjs"
 
@@ -48,9 +48,12 @@ USER_API.get('/users', adminAuth, async (req, res, next) => {
     }
 });
 
-USER_API.get('/avatar/:id', async (req, res, next) => {
+//add some verification of some sort?
+
+USER_API.get('/avatar/:id', validateUserMiddleware, async (req, res, next) => {
+    const { dbAvatar} = req.authCredentials;
     try {
-        const id = req.params.id;
+        const id = dbAvatar.avatarId;
         const avatar = await DBManager.getAvatar(id);
         if (avatar !== null) {
             res.status(HttpCodes.successfulResponse.Ok).json(avatar);
@@ -96,12 +99,13 @@ USER_API.post('/users', async (req, res, next) => {
 });
 
 //using :id then you can use req.params since all data is named id as a variable
-USER_API.post('/login', basicAuthMiddleware, async (req, res, next) => {
+USER_API.post('/login', loginAuthenticationMiddleware, async (req, res, next) => {
     try {
-        const { dbAvatar, existingUser } = req.authCredentials;
+        const { dbAvatar, existingUser, token } = req.authCredentials;
         const userData = {
             user: existingUser,
             avatar: dbAvatar,
+            token,
         }
         res.status(HttpCodes.successfulResponse.Ok).json(userData);
     } catch (error) {
@@ -110,7 +114,7 @@ USER_API.post('/login', basicAuthMiddleware, async (req, res, next) => {
     }
 });
 
-USER_API.put('/users/:id', async (req, res) => {
+USER_API.put('/users/:id', validateUserMiddleware, async (req, res) => {
     try {
         const userId = req.params.id;
         const { name, email } = req.body;
@@ -149,7 +153,7 @@ USER_API.put('/users/:id', async (req, res) => {
     }
 });
 
-USER_API.post('/avatar', async (req, res) => {
+USER_API.post('/avatar', validateUserMiddleware, async (req, res) => {
     const { hairColor, eyeColor, skinColor, browType, loggedInUser } = req.body;
 
     const user = new User();
@@ -169,7 +173,7 @@ USER_API.post('/avatar', async (req, res) => {
 });
 
 
-USER_API.delete('/users/:id', async (req, res) => {
+USER_API.delete('/users/:id', validateUserMiddleware, async (req, res) => {
     const userId = req.params.id;
 
     console.log('Deleting user with ID:', userId);

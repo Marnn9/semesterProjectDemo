@@ -17,12 +17,14 @@ const deleteBtn = document.getElementById('deleteUserBtn');
 
 myAccountBtn.addEventListener("click", async (event) => {
     event.preventDefault();
-    if (editUserForm.style.display === "none") {
+    if (editUserForm.style.display === 'none') {
         editUserForm.style.display = 'block';
-        bntContainerLoggedIn.style.display = "block";
+        bntContainerLoggedIn.style.display = 'block';
+        languageSelection.style.display = 'flex';
     } else {
-        editUserForm.style.display = "none";
-        bntContainerLoggedIn.style.display = "none";
+        editUserForm.style.display = 'none';
+        bntContainerLoggedIn.style.display = 'none';
+        languageSelection.style.display = 'none';
     }
 });
 
