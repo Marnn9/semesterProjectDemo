@@ -56,7 +56,7 @@ Expects: JSON <br>
 Returns: JSON <br>
 
 finds the logged in user and the avatar Id connected to them, and saves the changes to the avatar table at the given avatarId. 
-response Avatar : {aHairColor, anEyeColor, aSkinColor, aBrowType}
+response Avatar : *{aHairColor, anEyeColor, aSkinColor, aBrowType}*.
 
 ## DELETE  /users/:id 
 > [!caution]
