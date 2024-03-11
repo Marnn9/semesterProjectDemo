@@ -1,10 +1,11 @@
 # API Documentation
 
-## GET / 
+## GET /
+> [!note]
 > Returns current authenticated user object. If no authenticated user, returns 403 Not authorized.
 
 **"/"**<br>
-> <span style="color:blue"> METHOD: GET <br>
+> METHOD: GET <br>
 > Expects: JSON <br>
 > Returns: JSON <br>
 > Requires: Authentication <br>
