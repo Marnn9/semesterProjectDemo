@@ -40,14 +40,6 @@ export function connectionLost(error) {
     }
 }
 
-export async function loadAvatarScene() {
-    myAccountBtn.style.display = "block";
-    loginForms.style.display = 'none';
-    main.loadScene();
-    avatarStudioEvents.style.display = 'block';
-    languageSelection.style.display = 'none';
-}
-
 export function showAdminFields() {
     displayBtnAdmin.style.display = "inline-block";
     const inpEmailEdit = document.getElementById("inpEmailEdit");
@@ -86,21 +78,21 @@ export function checkStorage() {
     return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole, avatarId, token };
 }
 
-export async function globalFetch(aMethod, anUrl, aBodyElement = false) {
+export async function globalFetch(aMethod, anUrl, aBodyElement, aAuthenticationReq = false) {
+    
     try {
         const response = await fetch(anUrl, {
             method: aMethod,
             headers: {
-                Authorization: functions.checkStorage().token,
-                'Content-Type': 'application/json',
+                Authorization: checkStorage().token,
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(aBodyElement),
         });
         return response;
     } catch (error) {
-        console.error("An error during " + aMethod +  " for url " + anUrl, error);
-        functions.displayServerMsg();
-        functions.connectionLost(error);
+        console.error("An error during " + aMethod + " for url " + anUrl, error);
+        displayServerMsg();
+        connectionLost(error);
     }
-
 }

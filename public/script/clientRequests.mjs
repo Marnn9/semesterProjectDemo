@@ -1,5 +1,4 @@
 "use strict"
-
 import * as main from "../AvatarStudio/Script/main.mjs";
 import * as functions from "./functions.mjs"
 import { avatarFeatures } from "../AvatarStudio/Script/scene.mjs";
@@ -64,34 +63,25 @@ export async function loginUser() {
 }
 
 export async function addUser() {
-
     const name = document.getElementById('inpUname').value;
     const email = document.getElementById('inpEmail').value;
     const password = document.getElementById('inpPassword').value;
 
-    // Create a user object
     const user = { name, email, password };
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user),
-        })
-        const data = await response.json();
+    const response = await functions.globalFetch('POST', url, user);
 
+    try {
         if (response.ok) {
+            const data = await response.json();
             window.location.reload();
-            console.log(data)
+            console.log(data);
         } else {
             const errorData = await response.json();
             console.error(`Error: ${response.status} - ${errorData.error}`);
-            functions.displayMsg(errorData.error, 'red')
+            functions.displayMsg(errorData.error, 'red');
         }
-
     } catch (error) {
-        console.error('Error during login:', error);
+        console.error("An error occurred while processing the response", error);
         functions.displayServerMsg();
         functions.connectionLost(error);
     }
@@ -174,9 +164,14 @@ export async function saveAvatar() {
 
 export async function loggedInShowAvatar() {
 
-    const avatarId = functions.checkStorage().avatarId;
+    const loggedInId = sessionStorage.getItem("loggedInId");
+    const loggedInEmail = sessionStorage.getItem("loggedInEmail");
+    const loggedInName = sessionStorage.getItem("loggedInName");
+    const loggedInPassword = sessionStorage.getItem("loggedInPassword");
+    const avatarId = sessionStorage.getItem("avatarId");
 
     if (avatarId != null) {
+
         try {
             const response = await fetch(avatarUrl + "/" + avatarId, {
                 method: 'GET',
@@ -192,9 +187,6 @@ export async function loggedInShowAvatar() {
                 localStorage.setItem("skincolor", data.skinColor);
                 localStorage.setItem("browtype", data.eyeBrowType);
 
-                functions.loadAvatarScene();
-
-
             } else {
                 console.error(`Error: ${response.status} - ${data.error}`);
                 functions.displayMsg(data.error, 'red')
@@ -207,6 +199,24 @@ export async function loggedInShowAvatar() {
         }
     }
 
+    if (loggedInId && loggedInEmail && loggedInName && loggedInPassword !== null) {
+
+        myAccountBtn.style.display = "block";
+        loginForms.style.display = 'none';
+        main.loadScene();
+        avatarStudioEvents.style.display = 'block';
+        languageSelection.style.display = 'none';
+    } else {
+        return;
+    }
+}
+
+function loadAvatarScene() {
+    myAccountBtn.style.display = "block";
+    loginForms.style.display = 'none';
+    main.loadScene();
+    avatarStudioEvents.style.display = 'block';
+    languageSelection.style.display = 'none';
 }
 
 
