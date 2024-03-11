@@ -1,6 +1,5 @@
 # API Documentation
-> [!note]
-> All the authorisation is sent as base 64 encoding
+> [!note] All the authorisation is sent as base 64 encoding
 
 ## GET / users
 > Returns all the users, returns 403 Forbidden if you are not an admin.
