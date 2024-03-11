@@ -60,14 +60,13 @@ response Avatar : {aHairColor, anEyeColor, aSkinColor, aBrowType}
 
 ## DELETE  /users/:id 
 > [!caution]
-> The user will be permanently deleted and can therefore nevet be restored
+> The user will be permanently deleted and can therefore never be restored
 
 
 "/users/:id" <br>
 METHOD: DELETE <br>
- returns the data of the deleted user. responds with 404 not found if the user has no id.
 Expects: JSON <br>
 Returns: JSON <br>
 
-Required firlds : *{id}*if there is a user logged in, the user with the same id is deleted in the database. 
-responds with {msg}
+Required fields : *{id}* if there is a user logged in, the user with the same id is deleted in the database. 
+responds with {msg}.
