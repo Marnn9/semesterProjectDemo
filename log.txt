@@ -3026,3 +3026,29 @@ Database connection  local
 18:00:51 [33mPOST[39m /user/login
 18:00:51 [32mGET[39m /user/avatar/41
 18:00:54 [32mGET[39m /user/users
+####################
+####################
+Server enviorment local
+Database connection  local
+18:37:10 [32mGET[39m /
+18:37:10 [32mGET[39m /styles.css
+18:37:10 [32mGET[39m /script/clientEvents.mjs
+18:37:10 [32mGET[39m /script/admin.mjs
+18:37:10 [32mGET[39m /media/england.png
+18:37:10 [32mGET[39m /media/norway.png
+18:37:10 [32mGET[39m /media/spain.png
+18:37:10 [32mGET[39m /script/clientRequests.mjs
+18:37:10 [32mGET[39m /script/functions.mjs
+18:37:11 [32mGET[39m /Languages/en.json
+18:37:12 [32mGET[39m /
+18:37:12 [32mGET[39m /styles.css
+18:37:12 [32mGET[39m /script/clientEvents.mjs
+18:37:12 [32mGET[39m /script/admin.mjs
+18:37:12 [32mGET[39m /media/england.png
+18:37:12 [32mGET[39m /media/norway.png
+18:37:12 [32mGET[39m /media/spain.png
+18:37:12 [32mGET[39m /script/clientRequests.mjs
+18:37:12 [32mGET[39m /script/functions.mjs
+18:37:13 [32mGET[39m /Languages/en.json
+18:37:19 [33mPOST[39m /user/login
+18:37:19 [32mGET[39m /user/avatar/42

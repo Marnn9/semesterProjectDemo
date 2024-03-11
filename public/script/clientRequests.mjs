@@ -186,6 +186,7 @@ export async function loggedInShowAvatar() {
                 localStorage.setItem("eyecolor", data.eyeColor);
                 localStorage.setItem("skincolor", data.skinColor);
                 localStorage.setItem("browtype", data.eyeBrowType);
+                loadAvatarScene();
 
             } else {
                 console.error(`Error: ${response.status} - ${data.error}`);
@@ -199,19 +200,22 @@ export async function loggedInShowAvatar() {
         }
     }
 
-    if (loggedInId && loggedInEmail && loggedInName && loggedInPassword !== null) {
-
-        myAccountBtn.style.display = "block";
-        loginForms.style.display = 'none';
-        main.loadScene();
-        avatarStudioEvents.style.display = 'block';
-        languageSelection.style.display = 'none';
-    } else {
-        return;
-    }
+    /*  if (loggedInId && loggedInEmail && loggedInName && loggedInPassword !== null) {
+ 
+         myAccountBtn.style.display = "block";
+         loginForms.style.display = 'none';
+         main.loadScene();
+         avatarStudioEvents.style.display = 'block';
+         languageSelection.style.display = 'none';
+     } else {
+         return;
+     }*/
 }
 
 function loadAvatarScene() {
+    const myAccountBtn = document.getElementById("myAccountBtn");
+    const languageSelection = document.getElementById("languageSelection");
+
     myAccountBtn.style.display = "block";
     loginForms.style.display = 'none';
     main.loadScene();
