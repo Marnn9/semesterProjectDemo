@@ -59,7 +59,7 @@ finds the logged in user and the avatar Id connected to them, and saves the chan
 response Avatar : {aHairColor, anEyeColor, aSkinColor, aBrowType}
 
 ## DELETE  /users/:id 
-> [!warning]
+> [!caution]
 > The user will be permanently deleted and can therefore nevet be restored
 
 
