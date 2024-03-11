@@ -150,7 +150,6 @@ export async function sendEditUser() {
 
 export async function saveAvatar() {
     try {
-
         avatarFeatures.loggedInUser = functions.checkStorage().loggedInId;
         const response = await fetch(avatarUrl, {
             method: 'POST',
@@ -175,14 +174,9 @@ export async function saveAvatar() {
 
 export async function loggedInShowAvatar() {
 
-    const loggedInId = sessionStorage.getItem("loggedInId");
-    const loggedInEmail = sessionStorage.getItem("loggedInEmail");
-    const loggedInName = sessionStorage.getItem("loggedInName");
-    const loggedInPassword = sessionStorage.getItem("loggedInPassword");
-    const avatarId = sessionStorage.getItem("avatarId");
+    const avatarId = functions.checkStorage().avatarId;
 
     if (avatarId != null) {
-
         try {
             const response = await fetch(avatarUrl + "/" + avatarId, {
                 method: 'GET',
@@ -198,6 +192,9 @@ export async function loggedInShowAvatar() {
                 localStorage.setItem("skincolor", data.skinColor);
                 localStorage.setItem("browtype", data.eyeBrowType);
 
+                functions.loadAvatarScene();
+
+
             } else {
                 console.error(`Error: ${response.status} - ${data.error}`);
                 functions.displayMsg(data.error, 'red')
@@ -210,17 +207,8 @@ export async function loggedInShowAvatar() {
         }
     }
 
-    if (loggedInId && loggedInEmail && loggedInName && loggedInPassword !== null) {
-
-        myAccountBtn.style.display = "block";
-        loginForms.style.display = 'none';
-        main.loadScene();
-        avatarStudioEvents.style.display = 'block';
-        languageSelection.style.display = 'none';
-    } else {
-        return;
-    }
 }
+
 
 export async function deleteUser() {
     const deleteConfirm = confirm("Are you sure you want to delete the user?");

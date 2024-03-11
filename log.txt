@@ -2498,3 +2498,176 @@ Database connection  local
 14:24:15 GET /script/clientRequests.mjs
 14:24:15 GET /script/functions.mjs
 14:24:16 GET /Languages/en.json
+####################
+Server enviorment local
+Database connection  local
+####################
+####################
+Server enviorment local
+Database connection  local
+####################
+14:25:41 GET /?Email=mail%40mail&password=pas
+14:25:41 GET /styles.css
+14:25:41 GET /script/clientEvents.mjs
+14:25:41 GET /script/admin.mjs
+14:25:41 GET /media/england.png
+14:25:41 GET /media/norway.png
+14:25:41 GET /media/spain.png
+14:25:41 GET /script/clientRequests.mjs
+14:25:41 GET /script/functions.mjs
+14:25:42 GET /Languages/en.json
+14:56:54 GET /?Email=mail%40mail&password=pas
+14:56:54 GET /styles.css
+14:56:54 GET /script/clientEvents.mjs
+14:56:54 GET /script/admin.mjs
+14:56:54 GET /media/england.png
+14:56:54 GET /media/norway.png
+14:56:54 GET /media/spain.png
+14:56:54 GET /script/clientRequests.mjs
+14:56:54 GET /script/functions.mjs
+14:56:54 GET /Languages/en.json
+14:57:03 POST /user/login
+14:57:03 GET /user/avatar/41
+14:57:15 GET /user/users
+####################
+Server enviorment local
+Database connection  local
+####################
+16:58:58 GET /?Email=mail%40mail&password=pas
+16:58:58 GET /styles.css
+16:58:58 GET /script/clientEvents.mjs
+16:58:58 GET /script/admin.mjs
+16:58:58 GET /media/england.png
+16:58:58 GET /media/norway.png
+16:58:58 GET /media/spain.png
+16:58:58 GET /script/clientRequests.mjs
+16:58:58 GET /script/functions.mjs
+####################
+Server enviorment local
+Database connection  local
+####################
+16:59:15 GET /?Email=mail%40mail&password=pas
+16:59:16 GET /styles.css
+16:59:16 GET /script/clientEvents.mjs
+16:59:16 GET /script/admin.mjs
+16:59:16 GET /media/england.png
+16:59:16 GET /media/norway.png
+16:59:16 GET /media/spain.png
+16:59:16 GET /script/clientRequests.mjs
+16:59:16 GET /script/functions.mjs
+####################
+Server enviorment local
+Database connection  local
+####################
+16:59:34 GET /
+16:59:34 GET /styles.css
+16:59:34 GET /script/clientEvents.mjs
+16:59:34 GET /script/admin.mjs
+16:59:34 GET /media/england.png
+16:59:34 GET /media/norway.png
+16:59:34 GET /media/spain.png
+16:59:34 GET /script/clientRequests.mjs
+16:59:34 GET /script/functions.mjs
+####################
+Server enviorment local
+Database connection  local
+####################
+16:59:47 [32mGET[39m /
+16:59:47 [32mGET[39m /styles.css
+16:59:47 [32mGET[39m /script/admin.mjs
+16:59:47 [32mGET[39m /script/clientEvents.mjs
+16:59:47 [32mGET[39m /media/england.png
+16:59:47 [32mGET[39m /media/norway.png
+16:59:47 [32mGET[39m /media/spain.png
+16:59:47 [32mGET[39m /script/functions.mjs
+16:59:47 [32mGET[39m /script/clientRequests.mjs
+####################
+Server enviorment local
+Database connection  local
+####################
+17:01:11 GET /
+17:01:11 GET /styles.css
+17:01:11 GET /script/clientEvents.mjs
+17:01:11 GET /script/admin.mjs
+17:01:11 GET /media/england.png
+17:01:11 GET /media/norway.png
+17:01:11 GET /media/spain.png
+17:01:11 GET /script/clientRequests.mjs
+17:01:11 GET /script/functions.mjs
+17:01:12 GET /Languages/en.json
+17:01:15 POST /user/login
+17:01:15 GET /user/avatar/42
+17:01:15 POST /user/avatar
+####################
+Server enviorment local
+Database connection  local
+####################
+17:03:15 GET /
+17:03:15 GET /styles.css
+17:03:15 GET /script/clientEvents.mjs
+17:03:15 GET /script/admin.mjs
+17:03:15 GET /media/england.png
+17:03:15 GET /media/norway.png
+17:03:15 GET /media/spain.png
+17:03:15 GET /script/clientRequests.mjs
+17:03:15 GET /script/functions.mjs
+17:03:15 GET /user/avatar/42
+17:03:15 GET /Languages/en.json
+17:03:18 GET /
+17:03:18 GET /styles.css
+17:03:18 GET /script/clientEvents.mjs
+17:03:18 GET /script/admin.mjs
+17:03:18 GET /media/england.png
+17:03:18 GET /media/norway.png
+17:03:18 GET /media/spain.png
+17:03:18 GET /script/clientRequests.mjs
+17:03:18 GET /script/functions.mjs
+17:03:18 GET /Languages/en.json
+17:03:22 POST /user/login
+17:03:22 GET /user/avatar/42
+17:03:28 GET /
+17:03:29 GET /styles.css
+17:03:29 GET /script/clientEvents.mjs
+17:03:29 GET /script/admin.mjs
+17:03:29 GET /media/england.png
+17:03:29 GET /media/norway.png
+17:03:29 GET /media/spain.png
+17:03:29 GET /script/clientRequests.mjs
+17:03:29 GET /script/functions.mjs
+17:03:29 GET /Languages/en.json
+17:03:31 GET /Languages/no-nb.json
+17:03:33 GET /Languages/es.json
+17:03:38 POST /user/login
+17:03:38 GET /user/avatar/41
+17:03:45 GET /
+17:03:45 GET /styles.css
+17:03:45 GET /script/clientEvents.mjs
+17:03:45 GET /script/admin.mjs
+17:03:45 GET /media/england.png
+17:03:45 GET /media/norway.png
+17:03:45 GET /media/spain.png
+17:03:45 GET /script/clientRequests.mjs
+17:03:45 GET /script/functions.mjs
+17:03:46 GET /Languages/en.json
+17:03:48 GET /Languages/no-nb.json
+17:03:52 POST /user/login
+17:03:52 GET /user/avatar/41
+17:03:57 GET /user/users
+17:04:06 GET /
+17:04:06 GET /styles.css
+17:04:06 GET /script/clientEvents.mjs
+17:04:06 GET /script/admin.mjs
+17:04:06 GET /media/england.png
+17:04:06 GET /media/norway.png
+17:04:06 GET /media/spain.png
+17:04:06 GET /script/clientRequests.mjs
+17:04:06 GET /script/functions.mjs
+17:04:07 GET /Languages/en.json
+17:04:11 POST /user/login
+17:04:11 GET /user/avatar/41
+17:04:13 GET /Languages/en.json
+17:04:14 GET /user/users
+17:04:16 GET /Languages/es.json
+17:04:22 GET /Languages/no-nb.json
+17:04:24 GET /Languages/en.json
+17:04:35 POST /user/avatar

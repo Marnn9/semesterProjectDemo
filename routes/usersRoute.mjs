@@ -44,11 +44,9 @@ USER_API.get('/users', adminAuth, async (req, res, next) => {
             res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
         }
     }else {
-        
+        res.status(HttpCodes.ClientSideErrorResponse.Forbidden).json({ error: "You don't have the rights to do this" });
     }
 });
-
-//add some verification of some sort?
 
 USER_API.get('/avatar/:id', validateUserMiddleware, async (req, res, next) => {
     const { dbAvatar} = req.authCredentials;
