@@ -7,6 +7,11 @@ export function encode(anEmail, aPassword) {
     return "Basic " + btoa(credentials);
 }
 
+export function encodeId(anId, anEmail) {
+    const credentials = anId + ":" + anEmail;
+    return "Basic " + btoa(credentials);
+}
+
 export function displayMsg(aMsg, aColor) {
     const messageDisplayContainerId = "messageDisplayContainer";
     let messageDisplay = document.getElementById(messageDisplayContainerId);

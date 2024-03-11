@@ -12,6 +12,7 @@ const bntContainerLoggedIn = document.getElementById('bntContainerLoggedIn');
 const editUserForm = document.getElementById('editUser');
 const deleteBtn = document.getElementById('deleteUserBtn');
 
+
 /*------- Header Events ------ */
 
 myAccountBtn.addEventListener("click", async (event) => {

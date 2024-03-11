@@ -40,7 +40,7 @@
         <p id="createUtext" class="login-createText" data-translate="createUserText">Create user here</p>
         <p id="loginText" class="login-createText" style="display: none;" data-translate="toLoginText">Already have
             a user? login here</p>
-    </div>
+        </div>
 
     <ul id="userList" class="adminItem"></ul>
 
@@ -85,6 +85,7 @@
         const norwegian = document.getElementById("norwegian");
         const spanish = document.getElementById("spanish");
 
+        // add to localstorage so you dont have to chooser language every time
         let language = "en";
 
         // Fetch translations from external JSON file

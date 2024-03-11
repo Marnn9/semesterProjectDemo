@@ -2,7 +2,7 @@ import 'dotenv/config'
 import express from 'express' // Express is installed using npm
 import USER_API from './routes/usersRoute.mjs'; // This is where we have defined the API for working with users.
 import SuperLogger from './modules/SuperLogger.mjs';
-import { basicAuthMiddleware } from './modules/middleWare.mjs';
+import { errorMiddleware } from './modules/middleWare.mjs';
 import printDeveloperStartupImportantInformationMSG from "./modules/developHelper.mjs";
 
 printDeveloperStartupImportantInformationMSG();
@@ -32,7 +32,7 @@ server.get("/", (req, res, next) => {
     res.status(200).send(JSON.stringify({ msg: "Server ok?" })).end();
 });
 
-//server.use(errorMiddleware);
+server.use(errorMiddleware);
 // Start the server 
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
