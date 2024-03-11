@@ -1,7 +1,7 @@
 # GET / 
 > Returns current authenticated user object. If no authenticated user, returns 403 Not authorized.
 
-**"/"**<br>
+_"/"_<br>
 METHOD: GET <br>
 Expects: JSON <br>
 Returns: JSON <br>
