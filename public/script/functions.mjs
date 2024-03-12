@@ -30,14 +30,13 @@ export function displayMsg(aMsg, aColor) {
 }
 
 export function displayServerMsg() {
-
     displayMsg('An error ocurred, trying to reach the server', 'red')
 }
 
 export function connectionLost(error) {
     if (error.message && error.message.includes('Failed to fetch')) {
         alert("Connection lost, this page will now be refreshed");
-        window.location.reload();
+        //window.location.reload();
     }
 }
 
@@ -54,14 +53,11 @@ export function displayCreateNewUser() {
     const loginText = document.getElementById('loginText');
 
     if (loginForm.style.display !== 'none') {
-
         loginForm.style.display = 'none';
         createNewUserForm.style.display = 'block';
         displayUserText.style.display = 'none';
         loginText.style.display = 'block';
-
     } else {
-
         loginForm.style.display = 'block';
         createNewUserForm.style.display = 'none';
         displayUserText.style.display = 'block';
@@ -76,7 +72,27 @@ export function checkStorage() {
     const loggedInName = sessionStorage.getItem("loggedInName");
     const loggedInPassword = sessionStorage.getItem("loggedInPassword")
     const loggedInRole = sessionStorage.getItem("role");
+    const avatarId = sessionStorage.getItem("avatarId");
     const token = sessionStorage.getItem("token");
 
-    return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole, token };
+    return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole, avatarId, token };
+}
+
+export async function globalFetch(aMethod, anUrl, aBodyElement, aAuthenticationReq = false) {
+    
+    try {
+        const response = await fetch(anUrl, {
+            method: aMethod,
+            headers: {
+                Authorization: checkStorage().token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(aBodyElement),
+        });
+        return response;
+    } catch (error) {
+        console.error("An error during " + aMethod + " for url " + anUrl, error);
+        displayServerMsg();
+        connectionLost(error);
+    }
 }

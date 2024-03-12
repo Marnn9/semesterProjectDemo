@@ -3,37 +3,17 @@ import express from 'express';
 import HttpCodes from '../modules/httpConstants.mjs';
 import User from '../modules/user.mjs';
 import SuperLogger from '../modules/SuperLogger.mjs';
-import { loginAuthenticationMiddleware, adminAuth, validateUserMiddleware } from '../modules/middleWare.mjs';
-import { encrypt, validatePas } from "../modules/authentication.mjs"
+import { loginAuthenticationMiddleware, adminAuth, validateUserMiddleware, updateUserMiddleware } from '../modules/middleWare.mjs';
+import { encrypt } from "../modules/authentication.mjs"
 import DBManager from "../modules/storageManager.mjs"
-
-
-
 
 const logger = new SuperLogger();
 const USER_API = express.Router();
 USER_API.use(express.json());
 
-// Use middleware to parse JSON requests
 
-//const users = [];
-
-/* 
-Next important so you do the code but then it sends 
-you to the next checkpoint (next line in code) this makes them do it automatically
-
- */
-/* const functionToRunToEveryUser = function (req, res, next) {
-    console.log("text");
-    next();
-}
-USER_API.use(functionToRunToEveryUser); //the use is from express making it run everytime
- */
-
-
-USER_API.get('/users', adminAuth, async (req, res, next) => {
+USER_API.get('/users', validateUserMiddleware, adminAuth, async (req, res, next) => {
     const admin = req.authCredentials;
-
     if (admin != null) {
         try {
             let users = new User();
@@ -43,15 +23,13 @@ USER_API.get('/users', adminAuth, async (req, res, next) => {
             console.error('Error retrieving all users:', error);
             res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
         }
-    }else {
-        
+    } else {
+        res.status(HttpCodes.ClientSideErrorResponse.Forbidden).json({ error: "You don't have the rights to access the data" });
     }
 });
 
-//add some verification of some sort?
-
 USER_API.get('/avatar/:id', validateUserMiddleware, async (req, res, next) => {
-    const { dbAvatar} = req.authCredentials;
+    const { dbAvatar } = req.authCredentials;
     try {
         const id = dbAvatar.avatarId;
         const avatar = await DBManager.getAvatar(id);
@@ -114,48 +92,20 @@ USER_API.post('/login', loginAuthenticationMiddleware, async (req, res, next) =>
     }
 });
 
-USER_API.put('/users/:id', validateUserMiddleware, async (req, res) => {
+USER_API.put('/users/update', validateUserMiddleware, updateUserMiddleware, async (req, res) => {
+    const { token, updatedUser } = req.updatedUserData;
     try {
-        const userId = req.params.id;
-        const { name, email } = req.body;
-        let password = req.body.password;
-
-        let user = new User();
-        const foundUser = await user.findByIdentifyer(userId);
-
-        const checkMail = new User();
-        const existingMail = await checkMail.findByIdentifyer(email);
-        if (existingMail === null || email === foundUser.uEmail) {
-            if (password === foundUser.password) {
-                password = password;
-            } else {
-                password = encrypt(password);
-            }
-
-            if (userId && foundUser !== null) {
-                // Update user data
-                user.name = name;
-                user.email = email;
-                user.pswHash = password;
-                user.id = userId;
-
-                user = await user.save();
-
-                res.status(HttpCodes.successfulResponse.Ok).json(user);
-            } else {
-                res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
-            }
-        } else {
-            res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: 'A user with this email already exists' });
-        }
+        await updatedUser.save();
+        res.status(HttpCodes.successfulResponse.Ok).json({ updatedUser, token });
     } catch (error) {
-        //add some code here
+        res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: "Could not update user in database" });
     }
 });
 
 USER_API.post('/avatar', validateUserMiddleware, async (req, res) => {
     const { hairColor, eyeColor, skinColor, browType, loggedInUser } = req.body;
 
+    // add try catch
     const user = new User();
     const existingUser = await user.findByIdentifyer(loggedInUser);
 
@@ -175,26 +125,25 @@ USER_API.post('/avatar', validateUserMiddleware, async (req, res) => {
 
 USER_API.delete('/users/:id', validateUserMiddleware, async (req, res) => {
     const userId = req.params.id;
-
-    console.log('Deleting user with ID:', userId);
-
-    //must check if it is the logged in user that wants to delte its own profile or an Admin 
-
+    const { existingUser } = req.authCredentials;
+    let adminId = null
     let deleteUser = new User();
 
-    if (userId) {
-        try {
-            // Call the deleteUser method, not deletedUser
-            deleteUser = await deleteUser.delete(userId);
+    if (existingUser.role === "admin") {
+        adminId = existingUser.id
+    }
 
+    if (userId && userId !== adminId) {
+        try {
+            deleteUser = await deleteUser.delete(userId);
             res.status(HttpCodes.successfulResponse.Ok).json({ msg: 'user with id ' + userId + ' deleted' });
         } catch (error) {
             console.error('Error deleting user:', error);
-            res.status(HttpCodes.InternalServerError).json({ error: 'Internal Server Error' });
+            res.status(HttpCodes.InternalServerError).json({ error: 'Could not delete user' });
         }
     } else {
-        console.log('User not found for deletion');
-        res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+        console.log('id not valid for deleting');
+        res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'id not valid for deleting' });
     }
 });
 

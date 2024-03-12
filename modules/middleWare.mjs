@@ -4,7 +4,6 @@ import HttpCodes from './httpConstants.mjs';
 import User from '../modules/user.mjs';
 import DBManager from "../modules/storageManager.mjs"
 
-
 //middleware must have req, res, and next, for error middleware the err parameter must be present
 
 export async function loginAuthenticationMiddleware(req, res, next) {
@@ -36,10 +35,10 @@ export async function loginAuthenticationMiddleware(req, res, next) {
 }
 
 export async function validateUserMiddleware(req, res, next) {
-    const authHeader = req.headers.authorization;
+    const authHeaderToken = req.headers.authorization;
 
-    if (authHeader != null) {
-        const { time, email } = decodeToken(authHeader);
+    if (authHeaderToken != null) {
+        const { time, email } = decodeToken(authHeaderToken);
         const validToken = tokenTimer(time);
 
         if (validToken) {
@@ -51,7 +50,7 @@ export async function validateUserMiddleware(req, res, next) {
                 if (existingUser.anAvatarId !== null) {
                     dbAvatar = await DBManager.getAvatar(existingUser.anAvatarId);
                 }
-                const token = authHeader;
+                const token = authHeaderToken;
                 req.authCredentials = { existingUser, dbAvatar, token }; // call this for the requested method in usersRoute
                 next();
             } else {
@@ -66,25 +65,13 @@ export async function validateUserMiddleware(req, res, next) {
 }
 
 
-export async function adminAuth(req, res, next) {
-    const authHeader = req.headers.authorization;
+export function adminAuth(req, res, next) {
+    const { existingUser } = req.authCredentials;
 
-    if (authHeader != null) {
-        const encodedCredentials = authHeader.split(' ')[1];
-        const credentials = Buffer.from(encodedCredentials, 'base64').toString('utf-8');
-        const [id, email] = credentials.split(':');
-
-        const user = new User();
-        const admin = await user.findByIdentifyer(id);
-
-        if (admin !== null && admin.role === 'admin') {
-            req.authCredentials = { admin }; // call this for the requested method in usersRoute
-            next();
-        } else {
-            res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid email or password' });
-        }
+    if (existingUser.role === "admin") {
+        next();
     } else {
-        res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'no provided authentication data' });
+        res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: "You don't have the rights to execute this request" });
     }
 }
 
@@ -101,6 +88,56 @@ export async function errorMiddleware(err, req, res, next) {
     res.status(500).json({ error: 'Unhandled error in server', errorCode: `${err}` });
     next();
 }
+
+export async function updateUserMiddleware(req, res, next) {
+    const { existingUser } = req.authCredentials;
+    const { name, email, password } = req.body;
+
+    let newName = null;
+    let newPas = null;
+    let newMail = null;
+
+    if (email !== undefined && email !== '') {
+        const checkMail = new User();
+        const existingMail = await checkMail.findByIdentifyer(email);
+
+        if (existingMail === null || existingMail.id === existingUser.id) {
+            newMail = email;
+        } else {
+            res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: "a user with this email already exists" });
+            return;
+        }
+    } else {
+        newMail = existingUser.uEmail;
+    }
+
+    if (password !== undefined && password !== '') {
+        newPas = encrypt(password);
+    } else {
+        newPas = existingUser.password;
+    }
+
+    if (name !== undefined && name !== '') {
+        newName = name;
+    } else {
+        newName = existingUser.uName;
+    }
+
+    if (newMail && newName && newPas) {
+        const updatedUser = new User();
+        updatedUser.name = newName;
+        updatedUser.email = newMail;
+        updatedUser.pswHash = newPas;
+        updatedUser.id = existingUser.id;
+
+        const token = createToken(existingUser.id, updatedUser.email, existingUser.anAvatarId, existingUser.role);
+        req.updatedUserData = { token, updatedUser };
+        next();
+    } else {
+        res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: "could not set new values to the user" });
+    }
+}
+
 
 
 //maybe add a new middleware for loading templates
