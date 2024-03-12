@@ -36,7 +36,7 @@ export function displayServerMsg() {
 export function connectionLost(error) {
     if (error.message && error.message.includes('Failed to fetch')) {
         alert("Connection lost, this page will now be refreshed");
-        window.location.reload();
+        //window.location.reload();
     }
 }
 

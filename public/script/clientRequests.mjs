@@ -46,6 +46,7 @@ export async function loginUser() {
                 sessionStorage.setItem("role", data.user.role);
                 functions.showAdminFields();
             }
+            loadAvatarScene();
             await loggedInShowAvatar();
         } else {
             console.error(`Error: ${response.status} - ${data.error}`);
@@ -88,40 +89,27 @@ export async function sendEditUser() {
     let name = document.getElementById('inpUnameEdit').value;
     let email = document.getElementById('inpEmailEdit').value;
     let password = document.getElementById('inpPasswordEdit').value;
-    const loggedId = functions.checkStorage().loggedInId;
+    console.log(sessionStorage.getItem("token"));
 
-    if (!name) {
-        name = functions.checkStorage().loggedInName;
-    }
-    if (!email) {
-        email = functions.checkStorage().loggedInEmail;
-    }
-    if (!password) {
-        password = functions.checkStorage().loggedInPassword;
-    }
+    const editedUser = { email, name, password };
+    try {
+        const response = await functions.globalFetch('PUT', url + "/update", editedUser);
+        const data = await response.json();
+        if (response.ok) {
+            console.log('Edited User:', data);
+            functions.displayMsg("User updated", 'green');
+            sessionStorage.setItem("token", data.token);
 
-    if (name && email && password && loggedId) {
-        const editedUser = { email, loggedId, name, password };
-        try {
-            const response = await functions.globalFetch('PUT', url + "/" + loggedId, editedUser);
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error(`Error: ${response.status} - ${errorData.error}`);
-                functions.displayMsg(errorData.error, 'red')
-            } else {
-                const data = await response.json();
-                console.log('Edited User:', data);
-                functions.displayMsg("User updated", 'green');
-            }
-        } catch (error) {
-            console.error('Error updating user:', error);
-            functions.connectionLost(error);
-            functions.displayServerMsg();
+        } else {
+            console.error(`Error: ${response.status} - ${data.error}`);
+            functions.displayMsg(data.error, 'red')
         }
-    } else {
-        console.error('Missing data in fields for editing user or no user logged In');
-        functions.displayMsg('Missing data in fields for editing user or no user logged In', 'red');
+    } catch (error) {
+        console.error('Error updating user:', error);
+        functions.connectionLost(error);
+        functions.displayServerMsg();
     }
+
 }
 
 export async function saveAvatar() {
@@ -130,7 +118,6 @@ export async function saveAvatar() {
         const response = await functions.globalFetch('POST', avatarUrl, avatarFeatures);
         const data = await response.json();
         if (response.ok) {
-
             functions.displayMsg("Saved", 'green');
             console.log('Saved:', data);
         }
@@ -205,9 +192,7 @@ export async function deleteUser() {
         functions.displayMsg("delete canceled", 'orange');
     } else if (role === "admin") {
         try {
-            const response = await fetch(url + "/" + selectedId, {
-                method: 'DELETE',
-            });
+            const response = await functions.globalFetch('DELETE', url + "/" + selectedId);
             const data = await response.json();
             if (response.ok) {
                 console.log('Deleted user:', data);

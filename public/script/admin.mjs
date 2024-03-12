@@ -27,17 +27,7 @@ displayBtnAdmin.addEventListener('click', async (event) => {
 async function displayAllUsers() {
     try {
         userList.innerHTML = ' ';
-        const id = functions.checkStorage().loggedInId;
-        const email = functions.checkStorage().loggedInEmail;
-
-        const authorization = functions.encodeId(id, email);
-
-        const response = await fetch(url, {
-            headers: {
-                'Authorization': authorization,
-                'Content-Type': 'application/json',
-            },
-        });
+        const response = await functions.globalFetch('GET', url);
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
