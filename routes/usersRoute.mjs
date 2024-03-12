@@ -154,6 +154,7 @@ USER_API.put('/users/:id', validateUserMiddleware, async (req, res) => {
 USER_API.post('/avatar', validateUserMiddleware, async (req, res) => {
     const { hairColor, eyeColor, skinColor, browType, loggedInUser } = req.body;
 
+    // add try catch
     const user = new User();
     const existingUser = await user.findByIdentifyer(loggedInUser);
 
@@ -173,6 +174,7 @@ USER_API.post('/avatar', validateUserMiddleware, async (req, res) => {
 
 USER_API.delete('/users/:id', validateUserMiddleware, async (req, res) => {
     const userId = req.params.id;
+    //get the id from head in middleware, and check role
 
     console.log('Deleting user with ID:', userId);
 

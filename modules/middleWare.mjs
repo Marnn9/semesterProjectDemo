@@ -4,7 +4,6 @@ import HttpCodes from './httpConstants.mjs';
 import User from '../modules/user.mjs';
 import DBManager from "../modules/storageManager.mjs"
 
-
 //middleware must have req, res, and next, for error middleware the err parameter must be present
 
 export async function loginAuthenticationMiddleware(req, res, next) {

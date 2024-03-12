@@ -5,7 +5,7 @@ import { avatarFeatures } from "../AvatarStudio/Script/scene.mjs";
 import { selectedUserId } from "./admin.mjs";
 
 const url = 'user/users';
-const avatarUrl = "user/avatar";
+const avatarUrl = 'user/avatar';
 const loginForms = document.getElementById('loginForms');
 const avatarStudioEvents = document.getElementById('avatarStudioEvents');
 
@@ -14,7 +14,6 @@ export async function loginUser() {
     const email = document.getElementById('inpEmailLogin').value;
     const password = document.getElementById('inpPasswordLogin').value;
     const authorization = functions.encode(email, password);
-
     try {
         const response = await fetch('user/login', {
             method: 'POST',
@@ -30,7 +29,6 @@ export async function loginUser() {
             functions.displayMsg("Successful login", 'green');
 
             //might only need to return a token that times out and give privileges that lets users/admin do different stuff
-
             sessionStorage.setItem("loggedInId", data.user.id);
             sessionStorage.setItem("loggedInEmail", data.user.uEmail);
             sessionStorage.setItem("loggedInName", data.user.uName);
@@ -44,7 +42,6 @@ export async function loginUser() {
                 localStorage.setItem('browtype', data.avatar.eyeBrowType);
                 sessionStorage.setItem('avatarId', data.avatar.avatarId);
             }
-
             if (data.user.role === "admin") {
                 sessionStorage.setItem("role", data.user.role);
                 functions.showAdminFields();
@@ -68,9 +65,9 @@ export async function addUser() {
     const password = document.getElementById('inpPassword').value;
 
     const user = { name, email, password };
-    const response = await functions.globalFetch('POST', url, user);
 
     try {
+        const response = await functions.globalFetch('POST', url, user);
         if (response.ok) {
             const data = await response.json();
             window.location.reload();
@@ -96,11 +93,9 @@ export async function sendEditUser() {
     if (!name) {
         name = functions.checkStorage().loggedInName;
     }
-
     if (!email) {
         email = functions.checkStorage().loggedInEmail;
     }
-
     if (!password) {
         password = functions.checkStorage().loggedInPassword;
     }
@@ -108,15 +103,7 @@ export async function sendEditUser() {
     if (name && email && password && loggedId) {
         const editedUser = { email, loggedId, name, password };
         try {
-            const response = await fetch(url + "/" + loggedId, {
-                method: 'PUT',
-                headers: {
-                    Authorization: functions.checkStorage().token,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(editedUser),
-            });
-
+            const response = await functions.globalFetch('PUT', url + "/" + loggedId, editedUser);
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error(`Error: ${response.status} - ${errorData.error}`);
@@ -126,7 +113,6 @@ export async function sendEditUser() {
                 console.log('Edited User:', data);
                 functions.displayMsg("User updated", 'green');
             }
-
         } catch (error) {
             console.error('Error updating user:', error);
             functions.connectionLost(error);
@@ -141,14 +127,7 @@ export async function sendEditUser() {
 export async function saveAvatar() {
     try {
         avatarFeatures.loggedInUser = functions.checkStorage().loggedInId;
-        const response = await fetch(avatarUrl, {
-            method: 'POST',
-            headers: {
-                Authorization: functions.checkStorage().token,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(avatarFeatures),
-        });
+        const response = await functions.globalFetch('POST', avatarUrl, avatarFeatures);
         const data = await response.json();
         if (response.ok) {
 
@@ -163,53 +142,29 @@ export async function saveAvatar() {
 };
 
 export async function loggedInShowAvatar() {
-
-    const loggedInId = sessionStorage.getItem("loggedInId");
-    const loggedInEmail = sessionStorage.getItem("loggedInEmail");
-    const loggedInName = sessionStorage.getItem("loggedInName");
-    const loggedInPassword = sessionStorage.getItem("loggedInPassword");
-    const avatarId = sessionStorage.getItem("avatarId");
+    const avatarId = functions.checkStorage().avatarId;
 
     if (avatarId != null) {
-
         try {
-            const response = await fetch(avatarUrl + "/" + avatarId, {
-                method: 'GET',
-                headers: {
-                    'Authorization': functions.checkStorage().token,
-                    'Content-Type': 'application/json',
-                }
-            });
+            const response = await functions.globalFetch('GET', avatarUrl + "/" + avatarId);
             const data = await response.json();
+
             if (response.ok) {
                 localStorage.setItem("haircolor", data.hairColor);
                 localStorage.setItem("eyecolor", data.eyeColor);
                 localStorage.setItem("skincolor", data.skinColor);
                 localStorage.setItem("browtype", data.eyeBrowType);
                 loadAvatarScene();
-
             } else {
                 console.error(`Error: ${response.status} - ${data.error}`);
                 functions.displayMsg(data.error, 'red')
             }
-
         } catch (error) {
             console.error('Error showing Avatar user:' + error);
             functions.displayServerMsg();
             functions.connectionLost(error);
         }
     }
-
-    /*  if (loggedInId && loggedInEmail && loggedInName && loggedInPassword !== null) {
- 
-         myAccountBtn.style.display = "block";
-         loginForms.style.display = 'none';
-         main.loadScene();
-         avatarStudioEvents.style.display = 'block';
-         languageSelection.style.display = 'none';
-     } else {
-         return;
-     }*/
 }
 
 function loadAvatarScene() {
@@ -232,14 +187,7 @@ export async function deleteUser() {
 
     if (deleteConfirm && id && (role !== "admin")) {
         try {
-            const response = await fetch(url + "/" + id, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': functions.checkStorage().token,
-                    'Content-Type': 'application/json',
-                }
-            });
-
+            const response = await functions.globalFetch('DELETE', url + "/" + id);
             const data = await response.json();
             if (response.ok) {
                 console.log('Deleted user:', data);
