@@ -1,4 +1,5 @@
 "use strict"
+import * as main from "../AvatarStudio/Script/main.mjs";
 
 const displayBtnAdmin = document.getElementById("displayUsers");
 
@@ -36,8 +37,21 @@ export function displayServerMsg() {
 export function connectionLost(error) {
     if (error.message && error.message.includes('Failed to fetch')) {
         alert("Connection lost, this page will now be refreshed");
-        //window.location.reload();
+        window.location.reload();
     }
+}
+
+export function loadAvatarScene() {
+    const myAccountBtn = document.getElementById("myAccountBtn");
+    const languageSelection = document.getElementById("languageSelection");
+    const loginForms = document.getElementById('loginForms');
+    const avatarStudioEvents = document.getElementById('avatarStudioEvents');
+
+    myAccountBtn.style.display = "block";
+    loginForms.style.display = 'none';
+    main.loadScene();
+    avatarStudioEvents.style.display = 'block';
+    languageSelection.style.display = 'none';
 }
 
 export function showAdminFields() {
@@ -76,7 +90,7 @@ export function checkStorage() {
 }
 
 export async function globalFetch(aMethod, anUrl, aBodyElement) {
-    
+
     try {
         const response = await fetch(anUrl, {
             method: aMethod,

@@ -58,20 +58,19 @@ export function hideUserList() {
     userList.style.display = 'none';
     userListVisible = false;
 }
-// Function to select a user by ID
+
 function selectUser(userId, userName, userEpost, userPassword) {
     selectedUserId = userId;
     selectedUserName = userName;
     selectedUserEpost = userEpost;
     selectedUserPassword = userPassword;
 }
-// Function to display a user in the user list
+
 function displayUser(user) {
     const userList = document.getElementById('userList');
 
     const listItem = document.createElement('li');
 
-    // Check if user is undefined before accessing properties
     if (user) {
         listItem.innerHTML = `<i>User</i> : Id: <b>${user.id}</b>, Name: <b>${user.uName}</b>, E-mail: <b>${user.uEmail}</b>, AvatarId: <b>${user.anAvatarId}</b>, Role: <b>${user.role}</b>`;
         userList.appendChild(listItem);

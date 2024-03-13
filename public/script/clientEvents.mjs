@@ -81,8 +81,8 @@ saveBtn.addEventListener("click", async (event) => {
     requests.saveAvatar();
 });
 
-const mainBtn = document.getElementById("mainBtn");
-mainBtn.addEventListener("click", async (event) => {
+const shareBtn = document.getElementById("mainBtn");
+shareBtn.addEventListener("click", async (event) => {
     event.preventDefault();
     main.saveImage();
 });

@@ -1,7 +1,6 @@
 "use strict";
 import * as THREE from '../three.js-master/src/Three.js';
 import * as dat from "../three.js-master/build/dat.gui.module.js";
-import { GLTFLoader } from "../three.js-master/build/GLTFLoader.js";
 import { TCharacter } from './Character.mjs';
 import { TCharacterOptions } from "./characterOptions.js";
 
@@ -19,9 +18,9 @@ export function TinitialiseScene(anAvatar) {
     scene = new THREE.Scene();
 
     const guiWidth = 300;
-    let centerX = window.innerWidth / 2 - (guiWidth/2); // Assuming each GUI panel has a width of 300px
+    let centerX = window.innerWidth / 2 - (guiWidth/2); 
 
-    const guiPosition = { x: centerX, y: 10 }; // Adjust 'y' as needed
+    const guiPosition = { x: centerX, y: 10 }; 
     //---------------gradient Background & color -----------------------
 
     let hexValue = "ffffff";

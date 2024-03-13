@@ -1,16 +1,13 @@
 "use strict"
-import * as main from "../AvatarStudio/Script/main.mjs";
 import * as functions from "./functions.mjs"
 import { avatarFeatures } from "../AvatarStudio/Script/scene.mjs";
 import { selectedUserId } from "./admin.mjs";
 
 const url = 'user/users';
 const avatarUrl = 'user/avatar';
-const loginForms = document.getElementById('loginForms');
-const avatarStudioEvents = document.getElementById('avatarStudioEvents');
+
 
 export async function loginUser() {
-    // Get user credentials from the input fields
     const email = document.getElementById('inpEmailLogin').value;
     const password = document.getElementById('inpPasswordLogin').value;
     const authorization = functions.encode(email, password);
@@ -131,11 +128,7 @@ export async function loggedInShowAvatar() {
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.setItem("haircolor", data.hairColor);
-                localStorage.setItem("eyecolor", data.eyeColor);
-                localStorage.setItem("skincolor", data.skinColor);
-                localStorage.setItem("browtype", data.eyeBrowType);
-                loadAvatarScene();
+                functions.loadAvatarScene();
             } else {
                 console.error(`Error: ${response.status} - ${data.error}`);
                 functions.displayMsg(data.error, 'red')
@@ -146,17 +139,6 @@ export async function loggedInShowAvatar() {
             functions.connectionLost(error);
         }
     }
-}
-
-function loadAvatarScene() {
-    const myAccountBtn = document.getElementById("myAccountBtn");
-    const languageSelection = document.getElementById("languageSelection");
-
-    myAccountBtn.style.display = "block";
-    loginForms.style.display = 'none';
-    main.loadScene();
-    avatarStudioEvents.style.display = 'block';
-    languageSelection.style.display = 'none';
 }
 
 

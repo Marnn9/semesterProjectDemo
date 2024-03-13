@@ -85,10 +85,8 @@
         const norwegian = document.getElementById("norwegian");
         const spanish = document.getElementById("spanish");
 
-        // add to localstorage so you dont have to chooser language every time
         let language = "en";
 
-        // Fetch translations from external JSON file
         async function fetchTranslations(lang) {
             try {
                 const response = await fetch(`./Languages/${lang}.json`);
@@ -167,7 +165,6 @@
             });
         });
 
-        // Set initial language when the page is loaded
         document.addEventListener("DOMContentLoaded", setInitialLanguage);
     </script>
 </body>
