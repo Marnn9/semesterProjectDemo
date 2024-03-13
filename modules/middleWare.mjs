@@ -4,8 +4,6 @@ import HttpCodes from './httpConstants.mjs';
 import User from '../modules/user.mjs';
 import DBManager from "../modules/storageManager.mjs"
 
-//middleware must have req, res, and next, for error middleware the err parameter must be present
-
 export async function loginAuthenticationMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
 
@@ -24,7 +22,7 @@ export async function loginAuthenticationMiddleware(req, res, next) {
                 dbAvatar = await DBManager.getAvatar(existingUser.anAvatarId);
             }
             const token = createToken(existingUser.id, existingUser.uEmail, existingUser.anAvatarId, existingUser.role);
-            req.authCredentials = { existingUser, dbAvatar, token }; // call this for the requested method in usersRoute
+            req.authCredentials = { existingUser, dbAvatar, token };
             next();
         } else {
             res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid email or password' });
@@ -51,13 +49,14 @@ export async function validateUserMiddleware(req, res, next) {
                     dbAvatar = await DBManager.getAvatar(existingUser.anAvatarId);
                 }
                 const token = authHeaderToken;
-                req.authCredentials = { existingUser, dbAvatar, token }; // call this for the requested method in usersRoute
+                req.authCredentials = { existingUser, dbAvatar, token };
                 next();
             } else {
                 res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid email or password' });
             }
         } else {
-            res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Invalid token, please log in' });
+            res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'Token timed out, please log in again' });
+            return;
         }
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: 'no provided authentication data' });
@@ -73,20 +72,6 @@ export function adminAuth(req, res, next) {
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.Unauthorized).json({ error: "You don't have the rights to execute this request" });
     }
-}
-
-export async function errorMiddleware(err, req, res, next) {
-    const superInstance = new SuperLogger();
-    superInstance.log(err);
-
-    process.on('uncaughtException', (error) => {
-        console.error('Uncaught Exception:', error);
-        superInstance.log(error);
-        process.exit(1);
-    });
-
-    res.status(500).json({ error: 'Unhandled error in server', errorCode: `${err}` });
-    next();
 }
 
 export async function updateUserMiddleware(req, res, next) {
@@ -138,6 +123,16 @@ export async function updateUserMiddleware(req, res, next) {
     }
 }
 
+export async function errorMiddleware(err, req, res, next) {
+    const superInstance = new SuperLogger();
+    superInstance.log(err);
 
+    process.on('uncaughtException', (error) => {
+        console.error('Uncaught Exception:', error);
+        superInstance.log(error);
+        process.exit(1);
+    });
 
-//maybe add a new middleware for loading templates
+    res.status(500).json({ error: 'Unhandled error in server', errorCode: `${err}` });
+    next();
+}

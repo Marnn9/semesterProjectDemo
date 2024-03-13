@@ -68,17 +68,14 @@ export function displayCreateNewUser() {
 
 export function checkStorage() {
     const loggedInId = sessionStorage.getItem("loggedInId");
-    const loggedInEmail = sessionStorage.getItem("loggedInEmail");
-    const loggedInName = sessionStorage.getItem("loggedInName");
-    const loggedInPassword = sessionStorage.getItem("loggedInPassword")
     const loggedInRole = sessionStorage.getItem("role");
     const avatarId = sessionStorage.getItem("avatarId");
     const token = sessionStorage.getItem("token");
 
-    return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole, avatarId, token };
+    return { loggedInId, loggedInRole, avatarId, token };
 }
 
-export async function globalFetch(aMethod, anUrl, aBodyElement, aAuthenticationReq = false) {
+export async function globalFetch(aMethod, anUrl, aBodyElement) {
     
     try {
         const response = await fetch(anUrl, {

@@ -71,17 +71,14 @@ USER_API.post('/users', async (req, res, next) => {
     } catch (error) {
         console.error("Error in post handler:", error);
         res.status(HttpCodes.InternalServerError).json({ error: 'Internal Server Error' });
-        // displayMsg("error: Missing data fields catch");
-
     }
 });
 
-//using :id then you can use req.params since all data is named id as a variable
 USER_API.post('/login', loginAuthenticationMiddleware, async (req, res, next) => {
     try {
         const { dbAvatar, existingUser, token } = req.authCredentials;
         const userData = {
-            user: existingUser,
+            user: {id: existingUser.id, role: existingUser.role},
             avatar: dbAvatar,
             token,
         }
@@ -96,18 +93,20 @@ USER_API.put('/users/update', validateUserMiddleware, updateUserMiddleware, asyn
     const { token, updatedUser } = req.updatedUserData;
     try {
         await updatedUser.save();
-        res.status(HttpCodes.successfulResponse.Ok).json({ updatedUser, token });
+        const user = {id: updatedUser.id, email: updatedUser.email}
+        res.status(HttpCodes.successfulResponse.Ok).json({ user, token });
     } catch (error) {
         res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: "Could not update user in database" });
     }
 });
 
 USER_API.post('/avatar', validateUserMiddleware, async (req, res) => {
-    const { hairColor, eyeColor, skinColor, browType, loggedInUser } = req.body;
+    const { hairColor, eyeColor, skinColor, browType } = req.body;
+    const {existingUser} = req.authCredentials;
 
     // add try catch
     const user = new User();
-    const existingUser = await user.findByIdentifyer(loggedInUser);
+    await user.findByIdentifyer(loggedInUser);
 
     const avatar = { aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor, aBrowType: browType };
 

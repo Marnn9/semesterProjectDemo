@@ -7,7 +7,6 @@ export function validatePas(aInputPas, aStoredPas) {
     }
 }
 
-
 export function encrypt(aPas) {
     const secret = process.env.Secret;
     const hash = createHmac('sha256', secret)

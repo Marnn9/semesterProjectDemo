@@ -28,11 +28,7 @@ export async function loginUser() {
             console.log('Login successful:', data);
             functions.displayMsg("Successful login", 'green');
 
-            //might only need to return a token that times out and give privileges that lets users/admin do different stuff
             sessionStorage.setItem("loggedInId", data.user.id);
-            sessionStorage.setItem("loggedInEmail", data.user.uEmail);
-            sessionStorage.setItem("loggedInName", data.user.uName);
-            sessionStorage.setItem("loggedInPassword", data.user.password);
             sessionStorage.setItem("token", data.token);
 
             if (data.avatar !== null) {
@@ -46,11 +42,10 @@ export async function loginUser() {
                 sessionStorage.setItem("role", data.user.role);
                 functions.showAdminFields();
             }
-            loadAvatarScene();
             await loggedInShowAvatar();
         } else {
             console.error(`Error: ${response.status} - ${data.error}`);
-            functions.displayMsg(data.error, 'red')
+            functions.displayMsg(data.error, 'red');
         }
 
     } catch (error) {
@@ -114,7 +109,6 @@ export async function sendEditUser() {
 
 export async function saveAvatar() {
     try {
-        avatarFeatures.loggedInUser = functions.checkStorage().loggedInId;
         const response = await functions.globalFetch('POST', avatarUrl, avatarFeatures);
         const data = await response.json();
         if (response.ok) {

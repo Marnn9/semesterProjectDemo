@@ -32,6 +32,8 @@ class DBManager {
             return user;
 
         } catch (error) {
+            console.error(`Error updating user ${user}:`, error);
+            throw error;
         } finally {
             await client.end();
         }
@@ -83,7 +85,8 @@ class DBManager {
             }
 
         } catch (error) {
-            console.error(error);
+            console.error(`Error deleting user with id: ${anId}:`, error);
+            throw error;
         } finally {
             await client.end(); 
         }
@@ -101,8 +104,8 @@ class DBManager {
             }
 
         } catch (error) {
-            console.error(error);
-         
+            console.error(`Error creating user:  ${user}:`, error);
+            throw error;
         } finally {
             await client.end(); 
         }
@@ -120,7 +123,7 @@ class DBManager {
             return users;
 
         } catch (error) {
-            console.error(error);
+            console.error("error, could not find users in database" ,error);
             throw error;
         } finally {
             await client.end();
@@ -159,7 +162,8 @@ class DBManager {
             avatar.avatarId = avatarId;
 
         } catch (error) {
-            console.error('Error in addAvatar:', error);
+            console.error('Error adding avatar:', error);
+            throw error;
         } finally {
             await client.end();
         }
@@ -177,7 +181,8 @@ class DBManager {
         SET "${this.#dbTableNames.avatar.hairColor}" = $1::text, "${this.#dbTableNames.avatar.eyeColor}" = $2::text, "${this.#dbTableNames.avatar.skinColor}" = $3::text, "${this.#dbTableNames.avatar.eyebrowType}" = $4::text WHERE "avatarId" = $5::integer;`
                 , [avatar.aHairColor, avatar.anEyeColor, avatar.aSkinColor, avatar.aBrowType, avatarId]);
         } catch (error) {
-            console.error('Error in addAvatar:', error);
+            console.error("Error updating the avatar:", error);
+            throw error;
         } finally {
            await  client.end();
         }
@@ -199,7 +204,8 @@ class DBManager {
 
             return avatar;
         } catch (error) {
-            console.error('Error in getAvatar:', error);
+            console.error("Error finding the avatar:", error);
+
         } finally {
             await client.end();
         }

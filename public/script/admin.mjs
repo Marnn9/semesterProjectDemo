@@ -54,7 +54,7 @@ function showUserList() {
     userListVisible = true;
 }
 
-function hideUserList() {
+export function hideUserList() {
     userList.style.display = 'none';
     userListVisible = false;
 }
