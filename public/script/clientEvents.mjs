@@ -1,7 +1,7 @@
 "use strict"
 import * as requests from "./clientRequests.mjs"
 import * as functions from "./functions.mjs"
-import * as main from "../AvatarStudio/Script/main.mjs";
+import * as main from "../AvatarStudio/scriptAvatar/main.mjs";
 import { hideUserList } from "./admin.mjs";
 
 /*-------------HTML elements by ID-------------------- */

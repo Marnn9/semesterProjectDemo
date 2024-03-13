@@ -1,7 +1,7 @@
 "use strict";
 import * as THREE from '../three.js-master/src/Three.js';
 import * as dat from "../three.js-master/build/dat.gui.module.js";
-import { TCharacter } from './Character.mjs';
+import { TCharacter } from "./characterClass.mjs";
 import { TCharacterOptions } from "./characterOptions.js";
 
 export const avatarFeatures = {

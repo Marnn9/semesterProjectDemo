@@ -1,5 +1,5 @@
 "use strict"
-import * as main from "../AvatarStudio/Script/main.mjs";
+import * as main from "../AvatarStudio/scriptAvatar/main.mjs";
 
 const displayBtnAdmin = document.getElementById("displayUsers");
 

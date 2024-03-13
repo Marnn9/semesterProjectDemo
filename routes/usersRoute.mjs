@@ -54,8 +54,7 @@ USER_API.post('/users', async (req, res, next) => {
         const existingUser = await user.findByIdentifyer(email);
 
         if (name !== undefined && email !== undefined && password !== undefined) {
-            // Create a new User instance
-            // Check if a user with the provided email exists 
+           
             if (existingUser === null) {
                 user.name = name;
                 user.email = email;

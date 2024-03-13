@@ -12,7 +12,7 @@ export class TCharacter extends THREE.Object3D {
         const localEyeColor = localStorage.getItem("eyecolor");
         const localSkinColor = localStorage.getItem("skincolor");
 
-        loader.load("AvatarStudio/Media/Boy-smaller-file.gltf", (gltfModel) => {
+        loader.load("AvatarStudio/mediaAvatar/Boy-smaller-file.gltf", (gltfModel) => {
             //this.irisOfEye = gltfModel.scene.children[2].material;
             gltfModel.scene.position.set(0, 1, 2);
             this.add(gltfModel.scene);

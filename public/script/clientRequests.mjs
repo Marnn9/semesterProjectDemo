@@ -1,6 +1,6 @@
 "use strict"
 import * as functions from "./functions.mjs"
-import { avatarFeatures } from "../AvatarStudio/Script/scene.mjs";
+import { avatarFeatures } from "../AvatarStudio/scriptAvatar/scene.mjs";
 import { selectedUserId } from "./admin.mjs";
 
 const url = 'user/users';

@@ -112,17 +112,21 @@ class SuperLogger {
             type = colorize(type);
             this.#writeToLog([when, type, path].join(" "));
         }
-        // On to the next handler function
         next();
     }
 
     #writeToLog(msg) {
-
         msg += "\n";
         console.log(msg);
-        ///TODO: The files should be based on current date.
-        // ex: 300124.log
-        fs.appendFile("./log.txt", msg, { encoding: "utf8" }, (err) => { });
+
+        const day = new Date().toLocaleDateString().replace(/\//g, '_');
+        const logFilePath = `./logs/log${day}.txt`;
+
+        fs.appendFile(logFilePath, msg, { encoding: 'utf8' });
+        console.log('Successfully wrote to log file:', logFilePath);
+
+        //console.error('Error writing to log file:', err);
+
     }
 }
 

@@ -1,0 +1,59 @@
+####################
+Server enviorment local
+Database connection  local
+####################
+####################
+Database connection  local
+Server enviorment local
+####################
+####################
+Server enviorment local
+Database connection  local
+####################
+12:31:54 [32mGET[39m /
+12:31:54 [32mGET[39m /styles.css
+12:31:54 [32mGET[39m /script/clientEvents.mjs
+12:31:54 [32mGET[39m /script/admin.mjs
+12:35:30 [32mGET[39m /
+12:35:30 [32mGET[39m /styles.css
+12:35:30 [32mGET[39m /script/clientEvents.mjs
+12:35:30 [32mGET[39m /script/admin.mjs
+12:35:30 [32mGET[39m /media/england.png
+12:35:30 [32mGET[39m /media/norway.png
+12:35:30 [32mGET[39m /media/spain.png
+12:35:30 [32mGET[39m /script/functions.mjs
+12:35:30 [32mGET[39m /script/clientRequests.mjs
+12:35:30 [32mGET[39m /languages/en.json
+12:35:58 [32mGET[39m /
+12:35:58 [32mGET[39m /styles.css
+12:35:58 [32mGET[39m /script/clientEvents.mjs
+12:35:58 [32mGET[39m /script/admin.mjs
+12:35:58 [32mGET[39m /media/england.png
+12:35:58 [32mGET[39m /media/norway.png
+12:35:58 [32mGET[39m /media/spain.png
+12:35:58 [32mGET[39m /script/clientRequests.mjs
+12:35:58 [32mGET[39m /script/functions.mjs
+12:35:58 [32mGET[39m /languages/en.json
+12:36:12 [32mGET[39m /
+12:36:12 [32mGET[39m /styles.css
+12:36:12 [32mGET[39m /script/clientEvents.mjs
+12:36:12 [32mGET[39m /script/admin.mjs
+12:36:12 [32mGET[39m /media/england.png
+12:36:12 [32mGET[39m /media/norway.png
+12:36:12 [32mGET[39m /media/spain.png
+12:36:12 [32mGET[39m /script/clientRequests.mjs
+12:36:12 [32mGET[39m /script/functions.mjs
+12:36:12 [32mGET[39m /languages/en.json
+12:36:38 [32mGET[39m /
+12:36:38 [32mGET[39m /styles.css
+12:36:38 [32mGET[39m /script/clientEvents.mjs
+12:36:38 [32mGET[39m /script/admin.mjs
+12:36:38 [32mGET[39m /media/england.png
+12:36:38 [32mGET[39m /media/norway.png
+12:36:38 [32mGET[39m /media/spain.png
+12:36:38 [32mGET[39m /script/clientRequests.mjs
+12:36:38 [32mGET[39m /script/functions.mjs
+12:36:39 [32mGET[39m /user/avatar/41
+12:36:39 [32mGET[39m /languages/en.json
+12:36:45 [32mGET[39m /user/users
+12:36:52 [32mGET[39m /user/users

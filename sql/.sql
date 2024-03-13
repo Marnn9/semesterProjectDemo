@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS public."Users"
     "uEmail" VARCHAR(250) NOT NULL,
     "password" VARCHAR(250) NOT NULL,
     "anAvatarId" INTEGER,
-    role char
-  
+    "role" VARCHAR(50) DEFAULT 'user',
+
     CONSTRAINT fk_anavatar FOREIGN KEY ("anAvatarId")
         REFERENCES public."anAvatar" ("avatarId") MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -33,7 +33,6 @@ UPDATE public."Users"
 --delete
 DELETE FROM public."Users"
 	WHERE <condition>;
-
 
 -- Table: public.anAvatar
 
