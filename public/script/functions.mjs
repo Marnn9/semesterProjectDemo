@@ -107,3 +107,22 @@ export async function globalFetch(aMethod, anUrl, aBodyElement) {
         connectionLost(error);
     }
 }
+
+export function responseNotOk(aResponse, someData) {
+    console.error(`Error: ${aResponse.status} - ${someData.error}`);
+    displayMsg(someData.error, 'red');
+    connectionLost(someData.error);
+
+    if (someData.error && someData.error.includes('Token timed out')) {
+        sessionStorage.clear();
+        localStorage.clear();
+    }
+}
+
+export function avatarToStorage(data) {
+    localStorage.setItem('haircolor', data.avatar.hairColor);
+    localStorage.setItem('eyecolor', data.avatar.eyeColor);
+    localStorage.setItem('skincolor', data.avatar.skinColor);
+    localStorage.setItem('browtype', data.avatar.eyeBrowType);
+    sessionStorage.setItem('avatarId', data.avatar.avatarId);
+}

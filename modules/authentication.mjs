@@ -1,4 +1,3 @@
-//add the validate pas and encrypt here instead of middleware
 import { createHmac } from 'crypto';
 
 export function validatePas(aInputPas, aStoredPas) {

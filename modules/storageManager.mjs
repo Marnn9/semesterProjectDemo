@@ -179,7 +179,7 @@ class DBManager {
             const updateQuery = await client.query(`
         UPDATE "public"."anAvatar" 
         SET "${this.#dbTableNames.avatar.hairColor}" = $1::text, "${this.#dbTableNames.avatar.eyeColor}" = $2::text, "${this.#dbTableNames.avatar.skinColor}" = $3::text, "${this.#dbTableNames.avatar.eyebrowType}" = $4::text WHERE "avatarId" = $5::integer;`
-                , [avatar.aHairColor, avatar.anEyeColor, avatar.aSkinColor, avatar.aBrowType, avatarId]);
+                , [avatar.hairColor, avatar.eyeColor, avatar.skinColor, avatar.browType, avatarId]);
         } catch (error) {
             console.error("Error updating the avatar:", error);
             throw error;

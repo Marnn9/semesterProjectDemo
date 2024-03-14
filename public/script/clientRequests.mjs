@@ -29,11 +29,7 @@ export async function loginUser() {
             sessionStorage.setItem("token", data.token);
 
             if (data.avatar !== null) {
-                localStorage.setItem('haircolor', data.avatar.hairColor);
-                localStorage.setItem('eyecolor', data.avatar.eyeColor);
-                localStorage.setItem('skincolor', data.avatar.skinColor);
-                localStorage.setItem('browtype', data.avatar.eyeBrowType);
-                sessionStorage.setItem('avatarId', data.avatar.avatarId);
+                functions.avatarToStorage(data);
             }
             if (data.user.role === "admin") {
                 sessionStorage.setItem("role", data.user.role);
@@ -41,10 +37,8 @@ export async function loginUser() {
             }
             await loggedInShowAvatar();
         } else {
-            console.error(`Error: ${response.status} - ${data.error}`);
-            functions.displayMsg(data.error, 'red');
+            functions.responseNotOk(response, data);
         }
-
     } catch (error) {
         console.error('Error during login:', error);
         functions.displayServerMsg();
@@ -61,14 +55,13 @@ export async function addUser() {
 
     try {
         const response = await functions.globalFetch('POST', url, user);
+        const data = await response.json();
+
         if (response.ok) {
-            const data = await response.json();
             window.location.reload();
             console.log(data);
         } else {
-            const errorData = await response.json();
-            console.error(`Error: ${response.status} - ${errorData.error}`);
-            functions.displayMsg(errorData.error, 'red');
+            functions.responseNotOk(response, data);
         }
     } catch (error) {
         console.error("An error occurred while processing the response", error);
@@ -93,8 +86,7 @@ export async function sendEditUser() {
             sessionStorage.setItem("token", data.token);
 
         } else {
-            console.error(`Error: ${response.status} - ${data.error}`);
-            functions.displayMsg(data.error, 'red')
+            functions.responseNotOk(response, data);
         }
     } catch (error) {
         console.error('Error updating user:', error);
@@ -110,7 +102,13 @@ export async function saveAvatar() {
         const data = await response.json();
         if (response.ok) {
             functions.displayMsg("Saved", 'green');
-            console.log('Saved:', data);
+            console.log("Saved:", data);
+
+            if (data !== null) {
+                functions.avatarToStorage(data);
+            }
+        } else {
+            functions.responseNotOk(response, data);
         }
     } catch (error) {
         console.error("Bad Input", error);
@@ -130,8 +128,7 @@ export async function loggedInShowAvatar() {
             if (response.ok) {
                 functions.loadAvatarScene();
             } else {
-                console.error(`Error: ${response.status} - ${data.error}`);
-                functions.displayMsg(data.error, 'red')
+                functions.responseNotOk(response, data);
             }
         } catch (error) {
             console.error('Error showing Avatar user:' + error);
@@ -158,8 +155,7 @@ export async function deleteUser() {
                 sessionStorage.clear();
                 window.location.reload();
             } else {
-                console.error(`Error: ${response.status} - ${data.error}`);
-                functions.displayMsg(data.error, 'red')
+                functions.responseNotOk(response, data);
             }
         } catch (error) {
             console.error('Error deleting user:', error);
@@ -174,8 +170,7 @@ export async function deleteUser() {
                 console.log('Deleted user:', data);
                 localStorage.clear();
             } else {
-                console.error(`Error: ${response.status} - ${data.error}`);
-                functions.displayMsg(data.error, 'red')
+                functions.responseNotOk(response, data);
             }
         } catch (error) {
             console.error('Error deleting user:', error);
