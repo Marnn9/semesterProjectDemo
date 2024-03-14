@@ -118,19 +118,21 @@ export async function saveAvatar() {
 };
 
 export async function loggedInShowAvatar() {
-    try {
-        const response = await functions.globalFetch('GET', avatarUrl);
-        const data = await response.json();
+    if (functions.checkStorage().loggedInId) {
+        try {
+            const response = await functions.globalFetch('GET', avatarUrl);
+            const data = await response.json();
 
-        if (response.ok) {
-            functions.loadAvatarScene();
-        } else {
-            functions.responseNotOk(response, data);
+            if (response.ok) {
+                functions.loadAvatarScene();
+            } else {
+                functions.responseNotOk(response, data);
+            }
+        } catch (error) {
+            console.error('Error showing Avatar user:' + error);
+            functions.displayServerMsg();
+            functions.connectionLost(error);
         }
-    } catch (error) {
-        console.error('Error showing Avatar user:' + error);
-        functions.displayServerMsg();
-        functions.connectionLost(error);
     }
 }
 
