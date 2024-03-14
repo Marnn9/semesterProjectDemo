@@ -28,7 +28,7 @@ USER_API.get('/users', validateUserMiddleware, adminAuth, async (req, res, next)
     }
 });
 
-USER_API.get('/avatar/:id', validateUserMiddleware, async (req, res, next) => {
+USER_API.get('/avatar', validateUserMiddleware, async (req, res, next) => {
     const { dbAvatar } = req.authCredentials;
     try {
         const id = dbAvatar.avatarId;
