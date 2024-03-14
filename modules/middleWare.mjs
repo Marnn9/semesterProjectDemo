@@ -35,7 +35,7 @@ export async function loginAuthenticationMiddleware(req, res, next) {
 export async function validateUserMiddleware(req, res, next) {
     const authHeaderToken = req.headers.authorization;
 
-    if (authHeaderToken != null) {
+    if (authHeaderToken !== null && authHeaderToken !== 'null') {
         const { time, email } = decodeToken(authHeaderToken);
         const validToken = tokenTimer(time);
 
