@@ -83,10 +83,9 @@ export function displayCreateNewUser() {
 export function checkStorage() {
     const loggedInId = sessionStorage.getItem("loggedInId");
     const loggedInRole = sessionStorage.getItem("role");
-    const avatarId = sessionStorage.getItem("avatarId");
     const token = sessionStorage.getItem("token");
 
-    return { loggedInId, loggedInRole, avatarId, token };
+    return { loggedInId, loggedInRole, token };
 }
 
 export async function globalFetch(aMethod, anUrl, aBodyElement) {
