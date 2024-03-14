@@ -1,8 +1,8 @@
 "use strict"
 import * as requests from "./clientRequests.mjs"
 import * as functions from "./functions.mjs"
-import * as main from "../AvatarStudio/Script/main.mjs";
-
+import * as main from "../AvatarStudio/scriptAvatar/main.mjs";
+import { hideUserList } from "./admin.mjs";
 
 /*-------------HTML elements by ID-------------------- */
 
@@ -25,6 +25,7 @@ myAccountBtn.addEventListener("click", async (event) => {
         editUserForm.style.display = 'none';
         bntContainerLoggedIn.style.display = 'none';
         languageSelection.style.display = 'none';
+        hideUserList()
     }
 });
 
@@ -80,8 +81,8 @@ saveBtn.addEventListener("click", async (event) => {
     requests.saveAvatar();
 });
 
-const mainBtn = document.getElementById("mainBtn");
-mainBtn.addEventListener("click", async (event) => {
+const shareBtn = document.getElementById("mainBtn");
+shareBtn.addEventListener("click", async (event) => {
     event.preventDefault();
     main.saveImage();
 });

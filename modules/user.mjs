@@ -3,11 +3,12 @@ import DBManager from "./storageManager.mjs";
 class User {
 
     constructor() {
-        ///TODO: Are these the correct fields for your project?
         this.email;
         this.pswHash;
         this.name;
         this.id;
+        this.avatarId;
+        this.role;
     }
    
     async save() {
@@ -26,10 +27,10 @@ class User {
     async displayAll() {
         try {
             const users = await DBManager.retrieveAllUsers();
-            return users;  // Make sure the retrieved users are returned
+            return users;  
         } catch (error) {
             console.error('Error displaying all users:', error);
-            throw error;  // Rethrow the error for better debugging
+            throw error;  
         }
     }
 
@@ -47,16 +48,6 @@ class User {
             throw error;
         }
     }
-
-}
-
-class Avatar {
-    /*     
-        add the code here for the avatar, it must also be linked to the user 
-        create the table in pgAdmin, make some foreign keys to the users table 
-        save the avatar each user cerate 
-    */
-
 }
 
 export default User;

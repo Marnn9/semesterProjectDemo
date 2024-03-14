@@ -1,8 +1,7 @@
 "use strict";
 import * as THREE from '../three.js-master/src/Three.js';
 import * as dat from "../three.js-master/build/dat.gui.module.js";
-import { GLTFLoader } from "../three.js-master/build/GLTFLoader.js";
-import { TCharacter } from './Character.mjs';
+import { TCharacter } from "./characterClass.mjs";
 import { TCharacterOptions } from "./characterOptions.js";
 
 export const avatarFeatures = {
@@ -18,10 +17,10 @@ export function TinitialiseScene(anAvatar) {
     let scene, camera, renderer, modelMaterial, eyeMaterial, hairMaterial, skinMaterial;
     scene = new THREE.Scene();
 
-    let centerX = window.innerWidth / 2 - 150; // Assuming each GUI panel has a width of 300px
+    const guiWidth = 300;
+    let centerX = window.innerWidth / 2 - (guiWidth/2); 
 
-    // Define the initial position for the GUI
-    const guiPosition = { x: centerX, y: 10 }; // Adjust 'y' as needed
+    const guiPosition = { x: centerX, y: 10 }; 
     //---------------gradient Background & color -----------------------
 
     let hexValue = "ffffff";
@@ -29,9 +28,7 @@ export function TinitialiseScene(anAvatar) {
 
     scene.background = new THREE.Color(0xC3D1C3);
 
-
     //----------------scene objects----------------------
-
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 10;
@@ -41,6 +38,7 @@ export function TinitialiseScene(anAvatar) {
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.domElement.id = "sceneCanvas";
+    renderer.domElement.setAttribute('alt', 'sceneCanvas');
 
     document.body.appendChild(renderer.domElement);
     window.addEventListener('resize', windowResized);
@@ -80,11 +78,9 @@ export function TinitialiseScene(anAvatar) {
     function guiControls() {
         const gui = new dat.GUI();
 
-        // Use dat.GUI's `domElement` property to set the position
         gui.domElement.style.position = 'absolute';
         gui.domElement.style.left = guiPosition.x + 'px';
         gui.domElement.style.top = guiPosition.y + 'px';
-
 
         const eyeChanger = { color: eyeMaterial.color.getHex() };
 
@@ -95,8 +91,6 @@ export function TinitialiseScene(anAvatar) {
 
             avatarFeatures.eyeColor = eyeMaterial.color.getHex().toString(16);
 
-
-            // Set the color of the loaded model's material to the same color
             if (modelMaterial) {
                 modelMaterial.color.set(color);
             }
@@ -111,7 +105,6 @@ export function TinitialiseScene(anAvatar) {
 
             avatarFeatures.hairColor = hairMaterial.color.getHex().toString(16);
 
-            // Set the color of the loaded model's material to the same color
             if (modelMaterial) {
                 modelMaterial.color.set(color);
             }
@@ -125,7 +118,6 @@ export function TinitialiseScene(anAvatar) {
 
             avatarFeatures.skinColor = skinMaterial.color.getHex().toString(16);
 
-            // Set the color of the loaded model's material to the same color
             if (modelMaterial) {
                 modelMaterial.color.set(color);
             }
@@ -134,7 +126,6 @@ export function TinitialiseScene(anAvatar) {
 
     guiControls();
 
-
     function render() {
         requestAnimationFrame(render);
 
@@ -142,7 +133,7 @@ export function TinitialiseScene(anAvatar) {
     }
 
     function windowResized() {
-        centerX = window.innerWidth / 2 - 150;
+        centerX = window.innerWidth / 2 - (guiWidth/2);
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);

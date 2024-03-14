@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="./script/clientEvents.mjs"></script>
     <script type="module" src="./script/admin.mjs"></script>
+    <link rel="icon" type="image/x-icon" href="./AvatarStudio/mediaAvatar/head.png">
 </head>
 
 <body>
@@ -17,47 +18,47 @@
 
     <div id="loginForms">
         <form class="form" id="login">
-            <h2 data-translate="titleLogin">Log in to create your character</h2> <br><br>
+            <h2 translateText="titleLogin">Log in to create your character</h2> <br><br>
             <input type="text" class="input" name="Email" id="inpEmailLogin"
-                data-translate-placeholder="mailPlaceholder" required>
+                translateText-placeholder="mailPlaceholder" required>
             <input type="password" class="input" name="password" id="inpPasswordLogin"
-                data-translate-placeholder="passwordPlaceholder" required>
-            <button class="commitBtn" type="submit" id="loginBtn" data-translate="loginBtn">login</button> <br><br>
+                translateText-placeholder="passwordPlaceholder" required>
+            <button class="commitBtn" type="submit" id="loginBtn" translateText="loginBtn">login</button> <br><br>
         </form>
 
         <form class="form" id="create" style="display: none;">
-            <h2 data-translate="titleCreate">Create a user</h2> <br><br>
-            <input type="text" class="input" name="username" id="inpUname" data-translate-placeholder="namePlaceholder"
+            <h2 translateText="titleCreate">Create a user</h2> <br><br>
+            <input type="text" class="input" name="username" id="inpUname" translateText-placeholder="namePlaceholder"
                 required>
-            <input type="text" class="input" name="Email" id="inpEmail" data-translate-placeholder="mailPlaceholder"
+            <input type="text" class="input" name="Email" id="inpEmail" translateText-placeholder="mailPlaceholder"
                 required>
             <input type="password" class="input" name="password" id="inpPassword"
-                data-translate-placeholder="passwordPlaceholder" required>
-            <button class="commitBtn" type="submit" id="createBtn" data-translate="createBtn">create user</button>
+                translateText-placeholder="passwordPlaceholder" required>
+            <button class="commitBtn" type="submit" id="createBtn" translateText="createBtn">create user</button>
             <br><br>
         </form>
 
-        <p id="createUtext" class="login-createText" data-translate="createUserText">Create user here</p>
-        <p id="loginText" class="login-createText" style="display: none;" data-translate="toLoginText">Already have
+        <p id="createUtext" class="login-createText" translateText="createUserText">Create user here</p>
+        <p id="loginText" class="login-createText" style="display: none;" translateText="toLoginText">Already have
             a user? login here</p>
     </div>
 
     <ul id="userList" class="adminItem"></ul>
 
     <form class="form" id="editUser" style="display: none;">
-        <h2 data-translate="editUserTitle">Edit your user</h2> <br><br>
-        <input type="text" class="input" name="username" id="inpUnameEdit" data-translate-placeholder="namePlaceholder">
-        <input type="text" class="input" name="Email" id="inpEmailEdit" data-translate-placeholder="mailPlaceholder">
+        <h2 translateText="editUserTitle">Edit your user</h2> <br><br>
+        <input type="text" class="input" name="username" id="inpUnameEdit" translateText-placeholder="namePlaceholder">
+        <input type="text" class="input" name="Email" id="inpEmailEdit" translateText-placeholder="mailPlaceholder">
         <input type="password" class="input" name="password" id="inpPasswordEdit"
-            data-translate-placeholder="passwordPlaceholder">
-        <button class="commitBtn" type="submit" id="Update" data-translate="updateBtn">Update</button> <br><br>
+            translateText-placeholder="passwordPlaceholder">
+        <button class="commitBtn" type="submit" id="Update" translateText="updateBtn">Update</button>
     </form>
 
     <div id="bntContainerLoggedIn" class="btnContainer" style="display: none;">
-        <button class="UserBtn" id="logOutUser" data-translate="logOutBtn">Log out</button>
-        <button class="UserBtn" id="displayUsers" style="display: none;" data-translate="displayUsersBtn">Display
+        <button class="UserBtn" id="logOutUser" translateText="logOutBtn">Log out</button>
+        <button class="UserBtn" id="displayUsers" style="display: none;" translateText="displayUsersBtn">Display
             Users</button>
-        <button class="deleteUserBtn" id="deleteUserBtn" data-translate="deleteUserBtn">Delete user</button>
+        <button class="deleteUserBtn" id="deleteUserBtn" translateText="deleteUserBtn">Delete user</button>
     </div>
 
     <div id="avatarStudioEvents" style="display: none;">
@@ -65,12 +66,12 @@
         <button id="checkBtn" class="globalBtn">&#10004;</button>
 
         <div id="choiceMenu">
-            <img id="option2" class="thumbnail" src="./AvatarStudio/Media/head.png">
-            <img id="option3" class="thumbnail" src="./AvatarStudio/Media/head.png">
-            <img id="option4" class="thumbnail" src="./AvatarStudio/Media/head.png">
-            <img id="option5" class="thumbnail" src="./AvatarStudio/Media/head.png">
-            <img class="thumbnail" src="./AvatarStudio/Media/eyebrowRender.jpg" id="loadEyebrows2Button">
-            <img class="thumbnail" src="./AvatarStudio/Media/eyebrow-1Render.jpg" id="loadEyebrowsButton">
+            <img id="option2" class="thumbnail" src="./AvatarStudio/mediaAvatar/head.png" alt="placeholderHead">
+            <img id="option3" class="thumbnail" src="./AvatarStudio/mediaAvatar/head.png" alt="placeholderHead">
+            <img id="option4" class="thumbnail" src="./AvatarStudio/mediaAvatar/head.png" alt="placeholderHead">
+            <img id="option5" class="thumbnail" src="./AvatarStudio/mediaAvatar/head.png" alt="placeholderHead">
+            <img class="thumbnail" src="./AvatarStudio/mediaAvatar/eyebrowRender.jpg" id="loadEyebrows2Button" alt="brwTypeThick">
+            <img class="thumbnail" src="./AvatarStudio/mediaAvatar/eyebrow-1Render.jpg" id="loadEyebrowsButton" alt="brwTypeThin">
         </div>
     </div>
 
@@ -85,13 +86,11 @@
         const norwegian = document.getElementById("norwegian");
         const spanish = document.getElementById("spanish");
 
-        // add to localstorage so you dont have to chooser language every time
         let language = "en";
 
-        // Fetch translations from external JSON file
         async function fetchTranslations(lang) {
             try {
-                const response = await fetch(`./Languages/${lang}.json`);
+                const response = await fetch(`./languages/${lang}.json`);
                 const translations = await response.json();
                 return translations;
             } catch (error) {
@@ -101,11 +100,11 @@
         }
 
         async function replaceAllOccurrences(container, translations) {
-            const elementsToTranslate = container.querySelectorAll("[data-translate], [data-translate-placeholder]");
+            const elementsToTranslate = container.querySelectorAll("[translateText], [translateText-placeholder]");
 
             elementsToTranslate.forEach(element => {
-                if (element.hasAttribute("data-translate")) {
-                    const translationKey = element.getAttribute("data-translate");
+                if (element.hasAttribute("translateText")) {
+                    const translationKey = element.getAttribute("translateText");
                     const translation = translations[language] && translations[language][translationKey];
 
                     if (translation !== undefined) {
@@ -115,8 +114,8 @@
                     }
                 }
 
-                if (element.hasAttribute("data-translate-placeholder")) {
-                    const translationKey = element.getAttribute("data-translate-placeholder");
+                if (element.hasAttribute("translateText-placeholder")) {
+                    const translationKey = element.getAttribute("translateText-placeholder");
                     const translation = translations[language] && translations[language][translationKey];
 
                     if (translation !== undefined) {
@@ -139,17 +138,12 @@
         }
 
         async function setInitialLanguage() {
-            // Set initial language based on the stored language or default to "en"
             language = localStorage.getItem("language") || "en";
-
-            // Fetch translations for the initial language
             const translations = await fetchTranslations(language);
-
-            // Translate all relevant containers
             translateAll(translations);
         }
 
-        // Add click event listeners to each image
+       
         english.addEventListener("click", () => {
             language = "en";
             localStorage.setItem("language", language);
@@ -172,7 +166,6 @@
             });
         });
 
-        // Set initial language when the page is loaded
         document.addEventListener("DOMContentLoaded", setInitialLanguage);
     </script>
 </body>

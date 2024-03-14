@@ -1,4 +1,5 @@
 "use strict"
+import * as main from "../AvatarStudio/scriptAvatar/main.mjs";
 
 const displayBtnAdmin = document.getElementById("displayUsers");
 
@@ -36,8 +37,21 @@ export function displayServerMsg() {
 export function connectionLost(error) {
     if (error.message && error.message.includes('Failed to fetch')) {
         alert("Connection lost, this page will now be refreshed");
-        //window.location.reload();
+        window.location.reload();
     }
+}
+
+export function loadAvatarScene() {
+    const myAccountBtn = document.getElementById("myAccountBtn");
+    const languageSelection = document.getElementById("languageSelection");
+    const loginForms = document.getElementById('loginForms');
+    const avatarStudioEvents = document.getElementById('avatarStudioEvents');
+
+    myAccountBtn.style.display = "block";
+    loginForms.style.display = 'none';
+    main.loadScene();
+    avatarStudioEvents.style.display = 'block';
+    languageSelection.style.display = 'none';
 }
 
 export function showAdminFields() {
@@ -68,18 +82,15 @@ export function displayCreateNewUser() {
 
 export function checkStorage() {
     const loggedInId = sessionStorage.getItem("loggedInId");
-    const loggedInEmail = sessionStorage.getItem("loggedInEmail");
-    const loggedInName = sessionStorage.getItem("loggedInName");
-    const loggedInPassword = sessionStorage.getItem("loggedInPassword")
     const loggedInRole = sessionStorage.getItem("role");
     const avatarId = sessionStorage.getItem("avatarId");
     const token = sessionStorage.getItem("token");
 
-    return { loggedInId, loggedInEmail, loggedInName, loggedInPassword, loggedInRole, avatarId, token };
+    return { loggedInId, loggedInRole, avatarId, token };
 }
 
-export async function globalFetch(aMethod, anUrl, aBodyElement, aAuthenticationReq = false) {
-    
+export async function globalFetch(aMethod, anUrl, aBodyElement) {
+
     try {
         const response = await fetch(anUrl, {
             method: aMethod,
@@ -95,4 +106,23 @@ export async function globalFetch(aMethod, anUrl, aBodyElement, aAuthenticationR
         displayServerMsg();
         connectionLost(error);
     }
+}
+
+export function responseNotOk(aResponse, someData) {
+    console.error(`Error: ${aResponse.status} - ${someData.error}`);
+    displayMsg(someData.error, 'red');
+    connectionLost(someData.error);
+
+    if (someData.error && someData.error.includes('Token timed out')) {
+        sessionStorage.clear();
+        localStorage.clear();
+    }
+}
+
+export function avatarToStorage(data) {
+    localStorage.setItem('haircolor', data.avatar.hairColor);
+    localStorage.setItem('eyecolor', data.avatar.eyeColor);
+    localStorage.setItem('skincolor', data.avatar.skinColor);
+    localStorage.setItem('browtype', data.avatar.eyeBrowType);
+    sessionStorage.setItem('avatarId', data.avatar.avatarId);
 }

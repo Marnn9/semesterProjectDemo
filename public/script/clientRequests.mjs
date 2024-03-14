@@ -1,16 +1,13 @@
 "use strict"
-import * as main from "../AvatarStudio/Script/main.mjs";
 import * as functions from "./functions.mjs"
-import { avatarFeatures } from "../AvatarStudio/Script/scene.mjs";
+import { avatarFeatures } from "../AvatarStudio/scriptAvatar/scene.mjs";
 import { selectedUserId } from "./admin.mjs";
 
 const url = 'user/users';
 const avatarUrl = 'user/avatar';
-const loginForms = document.getElementById('loginForms');
-const avatarStudioEvents = document.getElementById('avatarStudioEvents');
+
 
 export async function loginUser() {
-    // Get user credentials from the input fields
     const email = document.getElementById('inpEmailLogin').value;
     const password = document.getElementById('inpPasswordLogin').value;
     const authorization = functions.encode(email, password);
@@ -28,31 +25,20 @@ export async function loginUser() {
             console.log('Login successful:', data);
             functions.displayMsg("Successful login", 'green');
 
-            //might only need to return a token that times out and give privileges that lets users/admin do different stuff
             sessionStorage.setItem("loggedInId", data.user.id);
-            sessionStorage.setItem("loggedInEmail", data.user.uEmail);
-            sessionStorage.setItem("loggedInName", data.user.uName);
-            sessionStorage.setItem("loggedInPassword", data.user.password);
             sessionStorage.setItem("token", data.token);
 
             if (data.avatar !== null) {
-                localStorage.setItem('haircolor', data.avatar.hairColor);
-                localStorage.setItem('eyecolor', data.avatar.eyeColor);
-                localStorage.setItem('skincolor', data.avatar.skinColor);
-                localStorage.setItem('browtype', data.avatar.eyeBrowType);
-                sessionStorage.setItem('avatarId', data.avatar.avatarId);
+                functions.avatarToStorage(data);
             }
             if (data.user.role === "admin") {
                 sessionStorage.setItem("role", data.user.role);
                 functions.showAdminFields();
             }
-            loadAvatarScene();
             await loggedInShowAvatar();
         } else {
-            console.error(`Error: ${response.status} - ${data.error}`);
-            functions.displayMsg(data.error, 'red')
+            functions.responseNotOk(response, data);
         }
-
     } catch (error) {
         console.error('Error during login:', error);
         functions.displayServerMsg();
@@ -69,14 +55,13 @@ export async function addUser() {
 
     try {
         const response = await functions.globalFetch('POST', url, user);
+        const data = await response.json();
+
         if (response.ok) {
-            const data = await response.json();
             window.location.reload();
             console.log(data);
         } else {
-            const errorData = await response.json();
-            console.error(`Error: ${response.status} - ${errorData.error}`);
-            functions.displayMsg(errorData.error, 'red');
+            functions.responseNotOk(response, data);
         }
     } catch (error) {
         console.error("An error occurred while processing the response", error);
@@ -101,8 +86,7 @@ export async function sendEditUser() {
             sessionStorage.setItem("token", data.token);
 
         } else {
-            console.error(`Error: ${response.status} - ${data.error}`);
-            functions.displayMsg(data.error, 'red')
+            functions.responseNotOk(response, data);
         }
     } catch (error) {
         console.error('Error updating user:', error);
@@ -114,12 +98,17 @@ export async function sendEditUser() {
 
 export async function saveAvatar() {
     try {
-        avatarFeatures.loggedInUser = functions.checkStorage().loggedInId;
         const response = await functions.globalFetch('POST', avatarUrl, avatarFeatures);
         const data = await response.json();
         if (response.ok) {
             functions.displayMsg("Saved", 'green');
-            console.log('Saved:', data);
+            console.log("Saved:", data);
+
+            if (data !== null) {
+                functions.avatarToStorage(data);
+            }
+        } else {
+            functions.responseNotOk(response, data);
         }
     } catch (error) {
         console.error("Bad Input", error);
@@ -137,14 +126,9 @@ export async function loggedInShowAvatar() {
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.setItem("haircolor", data.hairColor);
-                localStorage.setItem("eyecolor", data.eyeColor);
-                localStorage.setItem("skincolor", data.skinColor);
-                localStorage.setItem("browtype", data.eyeBrowType);
-                loadAvatarScene();
+                functions.loadAvatarScene();
             } else {
-                console.error(`Error: ${response.status} - ${data.error}`);
-                functions.displayMsg(data.error, 'red')
+                functions.responseNotOk(response, data);
             }
         } catch (error) {
             console.error('Error showing Avatar user:' + error);
@@ -152,17 +136,6 @@ export async function loggedInShowAvatar() {
             functions.connectionLost(error);
         }
     }
-}
-
-function loadAvatarScene() {
-    const myAccountBtn = document.getElementById("myAccountBtn");
-    const languageSelection = document.getElementById("languageSelection");
-
-    myAccountBtn.style.display = "block";
-    loginForms.style.display = 'none';
-    main.loadScene();
-    avatarStudioEvents.style.display = 'block';
-    languageSelection.style.display = 'none';
 }
 
 
@@ -182,8 +155,7 @@ export async function deleteUser() {
                 sessionStorage.clear();
                 window.location.reload();
             } else {
-                console.error(`Error: ${response.status} - ${data.error}`);
-                functions.displayMsg(data.error, 'red')
+                functions.responseNotOk(response, data);
             }
         } catch (error) {
             console.error('Error deleting user:', error);
@@ -198,8 +170,7 @@ export async function deleteUser() {
                 console.log('Deleted user:', data);
                 localStorage.clear();
             } else {
-                console.error(`Error: ${response.status} - ${data.error}`);
-                functions.displayMsg(data.error, 'red')
+                functions.responseNotOk(response, data);
             }
         } catch (error) {
             console.error('Error deleting user:', error);

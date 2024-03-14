@@ -11,7 +11,7 @@ Expects: JSON <br>
 Returns: JSON <br>
 Requires: Authentication {token} <br>
 
-Shows the avatar the loggedIn user has based on their token. If no avatar msg to user: "no avatar found". 
+required parameter: *{id}*. Shows the avatar the loggedIn user has based on their token. If no avatar msg to user: "no avatar found". 
 
 ## POST /users 
 > Adds a new user to the user/users endpoint. if a user with the given email exists it returns 422 Unprocessable Content. Also if one of the data fields is missing it returns 400

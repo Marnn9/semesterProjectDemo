@@ -1,4 +1,3 @@
-//add the validate pas and encrypt here instead of middleware
 import { createHmac } from 'crypto';
 
 export function validatePas(aInputPas, aStoredPas) {
@@ -6,7 +5,6 @@ export function validatePas(aInputPas, aStoredPas) {
         return true;
     }
 }
-
 
 export function encrypt(aPas) {
     const secret = process.env.Secret;

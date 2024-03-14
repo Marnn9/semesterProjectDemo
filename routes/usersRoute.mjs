@@ -54,8 +54,7 @@ USER_API.post('/users', async (req, res, next) => {
         const existingUser = await user.findByIdentifyer(email);
 
         if (name !== undefined && email !== undefined && password !== undefined) {
-            // Create a new User instance
-            // Check if a user with the provided email exists 
+
             if (existingUser === null) {
                 user.name = name;
                 user.email = email;
@@ -71,17 +70,14 @@ USER_API.post('/users', async (req, res, next) => {
     } catch (error) {
         console.error("Error in post handler:", error);
         res.status(HttpCodes.InternalServerError).json({ error: 'Internal Server Error' });
-        // displayMsg("error: Missing data fields catch");
-
     }
 });
 
-//using :id then you can use req.params since all data is named id as a variable
 USER_API.post('/login', loginAuthenticationMiddleware, async (req, res, next) => {
     try {
         const { dbAvatar, existingUser, token } = req.authCredentials;
         const userData = {
-            user: existingUser,
+            user: { id: existingUser.id, role: existingUser.role },
             avatar: dbAvatar,
             token,
         }
@@ -96,29 +92,31 @@ USER_API.put('/users/update', validateUserMiddleware, updateUserMiddleware, asyn
     const { token, updatedUser } = req.updatedUserData;
     try {
         await updatedUser.save();
-        res.status(HttpCodes.successfulResponse.Ok).json({ updatedUser, token });
+        const user = { id: updatedUser.id, email: updatedUser.email }
+        res.status(HttpCodes.successfulResponse.Ok).json({ user, token });
     } catch (error) {
         res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: "Could not update user in database" });
     }
 });
 
 USER_API.post('/avatar', validateUserMiddleware, async (req, res) => {
-    const { hairColor, eyeColor, skinColor, browType, loggedInUser } = req.body;
+    const { hairColor, eyeColor, skinColor, browType } = req.body;
+    const { existingUser } = req.authCredentials;
 
-    // add try catch
-    const user = new User();
-    const existingUser = await user.findByIdentifyer(loggedInUser);
+    const avatar = { avatar: {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, browType: browType, avatarId:existingUser.anAvatarId }};
 
-    const avatar = { aHairColor: hairColor, anEyeColor: eyeColor, aSkinColor: skinColor, aBrowType: browType };
-
-    if (avatar !== null && existingUser.anAvatarId === null) {
-        await DBManager.addAvatar(avatar, loggedInUser);
-        res.status(HttpCodes.successfulResponse.Ok).json(avatar);
-    } else if (avatar !== null && existingUser.anAvatarId !== null) {
-        const updatedAvatar = await DBManager.updateAvatar(avatar, existingUser.anAvatarId);
-        res.status(HttpCodes.successfulResponse.Ok).json(updatedAvatar);
-    } else {
-        res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+    try {
+        if (avatar !== null && existingUser.anAvatarId === null) {
+            await DBManager.addAvatar(avatar, existingUser.id);
+            res.status(HttpCodes.successfulResponse.Ok).json(avatar);
+        } else if (avatar !== null && existingUser.anAvatarId !== null) {
+            const updatedAvatar = await DBManager.updateAvatar(avatar);
+            res.status(HttpCodes.successfulResponse.Ok).json(updatedAvatar);
+        } else {
+            res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Error saving the avatar to database' });
     }
 });
 
@@ -145,6 +143,11 @@ USER_API.delete('/users/:id', validateUserMiddleware, async (req, res) => {
         console.log('id not valid for deleting');
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'id not valid for deleting' });
     }
+});
+
+USER_API.put('/forgotten', async (req, res) => {
+    const { mail, id } = req.headers.authorization;
+    
 });
 
 export default USER_API;
