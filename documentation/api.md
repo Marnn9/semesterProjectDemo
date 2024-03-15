@@ -77,7 +77,7 @@ Required paramater : *{id}* if there exists a user with the id in database, user
 responds with {msg}.
 
 ## GET / users
-> Returns all the users, returns 403 Forbidden if you are not an admin.
+> Returns all the users.
 
 **"/users"**<br>
  METHOD: GET <br>
@@ -86,5 +86,6 @@ responds with {msg}.
  Requires: Authentication {token} <br>
 
 Shows all the users in the database. 
+Responds with {users}.
 > [!Important]
 > Only available for the administrator

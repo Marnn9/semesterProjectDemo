@@ -31,16 +31,16 @@ USER_API.get('/users', validateUserMiddleware, adminAuth, async (req, res, next)
 USER_API.get('/avatar', validateUserMiddleware, async (req, res, next) => {
     const { dbAvatar } = req.authCredentials;
     try {
-        const id = dbAvatar.avatarId;
-        const avatar = await DBManager.getAvatar(id);
-        if (avatar !== null) {
+        if (dbAvatar !== null) {
+            const avatar = await DBManager.getAvatar(dbAvatar.avatarId);
             res.status(HttpCodes.successfulResponse.Ok).json(avatar);
-        } else {
-            res.status(HttpCodes.serverSideResponse.NotFound).json({ msg: 'no avatar found' });
+        }
+        else {
+            res.status(HttpCodes.successfulResponse.Ok).json({ msg: 'User has no avatar' });
         }
     } catch (error) {
         console.error('Something went wrong finding avatar', error);
-        res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Internal Server Error' });
+        res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Something went wrong finding avatar' });
     }
 });
 
@@ -103,14 +103,14 @@ USER_API.post('/avatar', validateUserMiddleware, async (req, res) => {
     const { hairColor, eyeColor, skinColor, browType } = req.body;
     const { existingUser } = req.authCredentials;
 
-    const avatar = { avatar: {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, browType: browType, avatarId:existingUser.anAvatarId }};
+    const avatar = { hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, browType: browType, avatarId: existingUser.anAvatarId };
 
     try {
         if (avatar !== null && existingUser.anAvatarId === null) {
             await DBManager.addAvatar(avatar, existingUser.id);
             res.status(HttpCodes.successfulResponse.Ok).json(avatar);
         } else if (avatar !== null && existingUser.anAvatarId !== null) {
-            const updatedAvatar = await DBManager.updateAvatar(avatar);
+            const updatedAvatar = await DBManager.updateAvatar(avatar, avatar.avatarId);
             res.status(HttpCodes.successfulResponse.Ok).json(updatedAvatar);
         } else {
             res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'User not found' });
@@ -145,9 +145,10 @@ USER_API.delete('/users/:id', validateUserMiddleware, async (req, res) => {
     }
 });
 
-USER_API.put('/forgotten', async (req, res) => {
+//wanted to add an endpoint for sending a new email-reset to the users whos forgotten hteir password
+/* USER_API.put('/forgotten', async (req, res) => {
     const { mail, id } = req.headers.authorization;
     
-});
+}); */
 
 export default USER_API;

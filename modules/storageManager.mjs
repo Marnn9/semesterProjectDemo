@@ -139,7 +139,7 @@ class DBManager {
             // Insert avatar details and get the avatarId
             const avatarInsertResult = await client.query(`
                 INSERT INTO "public"."anAvatar"("${this.#dbTableNames.avatar.hairColor}", "${this.#dbTableNames.avatar.eyeColor}", "${this.#dbTableNames.avatar.skinColor}", "${this.#dbTableNames.avatar.eyebrowType}")
-                VALUES($1::Text, $2::Text, $3::Text, $4::Text) RETURNING "avatarId";`, [avatar.aHairColor, avatar.anEyeColor, avatar.aSkinColor, avatar.aBrowType]);
+                VALUES($1::Text, $2::Text, $3::Text, $4::Text) RETURNING "avatarId";`, [avatar.hairColor, avatar.eyeColor, avatar.skinColor, avatar.browType]);
 
             const avatarId = avatarInsertResult.rows[0].avatarId;
             console.log('Inserted Avatar ID:', avatarId);
