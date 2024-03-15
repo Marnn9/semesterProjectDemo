@@ -1232,3 +1232,184 @@ Database connection  local
 13:27:13 GET /translations/en.json
 13:27:19 POST /user/login
 13:27:41 POST /user/avatar
+####################
+Server enviorment local
+Database connection  local
+####################
+13:31:58 [32mGET[39m /?Email=admin%40avatarstudio.no&password=adminpas
+13:31:59 [32mGET[39m /styles.css
+13:31:59 [32mGET[39m /script/clientEvents.mjs
+13:31:59 [32mGET[39m /script/admin.mjs
+13:31:59 [32mGET[39m /media/england.png
+13:31:59 [32mGET[39m /media/norway.png
+13:31:59 [32mGET[39m /media/spain.png
+13:31:59 [32mGET[39m /script/clientRequests.mjs
+13:31:59 [32mGET[39m /script/functions.mjs
+13:31:59 [32mGET[39m /translations/en.json
+13:32:07 [33mPOST[39m /user/login
+13:32:07 [32mGET[39m /user/avatar
+13:33:30 [32mGET[39m /user/users
+####################
+Server enviorment local
+Database connection  local
+####################
+####################
+Server enviorment local
+Database connection  local
+####################
+13:34:08 DELETE /user/users/49
+####################
+Server enviorment local
+Database connection  local
+####################
+13:35:31 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:35:31 GET /styles.css
+13:35:31 GET /script/clientEvents.mjs
+13:35:31 GET /script/admin.mjs
+13:35:31 GET /media/england.png
+13:35:31 GET /media/norway.png
+13:35:31 GET /media/spain.png
+13:35:31 GET /script/clientRequests.mjs
+13:35:31 GET /script/functions.mjs
+13:35:31 GET /user/avatar
+13:35:31 GET /translations/en.json
+13:35:59 GET /user/users
+####################
+Server enviorment local
+Database connection  local
+####################
+13:36:37 DELETE /user/users/49
+####################
+Server enviorment local
+Database connection  local
+####################
+13:38:17 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:38:17 GET /styles.css
+13:38:17 GET /script/clientEvents.mjs
+13:38:17 GET /script/admin.mjs
+13:38:17 GET /media/england.png
+13:38:17 GET /media/norway.png
+13:38:17 GET /media/spain.png
+13:38:17 GET /script/clientRequests.mjs
+13:38:17 GET /script/functions.mjs
+13:38:17 GET /user/avatar
+13:38:17 GET /translations/en.json
+13:38:25 GET /user/users
+13:38:34 DELETE /user/users/49
+####################
+Server enviorment local
+Database connection  local
+####################
+13:40:03 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:40:03 GET /styles.css
+13:40:03 GET /script/clientEvents.mjs
+13:40:03 GET /script/admin.mjs
+13:40:03 GET /media/england.png
+13:40:03 GET /media/norway.png
+13:40:03 GET /media/spain.png
+13:40:03 GET /script/clientRequests.mjs
+13:40:03 GET /script/functions.mjs
+13:40:04 GET /user/avatar
+13:40:04 GET /translations/en.json
+13:40:06 GET /user/users
+13:40:10 DELETE /user/users/49
+####################
+Server enviorment local
+Database connection  local
+####################
+13:40:24 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:40:24 GET /styles.css
+13:40:24 GET /script/admin.mjs
+13:40:24 GET /script/clientEvents.mjs
+13:40:24 GET /media/england.png
+13:40:24 GET /media/norway.png
+13:40:24 GET /media/spain.png
+13:40:24 GET /script/functions.mjs
+13:40:24 GET /script/clientRequests.mjs
+13:40:25 GET /user/avatar
+13:40:25 GET /translations/en.json
+13:40:37 POST /user/users
+13:40:37 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:40:37 GET /styles.css
+13:40:37 GET /script/clientEvents.mjs
+13:40:37 GET /script/admin.mjs
+13:40:37 GET /media/england.png
+13:40:37 GET /media/norway.png
+13:40:37 GET /media/spain.png
+13:40:37 GET /script/clientRequests.mjs
+13:40:37 GET /script/functions.mjs
+13:40:38 GET /user/avatar
+13:40:38 GET /translations/en.json
+13:40:46 GET /user/users
+13:40:49 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:40:49 GET /styles.css
+13:40:49 GET /script/clientEvents.mjs
+13:40:49 GET /script/admin.mjs
+13:40:50 GET /media/england.png
+13:40:50 GET /media/norway.png
+13:40:50 GET /media/spain.png
+13:40:50 GET /script/clientRequests.mjs
+13:40:50 GET /script/functions.mjs
+13:40:50 GET /user/avatar
+13:40:50 GET /translations/en.json
+13:40:52 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:40:52 GET /styles.css
+13:40:52 GET /script/clientEvents.mjs
+13:40:52 GET /script/admin.mjs
+13:40:52 GET /media/england.png
+13:40:52 GET /media/norway.png
+13:40:52 GET /media/spain.png
+13:40:52 GET /script/clientRequests.mjs
+13:40:52 GET /script/functions.mjs
+13:40:52 GET /translations/en.json
+13:40:58 POST /user/login
+13:41:25 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:41:25 GET /styles.css
+13:41:25 GET /script/clientEvents.mjs
+13:41:25 GET /script/admin.mjs
+13:41:25 GET /media/england.png
+13:41:25 GET /media/norway.png
+13:41:25 GET /media/spain.png
+13:41:25 GET /script/clientRequests.mjs
+13:41:25 GET /script/functions.mjs
+13:41:26 GET /user/avatar
+13:41:26 GET /translations/en.json
+13:41:28 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:41:28 GET /styles.css
+13:41:28 GET /script/clientEvents.mjs
+13:41:28 GET /script/admin.mjs
+13:41:28 GET /media/england.png
+13:41:28 GET /media/norway.png
+13:41:28 GET /media/spain.png
+13:41:28 GET /script/clientRequests.mjs
+13:41:28 GET /script/functions.mjs
+13:41:29 GET /translations/en.json
+13:41:36 POST /user/login
+13:41:39 GET /user/users
+####################
+Server enviorment local
+Database connection  local
+####################
+13:43:06 DELETE /user/users/51
+####################
+Server enviorment local
+Database connection  local
+####################
+13:43:54 GET /?Email=admin%40avatarstudio.no&password=adminpas
+13:43:54 GET /styles.css
+13:43:54 GET /script/clientEvents.mjs
+13:43:54 GET /script/admin.mjs
+13:43:54 GET /media/england.png
+13:43:54 GET /media/norway.png
+13:43:54 GET /media/spain.png
+13:43:54 GET /script/clientRequests.mjs
+13:43:54 GET /script/functions.mjs
+13:43:55 GET /user/avatar
+13:43:55 GET /translations/en.json
+13:43:57 GET /user/users
+13:44:01 DELETE /user/users/51
+####################
+Server enviorment local
+Database connection  local
+####################
+13:44:19 DELETE /user/users/51
