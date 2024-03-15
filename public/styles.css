@@ -58,17 +58,14 @@ button:hover {
 #mainBtn {
     background-color: var(--mainBtnColor);
     color: rgb(255, 255, 255);
-    width: 5em;
+    width: 6em;
     left: 7em;
     bottom: 14em;
 
 }
 
-#mainBtn:hover:before {
-    content: "Share ";
-    width: 5.3em;
-    height: 2.6em;
-
+#mainBtn:hover::before {
+    content: "-> ";
 }
 
 #exitBtn {

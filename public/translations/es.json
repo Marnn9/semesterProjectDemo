@@ -13,6 +13,7 @@
         "updateBtn": "Actualizar",
         "logOutBtn": "Cerrar sesión",
         "displayUsersBtn": "Mostrar usuarios",
-        "deleteUserBtn": "Eliminar usuario"
+        "deleteUserBtn": "Eliminar usuario",
+        "shareBtn" : "Compartir"
     }
 }

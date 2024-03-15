@@ -13,6 +13,7 @@
         "updateBtn": "Update",
         "logOutBtn": "Log out",
         "displayUsersBtn": "Display Users",
-        "deleteUserBtn": "Delete user"
+        "deleteUserBtn": "Delete user",
+        "shareBtn" : "Share"
     }
 }
