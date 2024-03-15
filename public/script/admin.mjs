@@ -1,6 +1,7 @@
 "use strict"
 import * as functions from "./functions.mjs"
 
+//make this happen in the server?
 if (sessionStorage.getItem("role") === "admin") {
     functions.showAdminFields();
 }
@@ -28,13 +29,11 @@ async function displayAllUsers() {
     try {
         userList.innerHTML = ' ';
         const response = await functions.globalFetch('GET', url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
         const data = await response.json();
 
+        if (!response.ok) {
+            functions.responseNotOk(response, data);
+        }
         console.log('Response from server:', data);
 
         if (Array.isArray(data)) {

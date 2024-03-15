@@ -35,7 +35,7 @@ export function displayServerMsg() {
 }
 
 export function connectionLost(error) {
-    if (error.message && error.message.includes('Failed to fetch')) {
+    if (error.message && (error.message.includes('Failed to fetch') ||  error.message.includes('Network Error'))) {
         alert("Connection lost, this page will now be refreshed");
         window.location.reload();
     }
@@ -119,9 +119,18 @@ export function responseNotOk(aResponse, someData) {
 }
 
 export function avatarToStorage(data) {
+    localStorage.setItem('haircolor', data.hairColor);
+    localStorage.setItem('eyecolor', data.eyeColor);
+    localStorage.setItem('skincolor', data.skinColor);
+    localStorage.setItem('browtype', data.browType);
+    sessionStorage.setItem('avatarId', data.avatarId);
+}
+
+export function avatarToStorageLogin(data) {
     localStorage.setItem('haircolor', data.avatar.hairColor);
     localStorage.setItem('eyecolor', data.avatar.eyeColor);
     localStorage.setItem('skincolor', data.avatar.skinColor);
     localStorage.setItem('browtype', data.avatar.eyeBrowType);
     sessionStorage.setItem('avatarId', data.avatar.avatarId);
 }
+

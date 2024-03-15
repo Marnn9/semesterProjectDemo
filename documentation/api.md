@@ -2,7 +2,7 @@
 > [!note]
 > All the authorizations is sent as base 64 encoding
 
-## GET / avatar /:id
+## GET / avatar
 > Returns the values of the avatar. If no authenticated user, returns 401 unauthorized.
 
 **"/avatar/:id"**<br>
@@ -11,10 +11,10 @@ Expects: JSON <br>
 Returns: JSON <br>
 Requires: Authentication {token} <br>
 
-required parameter: *{id}*. Shows the avatar the loggedIn user has based on their token. If no avatar msg to user: "no avatar found". 
+Returns the avatar if any exist, if not a msg: is sent as response.
 
 ## POST /users 
-> Adds a new user to the user/users endpoint. if a user with the given email exists it returns 422 Unprocessable Content. Also if one of the data fields is missing it returns 400
+> Adds a new user to the user/users endpoint. No user is added if a user with the given email exists already.
 
 **"/users"** <br>
 METHOD: POST <br>
@@ -25,7 +25,7 @@ Creates a user, required fields: *{name, email, password}*, password is encrypte
 Response : msg: " new user created" if successful.
 
 ## POST /login 
-> returns 401 Unautorised if the email or password does not exist in the database
+> Returns a token when user info is confirmed. Also sends the "avatardata" if any. 
 
 **"/login"** <br>
 METHOD: POST <br>
@@ -36,10 +36,10 @@ Requires: Authentication {token} <br>
 Checks if the input email exists in the database, if it does it validates the password by checking if the paswordhash in the database for the user with the given email is the same as the paswordhash inputted in the client. The token is updated and returned here.
 
 Required fields *{email, password}*.
-Response is {user: {id, email, name, paswHash}, avatar: {avatarId, hairColor, eyeColor, skinColor, eyeBrowType}, token}
+Response is {user: {id, role}, avatar: {avatarId, hairColor, eyeColor, skinColor, eyeBrowType}, token}
 
-## PUT /users/:id 
-> Respondes with 404 not found, if the client is trying to edit a user that doesn't exist in database. also if the input email is used in the database already the database, it responds with 422 Unprosessable Content, and error "a user with this email already exists".
+## PUT /users/update
+>  User can change their own data. New token with updated credentials returned.
 
 **"/users/update"** <br>
 METHOD: PUT <br>
@@ -49,10 +49,10 @@ Requires: Authentication {token} <br>
 
 **optional** fields *{name, email, password}*. 
 Checks if the user exists and if the password is to be reset or the same as the one in the database. creates a new updated token.
-response is {{user: id, email} token} with the updated data.
+response is {{user: id, email}, token} with the updated data.
 
 ## POST /avatar 
->  Responds with 200 OK if the avatar is cerated or updated. if there is no user logged in the avatar wont be saved and server responds with 404 Not Found.
+>  creates an avatar if there is none connected to the user, and updates the avatar if it exists
 
 "/avatar" <br>
 METHOD: POST <br>
@@ -61,7 +61,7 @@ Returns: JSON <br>
 Requires: Authentication {token} <br>
 
 finds the logged in user and the avatar Id connected to them, and saves the changes to the avatar table at the given avatarId. 
-response Avatar : {aHairColor, anEyeColor, aSkinColor, aBrowType}.
+response : {aHairColor, anEyeColor, aSkinColor, aBrowType}.
 
 ## DELETE  /users/:id 
 > [!caution]
@@ -74,10 +74,10 @@ Returns: JSON <br>
 Requires: Authentication {token} <br>
 
 Required paramater : *{id}* if there exists a user with the id in database, user with the same id is deleted. 
-responds with {msg}.
+responds with {msg}. <br> A user with role "admin" cannot be deleted.
 
 ## GET / users
-> Returns all the users, returns 403 Forbidden if you are not an admin.
+> Returns all the users.
 
 **"/users"**<br>
  METHOD: GET <br>
@@ -86,5 +86,6 @@ responds with {msg}.
  Requires: Authentication {token} <br>
 
 Shows all the users in the database. 
+Responds with {users}.
 > [!Important]
 > Only available for the administrator

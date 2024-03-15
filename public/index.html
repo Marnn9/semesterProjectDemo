@@ -62,7 +62,7 @@
     </div>
 
     <div id="avatarStudioEvents" style="display: none;">
-        <button id="mainBtn" class="globalBtn">&#8594;</button>
+        <button id="mainBtn" class="globalBtn" translateText="shareBtn">&#8594;</button>
         <button id="checkBtn" class="globalBtn">&#10004;</button>
 
         <div id="choiceMenu">
@@ -131,10 +131,12 @@
             const loginFormsContainer = document.getElementById("loginForms");
             const editUserForm = document.getElementById("editUser");
             const bntContainerLoggedIn = document.getElementById("bntContainerLoggedIn");
+            const avatarStudioEvents = document.getElementById("avatarStudioEvents");
 
             replaceAllOccurrences(loginFormsContainer, translations);
             replaceAllOccurrences(editUserForm, translations);
             replaceAllOccurrences(bntContainerLoggedIn, translations);
+            replaceAllOccurrences(avatarStudioEvents, translations);
         }
 
         async function setInitialLanguage() {

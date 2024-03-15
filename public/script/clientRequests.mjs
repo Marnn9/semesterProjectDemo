@@ -29,13 +29,16 @@ export async function loginUser() {
             sessionStorage.setItem("token", data.token);
 
             if (data.avatar !== null) {
-                functions.avatarToStorage(data);
+                functions.avatarToStorageLogin(data);
+                await loggedInShowAvatar();
+            } else {
+                functions.loadAvatarScene();
             }
             if (data.user.role === "admin") {
                 sessionStorage.setItem("role", data.user.role);
                 functions.showAdminFields();
             }
-            await loggedInShowAvatar();
+
         } else {
             functions.responseNotOk(response, data);
         }
@@ -122,7 +125,7 @@ export async function loggedInShowAvatar() {
         try {
             const response = await functions.globalFetch('GET', avatarUrl);
             const data = await response.json();
-
+            console.log(data);
             if (response.ok) {
                 functions.loadAvatarScene();
             } else {
