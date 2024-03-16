@@ -1,6 +1,7 @@
 :root {
-    --mainBtnColor: #EBAC78;
+    --mainBtnColor: orange;
     --borderColor: #ddb271;
+    --mainBtnTxt: black;
 }
 
 /* Avatar studio */
@@ -57,7 +58,7 @@ button:hover {
 
 #mainBtn {
     background-color: var(--mainBtnColor);
-    color: rgb(255, 255, 255);
+    color: var(--mainBtnTxt);
     width: 6em;
     left: 7em;
     bottom: 14em;
@@ -173,8 +174,8 @@ button:hover {
     }
 
     #mainBtn {
-        background-color: #EBAC78;
-        color: rgb(255, 255, 255);
+        background-color: var(--mainBtnColor);
+        color: var(--mainBtnTxt);
         width: 5em;
         left: 3.5em;
         bottom: 12em;
@@ -213,8 +214,8 @@ button:hover {
     }
 
     #mainBtn {
-        background-color: #EBAC78;
-        color: rgb(255, 255, 255);
+        background-color: var(--mainBtnColor);
+        color: var(--mainBtnTxt);
         width: 5em;
         left: 3.5em;
         bottom: 15em;
@@ -231,8 +232,8 @@ button:hover {
     }
 
     #mainBtn {
-        background-color: #EBAC78;
-        color: rgb(255, 255, 255);
+        background-color: var(--mainBtnColor);
+        color: var(--mainBtnTxt);
         width: 5em;
         left: 3.5em;
         bottom: 18em;
