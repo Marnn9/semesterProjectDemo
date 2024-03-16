@@ -128,10 +128,10 @@ USER_API.delete('/users/:id', validateUserMiddleware, async (req, res) => {
     let deleteUser = new User();
 
     if (existingUser.role === "admin") {
-        adminId = existingUser.id
+        adminId = existingUser.id;
     }
 
-    if (userId && (userId != adminId)) {
+    if (userId && (userId != adminId) && adminId == null) {
         try {
             deleteUser = await deleteUser.delete(userId);
             res.status(HttpCodes.successfulResponse.Ok).json({ msg: 'user with id ' + userId + ' deleted' });
@@ -142,7 +142,11 @@ USER_API.delete('/users/:id', validateUserMiddleware, async (req, res) => {
     } else if (userId && (userId == adminId)) {
         console.log('Admin user cannot be deleted');
         res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Admin user cannot be deleted' });
-    } else {
+    } else if (adminId != null) {
+        console.log('Admin user cannot be deleted');
+        res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: 'Admin user cannot be deleted' });
+    }
+    else {
         console.log('id not provided or not valid for deleting');
         res.status(HttpCodes.ClientSideErrorResponse.NotFound).json({ error: 'id not provided or not valid for deleting' });
     }
