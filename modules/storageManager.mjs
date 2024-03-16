@@ -1,8 +1,5 @@
 import pg from "pg"
 
-
-/// TODO: is the structure / design of the DBManager as good as it could be?
-
 class DBManager {
 
     #credentials = {};
@@ -191,7 +188,6 @@ class DBManager {
 
     async getAvatar(anId) {
         const client = new pg.Client(this.#credentials);
-
         try {
             await client.connect();
             let avatar = null;
@@ -201,7 +197,6 @@ class DBManager {
             if (outputId.rows.length === 1) {
                 avatar = outputId.rows[0];
             }
-
             return avatar;
         } catch (error) {
             console.error("Error finding the avatar:", error);
@@ -209,18 +204,13 @@ class DBManager {
         } finally {
             await client.end();
         }
-
     }
 }
 
-// We are using an enviorment variable to get the db credentials 
 let connectionString = process.env.ENVIORMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 
-// We are using an enviorment variable to get the db credentials 
-/* if (connectionString == undefined) {
+if (connectionString == undefined) {
     throw ("You forgot the db connection string");
-} */
+} 
 
 export default new DBManager(connectionString);
-
-//
