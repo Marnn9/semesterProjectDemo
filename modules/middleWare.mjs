@@ -76,36 +76,50 @@ export function adminAuth(req, res, next) {
 
 export async function updateUserMiddleware(req, res, next) {
     const { existingUser } = req.authCredentials;
-    const { name, email, password } = req.body;
+    const { name, email, password, userId } = req.body;
+
+    const loggedInUser = existingUser;
+    let token = req.authCredentials.token;
 
     let newName = null;
     let newPas = null;
     let newMail = null;
+    let foundUser = null;
+    let adminUpdateUser = false;
+    
+
+    const credentialToCheck = new User();
+
+    if (userId !== null && userId !== undefined && loggedInUser.role === "admin") {
+        adminUpdateUser = true
+        foundUser = await credentialToCheck.findByIdentifyer(userId);
+
+    } else {
+        foundUser = await credentialToCheck.findByIdentifyer(loggedInUser.id);
+    }
 
     if (email !== undefined && email !== '') {
-        const checkMail = new User();
-        const existingMail = await checkMail.findByIdentifyer(email);
 
-        if (existingMail === null || existingMail.id === existingUser.id) {
+        if (foundUser === null || foundUser.id === foundUser.id) {
             newMail = email;
         } else {
             res.status(HttpCodes.ClientSideErrorResponse.UnprocessableContent).json({ error: "a user with this email already exists" });
             return;
         }
     } else {
-        newMail = existingUser.uEmail;
+        newMail = foundUser.uEmail;
     }
 
     if (password !== undefined && password !== '') {
         newPas = encrypt(password);
     } else {
-        newPas = existingUser.password;
+        newPas = foundUser.password;
     }
 
     if (name !== undefined && name !== '') {
         newName = name;
     } else {
-        newName = existingUser.uName;
+        newName = foundUser.uName;
     }
 
     if (newMail && newName && newPas) {
@@ -113,15 +127,17 @@ export async function updateUserMiddleware(req, res, next) {
         updatedUser.name = newName;
         updatedUser.email = newMail;
         updatedUser.pswHash = newPas;
-        updatedUser.id = existingUser.id;
-
-        const token = createToken(existingUser.id, updatedUser.email, existingUser.anAvatarId, existingUser.role);
-        req.updatedUserData = { token, updatedUser };
+        updatedUser.id = foundUser.id;
+        if (!adminUpdateUser) {
+            token = createToken(loggedInUser.id, updatedUser.email, loggedInUser.anAvatarId, loggedInUser.role);
+        }
+        req.updatedUserData = { token, updatedUser};
         next();
     } else {
         res.status(HttpCodes.ClientSideErrorResponse.BadRequest).json({ error: "could not set new values to the user" });
     }
 }
+
 
 export async function errorMiddleware(err, req, res, next) {
     const superInstance = new SuperLogger();

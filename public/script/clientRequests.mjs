@@ -78,8 +78,9 @@ export async function sendEditUser() {
     let email = document.getElementById('inpEmailEdit').value;
     let password = document.getElementById('inpPasswordEdit').value;
     console.log(sessionStorage.getItem("token"));
+    const userId = selectedUserId;
 
-    const editedUser = { email, name, password };
+    const editedUser = { email, name, password, userId };
     try {
         const response = await functions.globalFetch('PUT', url + "/update", editedUser);
         const data = await response.json();
@@ -169,7 +170,6 @@ export async function deleteUser() {
             const data = await response.json();
             if (response.ok) {
                 console.log('Deleted user:', data);
-                localStorage.clear();
             } else {
                 functions.responseNotOk(response, data);
             }
