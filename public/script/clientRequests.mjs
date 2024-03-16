@@ -140,7 +140,6 @@ export async function loggedInShowAvatar() {
     }
 }
 
-
 export async function deleteUser() {
     const deleteConfirm = confirm("Are you sure you want to delete the user?");
     const id = functions.checkStorage().loggedInId;
@@ -170,6 +169,7 @@ export async function deleteUser() {
             const data = await response.json();
             if (response.ok) {
                 console.log('Deleted user:', data);
+                functions.displayMsg(data.msg, 'green');
             } else {
                 functions.responseNotOk(response, data);
             }

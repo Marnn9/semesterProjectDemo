@@ -253,3 +253,59 @@ Database connection  local
 13:31:22 GET /translations/en.json
 13:31:24 GET /user/users
 13:31:41 POST /user/avatar
+####################
+Server enviorment local
+Database connection  local
+####################
+13:47:21 GET /
+13:47:21 GET /media/england.png
+13:47:21 GET /media/norway.png
+13:47:21 GET /media/spain.png
+13:47:21 GET /user/avatar
+13:47:21 GET /translations/en.json
+13:47:24 GET /user/users
+13:47:30 GET /
+13:47:30 GET /media/england.png
+13:47:30 GET /media/norway.png
+13:47:30 GET /media/spain.png
+13:47:31 GET /translations/en.json
+13:47:38 POST /user/users
+13:47:38 GET /
+13:47:38 GET /media/england.png
+13:47:38 GET /media/norway.png
+13:47:38 GET /media/spain.png
+13:47:39 GET /translations/en.json
+13:47:42 POST /user/login
+13:47:42 GET /user/avatar
+13:47:44 GET /user/users
+13:47:48 DELETE /user/users/53
+13:50:02 DELETE /user/users/53
+13:50:07 GET /
+13:50:07 GET /media/england.png
+13:50:07 GET /media/norway.png
+13:50:07 GET /media/spain.png
+13:50:07 GET /user/avatar
+13:50:07 GET /translations/en.json
+13:50:10 GET /user/users
+13:50:14 DELETE /user/users/null
+####################
+Server enviorment local
+Database connection  local
+####################
+13:50:32 GET /
+13:50:32 GET /media/england.png
+13:50:32 GET /media/norway.png
+13:50:32 GET /media/spain.png
+13:50:33 GET /user/avatar
+13:50:33 GET /translations/en.json
+13:50:36 DELETE /user/users/null
+####################
+Server enviorment local
+Database connection  local
+####################
+13:50:55 GET /
+13:50:55 GET /media/england.png
+13:50:55 GET /media/norway.png
+13:50:56 GET /media/spain.png
+13:50:56 GET /user/avatar
+13:50:56 GET /translations/en.json
