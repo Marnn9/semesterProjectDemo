@@ -20,6 +20,7 @@ displayBtnAdmin.addEventListener('click', async (event) => {
 
     if (userListVisible) {
         hideUserList();
+        selectedUserId = null;
     } else {
         displayAllUsers();
     }

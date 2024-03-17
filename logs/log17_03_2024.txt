@@ -137,3 +137,41 @@ Server enviorment local
 Database connection  local
 ####################
 10:46:33 DELETE /user/users/null
+10:48:14 GET /user/users
+10:48:18 GET /user/users
+10:48:27 PUT /user/users/update
+10:48:31 GET /user/users
+10:48:44 PUT /user/users/update
+10:48:46 GET /user/users
+10:48:57 PUT /user/users/update
+10:49:00 GET /user/users
+10:49:06 PUT /user/users/update
+10:49:18 PUT /user/users/update
+10:49:19 GET /user/users
+10:49:25 PUT /user/users/update
+10:49:36 GET /user/users
+####################
+Server enviorment local
+Database connection  local
+####################
+10:51:15 GET /user/users
+10:51:26 PUT /user/users/update
+10:51:27 GET /user/users
+10:51:32 PUT /user/users/update
+10:51:35 GET /user/users
+10:51:40 GET /
+10:51:40 GET /media/england.png
+10:51:40 GET /media/norway.png
+10:51:40 GET /media/spain.png
+10:51:41 GET /user/avatar
+10:51:41 GET /translations/no-nb.json
+####################
+Server enviorment local
+Database connection  local
+####################
+10:51:48 GET /user/users
+10:51:53 GET /user/users
+10:51:57 PUT /user/users/update
+10:51:59 GET /user/users
+10:52:10 PUT /user/users/update
+10:52:13 GET /user/users

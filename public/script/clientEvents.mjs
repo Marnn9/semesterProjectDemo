@@ -25,7 +25,7 @@ myAccountBtn.addEventListener("click", async (event) => {
         editUserForm.style.display = 'none';
         bntContainerLoggedIn.style.display = 'none';
         languageSelection.style.display = 'none';
-        hideUserList()
+        hideUserList();
     }
 });
 
