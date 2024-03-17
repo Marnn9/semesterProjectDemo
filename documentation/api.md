@@ -3,7 +3,7 @@
 > All the authorizations is sent as base 64 encoding
 
 ## GET / avatar
-> Returns the values of the avatar. If no authenticated user, returns 401 unauthorized.
+> Returns the values of the avatar.
 
 **"/avatar/:id"**<br>
 METHOD: GET <br>
@@ -11,7 +11,7 @@ Expects: JSON <br>
 Returns: JSON <br>
 Requires: Authentication {token} <br>
 
-Response: avatar if any exist, if not a msg: is sent as response.
+Response: avatar if any exist, if not a msg "User has no avatar" is sent as response.
 
 ## POST /users 
 > Adds a new user to the user/users endpoint. No user is added if a user with the given email exists already.

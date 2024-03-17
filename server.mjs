@@ -1,6 +1,6 @@
 import 'dotenv/config'
-import express from 'express' // Express is installed using npm
-import USER_API from './routes/usersRoute.mjs'; // This is where we have defined the API for working with users.
+import express from 'express' 
+import USER_API from './routes/usersRoute.mjs'; 
 import SuperLogger from './modules/SuperLogger.mjs';
 import { errorMiddleware } from './modules/middleWare.mjs';
 import printDeveloperStartupImportantInformationMSG from "./modules/developHelper.mjs";
