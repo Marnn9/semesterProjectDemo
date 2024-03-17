@@ -1,0 +1,11 @@
+####################
+Server enviorment local
+Database connection  local
+####################
+10:29:39 GET /
+10:29:39 GET /media/england.png
+10:29:39 GET /media/norway.png
+10:29:39 GET /media/spain.png
+10:29:40 GET /user/avatar
+10:29:40 GET /translations/no-nb.json
+10:29:43 GET /user/users

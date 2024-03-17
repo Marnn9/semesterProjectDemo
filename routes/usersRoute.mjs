@@ -131,7 +131,7 @@ USER_API.delete('/users/:id', validateUserMiddleware, async (req, res) => {
         adminId = existingUser.id;
     }
 
-    if (userId && (userId != adminId) && adminId == null) {
+    if (userId && (userId != adminId)) {
         try {
             deleteUser = await deleteUser.delete(userId);
             res.status(HttpCodes.successfulResponse.Ok).json({ msg: 'user with id ' + userId + ' deleted' });
