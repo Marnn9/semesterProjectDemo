@@ -146,9 +146,8 @@ export async function errorMiddleware(err, req, res, next) {
     process.on('uncaughtException', (error) => {
         console.error('Uncaught Exception:', error);
         superInstance.log(error);
-        process.exit(1);
     });
 
-    res.status(500).json({ error: 'Unhandled error in server', errorCode: `${err}` });
+    res.status(HttpCodes.serverSideResponse.InternalServerError).json({ error: 'Unhandled error in server', errorCode: `${err}` });
     next();
 }

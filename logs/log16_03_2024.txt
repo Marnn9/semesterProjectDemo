@@ -528,3 +528,16 @@ Database connection  local
 20:55:22 GET /media/spain.png
 20:55:22 GET /user/avatar
 20:55:22 GET /translations/en.json
+20:57:36 GET /
+20:57:36 GET /media/england.png
+20:57:36 GET /media/norway.png
+20:57:36 GET /media/spain.png
+20:57:36 GET /user/avatar
+20:57:36 GET /translations/en.json
+20:57:42 GET /robots.txt
+20:57:46 GET /
+20:57:46 GET /media/england.png
+20:57:46 GET /media/norway.png
+20:57:46 GET /media/spain.png
+20:57:46 GET /user/avatar
+20:57:46 GET /translations/en.json
