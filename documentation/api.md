@@ -11,7 +11,7 @@ Expects: JSON <br>
 Returns: JSON <br>
 Requires: Authentication {token} <br>
 
-Response: avatar if any exist, if not a msg "User has no avatar" is sent as response.
+Response avatar:  {avatarId, hairColor, eyeColor, skinColor, eyeBrowType} if any exist, if not a msg "User has no avatar" is sent as response.
 
 ## POST /users 
 > Adds a new user to the user/users endpoint. No user is added if a user with the given email exists already.
